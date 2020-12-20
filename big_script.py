@@ -26,33 +26,37 @@ def get_op(n: int) -> Array:
 
 if __name__ == '__main__':
     np.random.seed(42)
-    max_num_qubits = 4
-    num_samples = 2
+    max_num_qubits = 6
+    num_samples = 10
     qubits_range = range(4, max_num_qubits+2)[0:max_num_qubits:2]
 
     lazy_data = []
-
-    @dask.delayed
-    def get_grad_sample(n, m, ans, op, point):
-        grad = get_gradient_fd(ans=ans, op=op, point=point)
-        return {
-            'n': n,
-            'm': m,
-            'grad': list(grad.real)
-        }
 
     for n in qubits_range:
         op = get_op(n)
         for m in range(2, n):
             ans = spc_ansatz(n, m)
             num_pars = 2*(comb(n, m) - 1)
+            grads = []
             for i in range(num_samples):
                 point = list(np.random.uniform(-np.pi, +np.pi, size=num_pars//2))
                 point = point + [0.0]*(num_pars//2)
 
-                lazy_data.append(get_grad_sample(
-                    n=n, m=m, ans=ans, op=op, point=point
-                ))
+                grad = dask.delayed(get_gradient_fd)(ans, op, point)
+                grads.append(grad)
+            
+            grad_list = dask.delayed(np.concatenate)(grads).flatten().real
+
+            mean = np.mean(grad_list)
+            var = np.var(grad_list)
+
+            lazy_data.append({
+                'n': n,
+                'm': m,
+                'mean': mean,
+                'var': var
+            })
+
             
     cluster = PBSCluster()
     cluster.scale(1)
