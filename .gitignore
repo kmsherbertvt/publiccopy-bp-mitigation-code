@@ -1,5 +1,8 @@
 *.csv
-dask-worker-space/*
+dask-*/
 __pycache__/*
-.vscode/*
+.vscode*/
 dask-worker.*
+dask_*/
+dask_*
+dask-*
