@@ -27,20 +27,24 @@ def get_op(n: int) -> Array:
 
 
 if __name__ == '__main__':
+    print(f'Starting cluster and client...')
+    t_o = time.time()
     np.random.seed(42)
     cluster = SLURMCluster()
-    cluster.adapt(maximum_jobs=10)
+    cluster.adapt(maximum_jobs=20)
     client = Client(cluster)
     client.upload_file('simulator.py')
 
     # Barren plateaus for MCPs
-    max_num_qubits = 4
+    max_num_qubits = 6
     qubits_range = range(4, max_num_qubits+2)[0:max_num_qubits:2]
-    num_samples = 3
+    num_samples = 50
     #layers = list(range(10, 100, 10)) + list(range(100,1000,100))
-    layers = range(10, 100, 10)
+    layers = range(10, 200, 10)
 
     inputs = []
+
+    print(f'Defining experiments...')
 
     for n in qubits_range:
         for l in layers:
@@ -71,5 +75,7 @@ if __name__ == '__main__':
     df = bag.to_dataframe()
     df = df.explode('grad')
     
-    time = time.time()
+    t_f = time.time()
+    print(f'Finished running {len(inputs)} in {t_f-t_o} seconds, dumping results to files...')
     df.to_csv(f'data/mpc/bp_mpc_*.csv')
+    print(f'Finished dumping results to files')

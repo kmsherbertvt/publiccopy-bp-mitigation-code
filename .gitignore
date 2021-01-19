@@ -6,3 +6,5 @@ dask-worker.*
 dask_*/
 dask_*
 dask-*
+*.out
+.ipynb_checkpoints
