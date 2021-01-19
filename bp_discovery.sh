@@ -2,7 +2,7 @@
 
 #SBATCH -J dask-nanny
 #SBATCH -p normal_q
-#SBATCH -A personal
+#SBATCH -A jvandyke_alloc
 #SBATCH -n 1
 #SBATCH --cpus-per-task=4
 #SBATCH -t 24:00:00

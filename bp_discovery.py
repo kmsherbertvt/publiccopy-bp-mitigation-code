@@ -31,7 +31,8 @@ if __name__ == '__main__':
     t_o = time.time()
     np.random.seed(42)
     cluster = SLURMCluster()
-    cluster.adapt(maximum_jobs=20)
+    #cluster.adapt(maximum_jobs=20)
+    cluster.scale(jobs=20)
     client = Client(cluster)
     client.upload_file('simulator.py')
 
@@ -74,8 +75,6 @@ if __name__ == '__main__':
 
     df = bag.to_dataframe()
     df = df.explode('grad')
-    
-    t_f = time.time()
-    print(f'Finished running {len(inputs)} in {t_f-t_o} seconds, dumping results to files...')
-    df.to_csv(f'data/mpc/bp_mpc_*.csv')
+    print(f'Finished running {len(inputs)} experiments, dumping results to files...')
+    df.to_csv('data/mcp/bp_mcp_*.csv')
     print(f'Finished dumping results to files')
