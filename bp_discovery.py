@@ -29,7 +29,7 @@ def get_op(n: int) -> Array:
 if __name__ == '__main__':
     np.random.seed(42)
     cluster = SLURMCluster()
-    cluster.adapt(maximum_jobs=4)
+    cluster.adapt(maximum_jobs=10)
     client = Client(cluster)
     client.upload_file('simulator.py')
 
@@ -72,4 +72,4 @@ if __name__ == '__main__':
     df = df.explode('grad')
     
     time = time.time()
-    df.to_csv(f'data/bp_spc_*.csv')
+    df.to_csv(f'data/mpc/bp_mpc_*.csv')
