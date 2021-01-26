@@ -1,0 +1,24 @@
+temporary-directory: /tmp
+
+distributed:
+  scheduler:
+    bandwidth: 1000000000     # GB MB/s estimated worker-worker bandwidth
+  worker:
+    memory:
+      target: 0.90  # Avoid spilling to disk
+      spill: False  # Avoid spilling to disk
+      pause: 0.80  # fraction at which we pause worker threads
+      terminate: 0.95  # fraction at which we terminate the worker
+  comm:
+    compression: null
+
+jobqueue:
+  slurm:
+    name: dask-worker
+    cores: 20
+    memory: '80 GB'
+    processes: 20
+    death-timeout: 600
+    queue: normal_q
+    project: jvandyke_alloc
+    walltime: '10:00:00'
