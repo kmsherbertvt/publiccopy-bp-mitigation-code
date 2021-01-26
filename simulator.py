@@ -52,6 +52,21 @@ def pauli_exp(mat: Array, theta: float) -> Array:
     identity = id_mat(n)
     return pauli_exp_rule(identity, mat, theta)
 
+def mcp_g_list(n: int) -> List[List[int]]:
+    res = []
+    for i in range(n):
+        ax = [0] * n
+        ax[i] = 2
+        res.append(ax)
+    
+    for i in range(n-1):
+        ax = [0] * n
+        ax[i] = 3
+        ax[i+1] = 2
+        res.append(ax)
+    
+    return res
+
 def pauli_ansatz(axes: List[int], initial_state: Array = None) -> Ansatz:
     num_pars = len(axes)
     num_qubits = len(axes[0])
