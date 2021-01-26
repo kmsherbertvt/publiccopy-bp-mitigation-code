@@ -190,12 +190,14 @@ def get_gradient_ps(ans: Ansatz, op: np.array, point: np.array, r: float = 1) ->
 
     return np.array(grad)
 
-def get_gradient_fd(ans: Ansatz, op: np.array, point: np.array, epsilon: float = 1e-8) -> np.array:
+def get_gradient_fd(ans: Ansatz, op: np.array, point: np.array, epsilon: float = 1e-8, grad_pars: List[int] = None) -> np.array:
     point = np.array(point)
     k = len(point)
     grad = []
 
-    for i in range(k):
+    grad_pars = range(k) if grad_pars is None else grad_pars
+
+    for i in grad_pars:
         mask = np.zeros(k)
         mask[i] = epsilon/2
 

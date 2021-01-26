@@ -2,6 +2,7 @@ import numpy as np
 from math import comb
 from dask.distributed import Client, progress, wait
 from typing import List
+from math import comb
 from dask_jobqueue import SLURMCluster
 from random import shuffle
 import dask
@@ -34,28 +35,15 @@ def get_op(n: int) -> Array:
     return pauli_str(axes=l)
 
 
-if __name__ == '__main__':
-    logging.info('Starting dask cluster/client...')
-    t_o = time.time()
-    np.random.seed(42)
-    cluster = SLURMCluster(extra=["--lifetime-stagger", "2m"])
-    #cluster.adapt(minimum_jobs=3, maximum_jobs=20)
-
-    logging.info('Scaling cluster...')
-    cluster.scale(jobs=20)
-    client = Client(cluster)
-    client.upload_file('simulator.py')
-
-    # Barren plateaus for MCPs
-    max_num_qubits = 6
-    qubits_range = range(4, max_num_qubits+2)[0:max_num_qubits:2]
-    num_samples = 50
-    #layers = list(range(10, 100, 10)) + list(range(100,1000,100))
-    layers = range(10, 200, 10)
-
+def gen_random_circs(
+    qubits_range: List[int],
+    num_samples: int,
+    layers: List[int]
+):
     inputs = []
 
-    logging.info('Defining experiments...')
+    logging.info('Defining experiments for random circs')
+
     for n in qubits_range:
         for l in layers:
             axes = [
@@ -80,7 +68,8 @@ if __name__ == '__main__':
         return {
             'n': n,
             'l': len(axes),
-            'grad': grad.real
+            'grad': grad.real,
+            'ans': 'rand'
         }
 
     logging.info('Defining bags')
@@ -88,10 +77,89 @@ if __name__ == '__main__':
     bag = input_bag.map(lambda kwargs: grad_comp(**kwargs))
     logging.info('Defining dataframe')
     df = bag.to_dataframe()
+    return df
+
+def gen_spc_circs(
+    qubits_range: List[int],
+    num_samples: int,
+    time_reversal_symmetry: bool = True
+):
+    inputs = []
+
+    logging.info('Defining experiments for SPC circs')
+
+    for n in qubits_range:
+        for m in range(n):
+            for i in range(num_samples):
+                theta_pars = np.random.uniform(-np.pi, +np.pi, size=comb(n, m) - 1)
+                if time_reversal_symmetry:
+                    phi_pars = np.zeros(len(theta_pars))
+                else:
+                    phi_pars = np.random.uniform(-np.pi, +np.pi, size=comb(n, m) - 1)
+                point = np.concatenate((theta_pars, phi_pars))
+                inputs.append({'n': n, 'm': m, 'point': point})
+    logging.info(f'Defined {len(inputs)} experiments')
+
+    # Shuffle so jobs are more homogeneous
+    logging.info('Shuffling experiments...')
+    shuffle(inputs)
+
+    def grad_comp(n, m, point):
+        ans = spc_ansatz(num_qubits=n, num_particles=m)
+        op = get_op(n)
+        logging.info(f'Computing gradient on {n} qubits')
+        if time_reversal_symmetry:
+            grad_pars = range(comb(n, m) - 1)
+        else:
+            grad_pars = range(2*(comb(n, m) - 1))
+        grad = get_gradient_fd(ans=ans, op=op, point=point, grad_pars=grad_pars)
+        logging.info(f'Finished computing gradient on {n} qubits')
+        return {
+            'n': n,
+            'm': m,
+            'time_rev_sym': time_reversal_symmetry,
+            'grad': grad.real,
+            'ans': 'spc'
+        }
+
+    logging.info('Defining bags')
+    input_bag = db.from_sequence(inputs)
+    bag = input_bag.map(lambda kwargs: grad_comp(**kwargs))
+    logging.info('Defining dataframe')
+    df = bag.to_dataframe()
+    return df
+
+if __name__ == '__main__':
+    logging.info('Starting dask cluster/client...')
+    t_o = time.time()
+    np.random.seed(42)
+    cluster = SLURMCluster(extra=["--lifetime-stagger", "2m"])
+
+    logging.info('Scaling cluster...')
+    cluster.scale(jobs=20)
+    client = Client(cluster)
+    client.upload_file('simulator.py')
+
+    #num_samples = 50
+    #qubits = [4, 6]
+    #df = gen_random_circs(
+    #    qubits_range=qubits,
+    #    num_samples=num_samples,
+    #    layers=list(range(10, 100, 10))
+    #)
+
+    #num_samples = 50
+    #qubits = [4, 6]
+    #df = gen_spc_circs(
+    #    qubits_range=qubits,
+    #    num_samples=num_samples,
+    #    time_reversal_symmetry=True
+    #)
+
     df = df.explode('grad')
     df['grad'] = df['grad'].astype(float)
     logging.info('Defining pivot...')
-    pivot = df.groupby(['l', 'n']).agg({'grad': ['mean', 'std']})
+    pivot = df.groupby(['n', 'm']).agg({'grad': ['mean', 'std']})
     logging.info('Dumping to file...')
     pivot.to_csv('data/rand/bp_rand_sum_*.csv')
     logging.info('Dumped to file...')
