@@ -2,6 +2,7 @@ import numpy as np
 from math import comb
 from dask.distributed import Client, progress, wait
 from dask_jobqueue import SLURMCluster
+from random import shuffle
 import dask
 import dask.bag as db
 import pandas as pd
@@ -30,8 +31,8 @@ if __name__ == '__main__':
     print(f'Starting cluster and client...')
     t_o = time.time()
     np.random.seed(42)
-    cluster = SLURMCluster()
-    #cluster.adapt(maximum_jobs=20)
+    cluster = SLURMCluster(extra=["--lifetime-stagger", "2m"])
+    #cluster.adapt(minimum_jobs=3, maximum_jobs=20)
     cluster.scale(jobs=20)
     client = Client(cluster)
     client.upload_file('simulator.py')
@@ -56,10 +57,11 @@ if __name__ == '__main__':
             for i in range(num_samples):
                 point = np.random.uniform(-np.pi, +np.pi, size=l)
                 inputs.append({'n': n, 'axes': axes, 'point': point})
-    
-    print(f'There are {len(inputs)} experiments to run')
 
-    input_bag = db.from_sequence(inputs)
+    # Shuffle so jobs are more homogeneous
+    shuffle(inputs)
+
+    print(f'There are {len(inputs)} experiments to run')
 
     def grad_comp(n, axes, point):
         ans = pauli_ansatz(axes=axes)
@@ -71,10 +73,10 @@ if __name__ == '__main__':
             'grad': grad.real
         }
 
+    input_bag = db.from_sequence(inputs)
     bag = input_bag.map(lambda kwargs: grad_comp(**kwargs))
-
     df = bag.to_dataframe()
     df = df.explode('grad')
-    print(f'Finished running {len(inputs)} experiments, dumping results to files...')
-    df.to_csv('data/mcp/bp_mcp_*.csv')
-    print(f'Finished dumping results to files')
+    df['grad'] = df['grad'].astype(float)
+    pivot = df.groupby(['l', 'n']).agg({'grad': ['mean', 'std']})
+    pivot.to_csv('data/rand/bp_rand_sum_*.csv')
