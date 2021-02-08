@@ -208,10 +208,14 @@ def get_gradient_ps(ans: Ansatz, op: np.array, point: np.array, r: float = 1) ->
 def get_gradient_fd(ans: Ansatz, op: np.array, point: np.array, epsilon: float = 1e-8, grad_pars: List[int] = None) -> np.array:
     point = np.array(point)
     k = len(point)
+
+    if grad_pars is None:
+        grad_pars = range(k)
+    else:
+        if not set(grad_pars).issubset(range(k)):
+            raise ValueError(f'Given list of parameters {grad_pars} is not a subset of {range(k)}')
+
     grad = []
-
-    grad_pars = range(k) if grad_pars is None else grad_pars
-
     for i in grad_pars:
         mask = np.zeros(k)
         mask[i] = epsilon/2
