@@ -25,15 +25,21 @@ logging.basicConfig(
     level=logging.INFO
 )
 
+
 def get_op(n: int) -> Array:
-    """Returns Z1 Z2 on `n` qubits.
+    """Returns Ising Hamiltonian on n qubits. Constants = 1.
     """
-    if n <= 1:
-        raise ValueError('Must be at least 2 qubits')
+    res = np.zeros((2**n, 2**n))
+    for i in range(n-1):
+        l = [0] * n
+        l[i] = 3
+        res += pauli_str(axes=l)
+        l[i+1] = 3
+        res += pauli_str(axes=l)
     l = [0] * n
-    l[0] = 3
-    l[1] = 3
-    return pauli_str(axes=l)
+    l[n] = 3
+    res += pauli_str(axes=l)
+    return res
 
 
 def gen_random_circs(
@@ -152,7 +158,7 @@ def gen_spc_circs(
                     phi_pars = np.zeros(len(theta_pars))
                 else:
                     phi_pars = np.random.uniform(-np.pi, +np.pi, size=num_pars)
-                point = np.concatenate((theta_pars, phi_pars))
+                point = np.concatenate((theta_pars, theta_pars))
                 inputs.append({'n': n, 'm': m, 'point': point, 'k': k})
     logging.info(f'Defined {len(inputs)} experiments')
 
@@ -164,7 +170,6 @@ def gen_spc_circs(
         ans = spc_ansatz(num_qubits=n, num_particles=m)
         op = get_op(n)
         logging.info(f'Computing gradient on {n} qubits')
-        print(point)
         grad = get_gradient_fd(ans=ans, op=op, point=point, grad_pars=[k])
         logging.info(f'Finished computing gradient on {n} qubits')
         return {
@@ -194,7 +199,7 @@ if __name__ == '__main__':
     client.upload_file('simulator.py')
 
     num_samples = 500
-    qubits = [4, 6, 8]
+    qubits = [4, 6, 8, 10]
 
     #df = gen_random_circs(
     #    qubits_range=qubits,
@@ -216,6 +221,7 @@ if __name__ == '__main__':
 
     df = df.explode('grad')
     df['grad'] = df['grad'].astype(float)
+    df = df[df['grad'] != 0.0]
     logging.info('Defining pivot...')
     pivot = df.groupby(['n', 'm']).agg({'grad': ['mean', 'std']})
     logging.info('Dumping to file...')
