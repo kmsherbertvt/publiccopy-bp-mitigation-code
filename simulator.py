@@ -92,8 +92,8 @@ def aswap_gate(theta: float, phi: float) -> Array:
     a[3, 3] = 1.0 + 0.j
     a[1, 1] = c
     a[2, 2] = -c
-    a[2, 3] = s*p
-    a[3, 2] = s/p
+    a[1, 2] = s*p
+    a[2, 1] = s/p
     return a
 
 def zero_state(n: int) -> Array:
@@ -205,7 +205,7 @@ def get_gradient_ps(ans: Ansatz, op: np.array, point: np.array, r: float = 1) ->
 
     return np.array(grad)
 
-def get_gradient_fd(ans: Ansatz, op: np.array, point: np.array, epsilon: float = 1e-8, grad_pars: List[int] = None) -> np.array:
+def get_gradient_fd(ans: Ansatz, op: np.array, point: np.array, epsilon: float = 1e-12, grad_pars: List[int] = None) -> np.array:
     point = np.array(point)
     k = len(point)
 
