@@ -21,6 +21,18 @@ def get_pauli(i: int) -> Array:
         out = np.array([[1.0, 0.0], [0.0, -1.0]]) * (1.0+0.j)
     return out
 
+def rot_p(theta: float, a: int) -> np.array:
+    if a == 1 or a == 2:
+        c = np.cos(theta/2)
+        s = np.sin(theta/2)
+        if a == 1:
+            return np.array([[c, -1j*s], [-1j*s, c]])
+        else:
+            return np.array([[c, -s], [s, c]])
+    elif a == 3:
+        p = np.exp(-1j*theta/2)
+        return np.array([[p, 0.0], [1/p, 0.0]])
+
 def kron_args(*args):
     """For `args = [m1, m2, m3, ...]`, return
     `m1 otimes m2 otimes m3 otimes ...`.
@@ -100,6 +112,33 @@ def zero_state(n: int) -> Array:
     res = np.zeros((2**n, 1)) * (1.0 + 0.j)
     res[0, 0] = 1.0
     return res
+
+def hwe_ansatz(num_qubits: int, depth: int) -> Ansatz:
+    if num_qubits % 2 != 0:
+        raise ValueError('Only even number of qubits supported')
+    initial_state = zero_state(num_qubits)
+
+    # Make V
+    cz = np.diag([1, 1, 1, -1])
+    V = kron_args(*[cz] * (num_qubits // 2))
+    v_list = [np.eye(2)] + [cz] * ((num_qubits // 2) - 1) + [np.eye(2)]
+    V = kron_args(*v_list).dot(V)
+
+    def _ans_out(pars: List[float]) -> Array:
+        state = kron_args(*[rot_p(np.pi/4, 2)] * num_qubits).dot(initial_state)
+        if len(pars) != num_qubits * depth:
+            raise ValueError('Invalid number of pars')
+        for _ in range(depth):
+            rots = []
+            for _ in range(num_qubits):
+                a = np.random.choice(list(range(1, 4)))
+                rots.append(rot_p(pars.pop(), a))
+            U = kron_args(*rots)
+            state = U.dot(state)
+            state = V.dot(state)
+        return state
+    
+    return _ans_out
 
 def spc_ansatz(num_qubits: int, num_particles: int) -> Ansatz:
     if num_qubits % 2 == 1:
