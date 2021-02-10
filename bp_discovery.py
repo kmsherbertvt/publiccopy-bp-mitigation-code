@@ -31,7 +31,7 @@ logging.basicConfig(
 def get_op(n: int) -> Array:
     """Returns Ising Hamiltonian on n qubits. Constants = 1.
     """
-    res = np.zeros((2**n, 2**n))
+    res = np.zeros((2**n, 2**n), dtype='complex128')
     for i in range(n-1):
         l = [0] * n
         l[i] = 3
@@ -39,7 +39,7 @@ def get_op(n: int) -> Array:
         l[i+1] = 3
         res += pauli_str(axes=l)
     l = [0] * n
-    l[n] = 3
+    l[n-1] = 3
     res += pauli_str(axes=l)
     return res
 
