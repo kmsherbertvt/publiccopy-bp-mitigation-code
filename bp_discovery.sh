@@ -8,6 +8,11 @@
 #SBATCH --mem=20gb
 #SBATCH -t 24:00:00
 
+touch 1.out
+touch 1.log
+rm *.out
+rm *.log
+
 source activate barren
 module load dask/2.18.1-foss-2020a-Python-3.8.2
 
