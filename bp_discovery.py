@@ -219,7 +219,9 @@ if __name__ == '__main__':
     #    depth_range=list(range(10, 100, 10)) + list(range(100, 1000, 100)) + [1200, 1400, 1600, 1800, 2000]
     #)
 
+    logging.info('Exploding gradients')
     df = df.explode('grad')
+    logging.info('Modifying gradient type')
     df['grad'] = df['grad'].astype(float)
     df = df[df['grad'] != 0.0]
     logging.info('Defining pivot...')
