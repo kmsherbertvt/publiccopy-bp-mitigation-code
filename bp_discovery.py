@@ -5,7 +5,8 @@ from dask.distributed import Client, progress, wait
 from typing import List, Dict
 from math import comb
 from dask_jobqueue import SLURMCluster
-from dask.dataframe import from_pandas
+from dask import delayed
+from dask.dataframe import from_pandas, from_delayed
 from random import shuffle
 import dask
 import dask.bag as db
@@ -125,6 +126,8 @@ def grad_comp(d: Dict) -> float:
         ans = pauli_ansatz(axes=d['axes'])
     elif ans_name == 'spc':
         ans = spc_ansatz(num_qubits=n, num_particles=d['m'])
+    else:
+        raise ValueError(f'Invalid ansatz given: {ans_name}')
     
     logging.info(f'Computing gradient on {n} qubits')
     grad = get_gradient_fd(ans=ans, op=op, point=d['point']).real
@@ -146,20 +149,21 @@ def experiments_to_dataframe(exps: List[Dict]):
     #logging.info('Make dask df from df_pd')
     #df = from_pandas(df_pd, npartitions=800, sort=False)
     #logging.info('Apply gradient comp')
-    #df['grad'] = df.apply(lambda row: logging.info(dict(row)), axis=1)
+    #df['grad'] = df.apply(lambda row: grad_comp(dict(row)), axis=1)
 
-    #logging.info('Creating bag...')
-    #bag = db.from_sequence(exps, npartitions=800)
-    #logging.info('Mapping bag with grad_comp')
-    #bag = bag.map(grad_comp)
-    #logging.info('Creating dask DataFrame from bag')
-    #df = bag.to_dataframe()
+    logging.info('Creating bag...')
+    bag = db.from_sequence(exps, npartitions=800)
+    logging.info('Mapping bag with grad_comp')
+    bag = bag.map(grad_comp)
+    logging.info('Creating dask DataFrame from bag')
+    df = bag.to_dataframe()
 
     logging.info('Exploding gradients')
     df = df.explode('grad')
     logging.info('Modifying gradient type')
     df['grad'] = df['grad'].astype(float)
     logging.info('Returning dask DataFrame...')
+    logging.info(f'DataFrame has columns: {df.columns}')
     return df
 
 
@@ -168,23 +172,23 @@ if __name__ == '__main__':
     t_o = time.time()
     np.random.seed(42)
 
-    # Define experiments
-    num_samples = 50
-    qubits = [4, 6, 8]
-
-    experiments = []
-    #experiments.extend(gen_spc_exps(qubits, num_samples))
-    experiments.extend(gen_mcp_exps(qubits, num_samples, depth_range=[100, 500, 1000, 1500, 2000]))
-
-    logging.info('Creating DataFrame with experiments')
-    df = experiments_to_dataframe(experiments)
-    logging.info('DataFrame defined...')
-
     cluster = SLURMCluster(extra=["--lifetime-stagger", "2m"])
     logging.info('Scaling cluster...')
     cluster.scale(jobs=20)
     client = Client(cluster)
     client.upload_file('simulator.py')
+
+    # Define experiments
+    num_samples = 500
+    qubits = [4, 6, 8, 10]
+
+    experiments = []
+    experiments.extend(gen_spc_exps(qubits, num_samples))
+    #experiments.extend(gen_mcp_exps(qubits, num_samples, depth_range=[100, 500, 1000, 1500, 2000]))
+
+    logging.info('Creating DataFrame with experiments')
+    df = experiments_to_dataframe(experiments)
+    logging.info('DataFrame defined...')
 
     # Do statistics
     """ Some points in the SPCs have exactly zero gradient. I think this is either due to the
