@@ -109,7 +109,11 @@ def gen_spc_exps(
                     phi_pars = np.zeros(len(theta_pars))
                 else:
                     phi_pars = np.random.uniform(-np.pi, +np.pi, size=num_pars)
-                point = np.concatenate((theta_pars, theta_pars))
+                """ Before I forgot to change this back to theta_pars, phi_pars, and I was using
+                theta_pars, theta_pars. So at some point I need to re-run this, but I don't think
+                it will change the result.
+                """
+                point = np.concatenate((theta_pars, phi_pars))
                 inputs.append({'n': n, 'm': m, 'point': point, 'k': k, 'ans': 'spc', 'time_rev_sym': time_reversal_symmetry})
     logging.info(f'Defined {len(inputs)} experiments')
     return inputs
