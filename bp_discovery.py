@@ -36,12 +36,12 @@ def get_op(n: int) -> Array:
     for i in range(n-1):
         l = [0] * n
         l[i] = 3
-        res += pauli_str(axes=l)
+        res += pauli_str(axes=tuple(l))
         l[i+1] = 3
-        res += pauli_str(axes=l)
+        res += pauli_str(axes=tuple(l))
     l = [0] * n
     l[n-1] = 3
-    res += pauli_str(axes=l)
+    res += pauli_str(axes=tuple(l))
     return res
 
 

@@ -1,4 +1,5 @@
 import numpy as np
+from functools import lru_cache
 from math import comb
 from scipy.linalg import kron
 from typing import List, Union, Optional, Tuple, Callable
@@ -44,6 +45,7 @@ def kron_args(*args):
         res = kron(res, m)
     return res
 
+@lru_cache(200)
 def pauli_str(axes: Tuple[int]) -> Array:
     res = get_pauli(axes[0])
     for ax in axes[1:]:
@@ -90,7 +92,7 @@ def pauli_ansatz(axes: List[int], initial_state: Array = None) -> Ansatz:
             raise ValueError('Invalid number of parameters supplied')
         current_state = initial_state
         for theta, op in zip(pars, axes):
-            mat = pauli_str(op)
+            mat = pauli_str(tuple(op))
             current_state = pauli_exp_rule(identity, mat, theta).dot(current_state)
         return current_state
     return _ans_out
