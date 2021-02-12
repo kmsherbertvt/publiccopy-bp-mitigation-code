@@ -2,6 +2,10 @@ import numpy as np
 from functools import lru_cache
 from math import comb
 from scipy.linalg import kron
+from numpy.linalg import multi_dot
+import numba
+from numpy import einsum
+from opt_einsum import contract
 from typing import List, Union, Optional, Tuple, Callable
 
 Array = np.array
@@ -11,6 +15,7 @@ Ansatz = Callable[
     Array
 ]
 
+#@lru_cache(4)
 def get_pauli(i: int) -> Array:
     if i == 0:
         out = np.eye(2) * (1.0+0.j)
@@ -52,9 +57,11 @@ def pauli_str(axes: Tuple[int]) -> Array:
         res = kron(res, get_pauli(ax))
     return res
 
+#@lru_cache(5)
 def id_mat(n: int) -> Array:
     return np.eye(2**n)
 
+@numba.jit(nopython=True, fastmath=True)
 def pauli_exp_rule(identity: Array, mat: Array, theta: float) -> Array:
     return np.cos(theta) * identity - 1j * np.sin(theta) * mat
 
@@ -93,7 +100,8 @@ def pauli_ansatz(axes: List[int], initial_state: Array = None) -> Ansatz:
         current_state = initial_state
         for theta, op in zip(pars, axes):
             mat = pauli_str(tuple(op))
-            current_state = pauli_exp_rule(identity, mat, theta).dot(current_state)
+            p = pauli_exp_rule(identity, mat, theta)
+            current_state = einsum('ab,bc->ac', p, current_state)
         return current_state
     return _ans_out
 
