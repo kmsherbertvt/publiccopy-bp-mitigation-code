@@ -1,5 +1,5 @@
 import numpy as np
-from functools import lru_cache
+from functools import lru_cache, reduce
 from math import comb
 from scipy.linalg import kron
 from numpy.linalg import multi_dot
@@ -27,28 +27,24 @@ def get_pauli(i: int) -> Array:
         out = np.array([[1.0, 0.0], [0.0, -1.0]]) * (1.0+0.j)
     return out
 
+@numba.jit(nopython=True, fastmath=True)
 def rot_p(theta: float, a: int) -> np.array:
     if a == 1 or a == 2:
         c = np.cos(theta/2)
         s = np.sin(theta/2)
         if a == 1:
-            return np.array([[c, -1j*s], [-1j*s, c]])
+            return np.array([[c, -1j*s], [-1j*s, c]]) * (1.0 + 0.j)
         else:
-            return np.array([[c, -s], [s, c]])
+            return np.array([[c, -s], [s, c]]) * (1.0 + 0.j)
     elif a == 3:
         p = np.exp(-1j*theta/2)
-        return np.array([[p, 0.0], [1/p, 0.0]])
+        return np.array([[p, 0.0 + 0.j], [1/p, 0.0 + 0.j]])
 
 def kron_args(*args):
     """For `args = [m1, m2, m3, ...]`, return
     `m1 otimes m2 otimes m3 otimes ...`.
     """
-    if len(args) == 1:
-        return args[0]
-    res = args[0]
-    for m in args[1:]:
-        res = kron(res, m)
-    return res
+    return reduce(np.kron, args)
 
 @lru_cache(200)
 def pauli_str(axes: Tuple[int]) -> Array:
@@ -135,17 +131,19 @@ def hwe_ansatz(num_qubits: int, depth: int) -> Ansatz:
     V = kron_args(*v_list).dot(V)
 
     def _ans_out(pars: List[float]) -> Array:
+        pars = list(pars)
         state = kron_args(*[rot_p(np.pi/4, 2)] * num_qubits).dot(initial_state)
         if len(pars) != num_qubits * depth:
             raise ValueError('Invalid number of pars')
-        for _ in range(depth):
+        axes = np.random.choice(list(range(1, 4)), size=(num_qubits, depth))
+        for d in range(depth):
             rots = []
-            for _ in range(num_qubits):
-                a = np.random.choice(list(range(1, 4)))
+            for i in range(num_qubits):
+                a = axes[i, d]
                 rots.append(rot_p(pars.pop(), a))
             U = kron_args(*rots)
-            state = U.dot(state)
-            state = V.dot(state)
+            state = einsum('ab,bc->ac', U, state)
+            state = einsum('ab,bc->ac', V, state)
         return state
     
     return _ans_out
@@ -230,6 +228,7 @@ def spc_ansatz(num_qubits: int, num_particles: int) -> Ansatz:
     return _ans_out
         
 
+@numba.jit(nopython=True, fastmath=True)
 def exp_val(op: Array, state: Array) -> float:
     res = state.conj().transpose().dot(op).dot(state)[0, 0]
     return res
