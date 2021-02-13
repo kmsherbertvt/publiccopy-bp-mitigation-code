@@ -6,6 +6,8 @@ from typing import List, Dict
 from math import comb
 from dask_jobqueue import SLURMCluster
 from dask import delayed
+from distributed import Future
+from distributed import as_completed
 from dask.dataframe import from_pandas, from_delayed
 from random import shuffle
 import dask
@@ -137,39 +139,17 @@ def grad_comp(d: Dict) -> float:
     grad = get_gradient_fd(ans=ans, op=op, point=d['point'], grad_pars=[d['k']]).real
     
     d_out = d
-    d_out['grad'] = grad
+    d_out['grad'] = grad[0]
+    d_out.pop('point', None)
+    d_out.pop('axes', None)
     return d_out
 
 
-def experiments_to_dataframe(exps: List[Dict]):
-    logging.info('Shuffling list...')
-    shuffle(exps)
-
-    """ Neither of these approaches work for some reason. In each case
-    they stop on the last line of the commented blocks.
-    """
-    #logging.info('Make pandas df')
-    #df_pd = pd.DataFrame(exps)
-    #logging.info('Make dask df from df_pd')
-    #df = from_pandas(df_pd, npartitions=800, sort=False)
-    #logging.info('Apply gradient comp')
-    #df['grad'] = df.apply(lambda row: grad_comp(dict(row)), axis=1)
-
-    logging.info('Creating bag...')
-    bag = db.from_sequence(exps, npartitions=800)
-    logging.info('Mapping bag with grad_comp')
-    bag = bag.map(grad_comp)
-    logging.info('Creating dask DataFrame from bag')
-    df = bag.to_dataframe()
-
-    logging.info('Exploding gradients')
-    df = df.explode('grad')
-    logging.info('Modifying gradient type')
-    df['grad'] = df['grad'].astype(float)
-    logging.info('Returning dask DataFrame...')
-    logging.info(f'DataFrame has columns: {df.columns}')
-    return df
-
+def grad_futures(l: List[dict], client: Client) -> List[Future]:
+    logging.info('Submitting futures')
+    futures = client.map(grad_comp, l)
+    logging.info('Submitted futures')
+    return futures
 
 if __name__ == '__main__':
     logging.info('Starting dask cluster/client...')
@@ -188,22 +168,15 @@ if __name__ == '__main__':
 
     experiments = []
     #experiments.extend(gen_spc_exps(qubits, num_samples))
-    experiments.extend(gen_mcp_exps(qubits, num_samples, depth_range=[100, 500, 1000, 1500, 2000]))
+    #experiments.extend(gen_mcp_exps(qubits, num_samples, depth_range=[100, 500, 1000, 1500, 2000]))
 
-    logging.info('Creating DataFrame with experiments')
-    df = experiments_to_dataframe(experiments)
-    logging.info('DataFrame defined...')
-
-    # Do statistics
-    """ Some points in the SPCs have exactly zero gradient. I think this is either due to the
-    first few initial gates potentially acting trivially, but it may be due to some more fundamental
-    symmetry. For now I am just discarding the points that have *exactly* zero gradient.
-    """
-    #logging.info('Excluding zero-gradient points')
-    #df = df[df['grad'] != 0.0]
-
-    logging.info('Defining pivot...')
-    pivot = df.groupby(['n', 'l']).agg({'grad': ['mean', 'std']}).compute()
-    logging.info('Dumping to file...')
-    pivot.to_csv('data/mcp/output.csv')
-    logging.info('Dumped to file...')
+    futures = grad_futures(experiments, client=client)
+    res_list = []
+    for future, res in as_completed(futures, with_results=True):
+        res_list.append(res)
+        del future
+    logging.info('Making dataframe...')
+    df = pd.DataFrame(res_list)
+    logging.info('Writing to disk')
+    df.to_csv('result.csv')
+    logging.info('Wrote to disk, exiting!')
