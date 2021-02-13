@@ -7,6 +7,7 @@ import numba
 from numpy import einsum
 from opt_einsum import contract
 from typing import List, Union, Optional, Tuple, Callable
+from kron_vec_product import kron_vec_prod
 
 Array = np.array
 
@@ -132,7 +133,8 @@ def hwe_ansatz(num_qubits: int, depth: int) -> Ansatz:
 
     def _ans_out(pars: List[float]) -> Array:
         pars = list(pars)
-        state = kron_args(*[rot_p(np.pi/4, 2)] * num_qubits).dot(initial_state)
+        #state = kron_args(*[rot_p(np.pi/4, 2)] * num_qubits).dot(initial_state)
+        state = kron_vec_prod([rot_p(np.pi/4, 2)] * num_qubits, initial_state)
         if len(pars) != num_qubits * depth:
             raise ValueError('Invalid number of pars')
         axes = np.random.choice(list(range(1, 4)), size=(num_qubits, depth))
@@ -141,8 +143,8 @@ def hwe_ansatz(num_qubits: int, depth: int) -> Ansatz:
             for i in range(num_qubits):
                 a = axes[i, d]
                 rots.append(rot_p(pars.pop(), a))
-            U = kron_args(*rots)
-            state = einsum('ab,bc->ac', U, state)
+            # kron_vec_prod should be faster for large numbers of qubits
+            state = kron_vec_prod(rots, state)
             state = einsum('ab,bc->ac', V, state)
         return state
     
