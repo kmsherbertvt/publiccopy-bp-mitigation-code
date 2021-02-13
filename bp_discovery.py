@@ -134,7 +134,7 @@ def grad_comp(d: Dict) -> float:
         raise ValueError(f'Invalid ansatz given: {ans_name}')
     
     logging.info(f'Computing gradient on {n} qubits')
-    grad = get_gradient_fd(ans=ans, op=op, point=d['point']).real
+    grad = get_gradient_fd(ans=ans, op=op, point=d['point'], grad_pars=[d['k']]).real
     
     d_out = d
     d_out['grad'] = grad
