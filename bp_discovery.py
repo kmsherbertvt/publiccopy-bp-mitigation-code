@@ -187,8 +187,8 @@ if __name__ == '__main__':
     qubits = [4, 6, 8, 10]
 
     experiments = []
-    experiments.extend(gen_spc_exps(qubits, num_samples))
-    #experiments.extend(gen_mcp_exps(qubits, num_samples, depth_range=[100, 500, 1000, 1500, 2000]))
+    #experiments.extend(gen_spc_exps(qubits, num_samples))
+    experiments.extend(gen_mcp_exps(qubits, num_samples, depth_range=[100, 500, 1000, 1500, 2000]))
 
     logging.info('Creating DataFrame with experiments')
     df = experiments_to_dataframe(experiments)
@@ -199,11 +199,11 @@ if __name__ == '__main__':
     first few initial gates potentially acting trivially, but it may be due to some more fundamental
     symmetry. For now I am just discarding the points that have *exactly* zero gradient.
     """
-    logging.info('Excluding zero-gradient points')
-    df = df[df['grad'] != 0.0]
+    #logging.info('Excluding zero-gradient points')
+    #df = df[df['grad'] != 0.0]
 
     logging.info('Defining pivot...')
-    pivot = df.groupby(['n', 'm']).agg({'grad': ['mean', 'std']})
+    pivot = df.groupby(['n', 'l']).agg({'grad': ['mean', 'std']}).compute()
     logging.info('Dumping to file...')
-    pivot.to_csv('data/spc/output_*.csv')
+    pivot.to_csv('data/mcp/output.csv')
     logging.info('Dumped to file...')
