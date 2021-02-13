@@ -22,7 +22,8 @@ from simulator import (
     get_gradient_fd,
     spc_ansatz,
     pauli_ansatz,
-    mcp_g_list
+    mcp_g_list,
+    hwe_ansatz
 )
 
 logging.basicConfig(
@@ -88,6 +89,23 @@ def gen_mcp_exps(
     return inputs
 
 
+def gen_hwe_exps(
+    qubits_range: List[int],
+    num_samples: int,
+    depth_range: List[int]
+):
+    inputs = []
+    logging.info('Defining experiments for HWE circs')
+    for n in qubits_range:
+        for l in depth_range:
+            for _ in range(num_samples):
+                point = np.random.uniform(-np.pi, +np.pi, size=l*n)
+                k = np.random.randint(0, l*n)
+                inputs.append({'n': n, 'l': l, 'point': point, 'k': k, 'ans': 'hwe'})
+    logging.info(f'Defined {len(inputs)} experiments')
+    return inputs
+
+
 def gen_spc_exps(
     qubits_range: List[int],
     num_samples: int,
@@ -132,6 +150,8 @@ def grad_comp(d: Dict) -> float:
         ans = pauli_ansatz(axes=d['axes'])
     elif ans_name == 'spc':
         ans = spc_ansatz(num_qubits=n, num_particles=d['m'])
+    elif ans_name == 'hwe':
+        ans = hwe_ansatz(num_qubits=n, depth=d['l'])
     else:
         raise ValueError(f'Invalid ansatz given: {ans_name}')
     
@@ -169,6 +189,7 @@ if __name__ == '__main__':
     experiments = []
     #experiments.extend(gen_spc_exps(qubits, num_samples))
     #experiments.extend(gen_mcp_exps(qubits, num_samples, depth_range=[100, 500, 1000, 1500, 2000]))
+    experiments.extend(gen_hwe_exps(qubits, num_samples, depth_range=range(0, 100, 10)))
 
     futures = grad_futures(experiments, client=client)
     res_list = []
@@ -178,5 +199,5 @@ if __name__ == '__main__':
     logging.info('Making dataframe...')
     df = pd.DataFrame(res_list)
     logging.info('Writing to disk')
-    df.to_csv('result.csv')
+    df.to_csv('result_hwe.csv')
     logging.info('Wrote to disk, exiting!')

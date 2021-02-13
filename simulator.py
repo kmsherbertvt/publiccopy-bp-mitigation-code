@@ -39,7 +39,7 @@ def rot_p(theta: float, a: int) -> np.array:
             return np.array([[c, -s], [s, c]]) * (1.0 + 0.j)
     elif a == 3:
         p = np.exp(-1j*theta/2)
-        return np.array([[p, 0.0 + 0.j], [1/p, 0.0 + 0.j]])
+        return np.array([[p, 0.0 + 0.j], [0.0 + 0.j, 1/p]])
 
 def kron_args(*args):
     """For `args = [m1, m2, m3, ...]`, return
@@ -130,22 +130,23 @@ def hwe_ansatz(num_qubits: int, depth: int) -> Ansatz:
     V = kron_args(*[cz] * (num_qubits // 2))
     v_list = [np.eye(2)] + [cz] * ((num_qubits // 2) - 1) + [np.eye(2)]
     V = kron_args(*v_list).dot(V)
+    axes = np.random.choice(list(range(1, 4)), size=(num_qubits, depth))
 
     def _ans_out(pars: List[float]) -> Array:
         pars = list(pars)
-        #state = kron_args(*[rot_p(np.pi/4, 2)] * num_qubits).dot(initial_state)
-        state = kron_vec_prod([rot_p(np.pi/4, 2)] * num_qubits, initial_state)
+        state = kron_args(*[rot_p(np.pi/4, 2)] * num_qubits).dot(initial_state)
         if len(pars) != num_qubits * depth:
             raise ValueError('Invalid number of pars')
-        axes = np.random.choice(list(range(1, 4)), size=(num_qubits, depth))
+        par_ind = 0
         for d in range(depth):
             rots = []
             for i in range(num_qubits):
                 a = axes[i, d]
-                rots.append(rot_p(pars.pop(), a))
-            # kron_vec_prod should be faster for large numbers of qubits
-            state = kron_vec_prod(rots, state)
+                rots.append(rot_p(pars[par_ind], a))
+            U = kron_args(*rots)
+            state = einsum('ab,bc->ac', U, state)
             state = einsum('ab,bc->ac', V, state)
+            par_ind += 1
         return state
     
     return _ans_out
