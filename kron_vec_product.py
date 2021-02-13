@@ -68,10 +68,11 @@ def kron_vec_prod(As, v):
     v without forming the full kronecker product.
     """
     dims = [A.shape[0] for A in As]
+    shape_orig = v.shape
     vt = v.reshape(dims)
     for i, A in enumerate(As):
         vt = refold(A @ unfold(vt, i, dims), i, dims)
-    return vt.ravel()
+    return vt.ravel().reshape(shape_orig)
 
 
 def kron_brute_force(As, v):
@@ -86,11 +87,13 @@ def kron_brute_force(As, v):
 if __name__ == "__main__":
 
     # Create random problem.
-    _dims = [3, 3, 3, 3, 3, 3, 3, 3]
-    As = [npr.randn(d, d) for d in _dims]
-    v = npr.randn(np.prod(_dims))
+    num_qubits = 5
+    As = [npr.randn(2, 2) for _ in range(num_qubits)]
+    v = npr.uniform(size=(2**num_qubits, 1))
 
     # Test accuracy.
     actual = kron_vec_prod(As, v)
     expected = kron_brute_force(As, v)
+    print(As)
+    print(v)
     print(np.linalg.norm(actual - expected))
