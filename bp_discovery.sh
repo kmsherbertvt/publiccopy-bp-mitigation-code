@@ -8,9 +8,9 @@
 #SBATCH --mem=20gb
 #SBATCH -t 24:00:00
 
-touch 1.out
+#touch 1.out
 touch 1.log
-rm *.out
+#rm *.out
 rm *.log
 
 source activate barren

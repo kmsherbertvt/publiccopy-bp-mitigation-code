@@ -16,6 +16,8 @@ import pandas as pd
 import time
 import logging
 
+import time
+
 from simulator import (
     Array,
     pauli_str,
@@ -79,12 +81,12 @@ def gen_mcp_exps(
     for n in qubits_range:
         pool = mcp_g_list(n)
         for l in depth_range:
+            num_pars = l
             for _ in range(num_samples):
-                point = np.random.uniform(-np.pi, +np.pi, size=l)
                 axes_inds = list(np.random.choice(range(len(pool)), size=l))
                 axes = [pool[i] for i in axes_inds]
                 k = np.random.randint(0, l)
-                inputs.append({'n': n, 'l': l, 'point': point, 'axes': axes, 'k': k, 'ans': 'mcp'})
+                inputs.append({'n': n, 'l': l, 'axes': axes, 'k': k, 'ans': 'mcp', 'num_pars': num_pars})
     logging.info(f'Defined {len(inputs)} experiments')
     return inputs
 
@@ -98,10 +100,10 @@ def gen_hwe_exps(
     logging.info('Defining experiments for HWE circs')
     for n in qubits_range:
         for l in depth_range:
+            num_pars = l*n
             for _ in range(num_samples):
-                point = np.random.uniform(-np.pi, +np.pi, size=l*n)
                 k = np.random.randint(0, l*n)
-                inputs.append({'n': n, 'l': l, 'point': point, 'k': k, 'ans': 'hwe'})
+                inputs.append({'n': n, 'l': l, 'k': k, 'ans': 'hwe', 'num_pars': num_pars})
     logging.info(f'Defined {len(inputs)} experiments')
     return inputs
 
@@ -143,6 +145,9 @@ def grad_comp(d: Dict) -> float:
     ans_name = d['ans']
     op = get_op(d['n'])
     n = d['n']
+    num_pars = d['num_pars']
+
+    point = np.random.uniform(-np.pi, +np.pi, size=num_pars)
 
     if ans_name == 'rand':
         ans = pauli_ansatz(axes=d['axes'])
@@ -156,12 +161,15 @@ def grad_comp(d: Dict) -> float:
         raise ValueError(f'Invalid ansatz given: {ans_name}')
     
     logging.info(f'Computing gradient on {n} qubits')
-    grad = get_gradient_fd(ans=ans, op=op, point=d['point'], grad_pars=[d['k']]).real
+    grad = get_gradient_fd(ans=ans, op=op, point=point, grad_pars=[d['k']]).real
     
     d_out = d
     d_out['grad'] = grad[0]
     d_out.pop('point', None)
     d_out.pop('axes', None)
+    del ans
+    del op
+    del point
     return d_out
 
 
@@ -188,8 +196,8 @@ if __name__ == '__main__':
 
     experiments = []
     #experiments.extend(gen_spc_exps(qubits, num_samples))
-    #experiments.extend(gen_mcp_exps(qubits, num_samples, depth_range=[100, 500, 1000, 1500, 2000]))
-    experiments.extend(gen_hwe_exps(qubits, num_samples, depth_range=range(0, 100, 10)))
+    experiments.extend(gen_mcp_exps(qubits, num_samples, depth_range=[100, 500, 1000, 1500, 2000]))
+    #experiments.extend(gen_hwe_exps(qubits, num_samples, depth_range=[100, 500, 1000, 1500, 2000]))
 
     futures = grad_futures(experiments, client=client)
     res_list = []
@@ -199,5 +207,5 @@ if __name__ == '__main__':
     logging.info('Making dataframe...')
     df = pd.DataFrame(res_list)
     logging.info('Writing to disk')
-    df.to_csv('result_hwe.csv')
+    df.to_csv('result_mcp.csv')
     logging.info('Wrote to disk, exiting!')

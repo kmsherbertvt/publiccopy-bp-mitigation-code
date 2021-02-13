@@ -16,7 +16,6 @@ import numba
 # ==== HELPER FUNCTIONS ==== #
 
 
-@numba.jit
 def unfold(tens, mode, dims):
     """
     Unfolds tensor into matrix.
@@ -37,7 +36,6 @@ def unfold(tens, mode, dims):
         return np.moveaxis(tens, mode, 0).reshape(dims[mode], -1)
 
 
-@numba.jit
 def refold(vec, mode, dims):
     """
     Refolds vector into tensor.
@@ -65,7 +63,6 @@ def refold(vec, mode, dims):
 
 # ==== KRON-VEC PRODUCT COMPUTATIONS ==== #
 
-@numba.jit
 def kron_vec_prod(As, v):
     """
     Computes matrix-vector multiplication between

@@ -28,7 +28,7 @@ def get_pauli(i: int) -> Array:
         out = np.array([[1.0, 0.0], [0.0, -1.0]]) * (1.0+0.j)
     return out
 
-@numba.jit(nopython=True, fastmath=True)
+#@numba.jit(nopython=True, fastmath=True)
 def rot_p(theta: float, a: int) -> np.array:
     if a == 1 or a == 2:
         c = np.cos(theta/2)
@@ -137,16 +137,14 @@ def hwe_ansatz(num_qubits: int, depth: int) -> Ansatz:
         state = kron_args(*[rot_p(np.pi/4, 2)] * num_qubits).dot(initial_state)
         if len(pars) != num_qubits * depth:
             raise ValueError('Invalid number of pars')
-        par_ind = 0
         for d in range(depth):
             rots = []
             for i in range(num_qubits):
                 a = axes[i, d]
-                rots.append(rot_p(pars[par_ind], a))
+                rots.append(rot_p(pars.pop(), a))
             U = kron_args(*rots)
             state = einsum('ab,bc->ac', U, state)
             state = einsum('ab,bc->ac', V, state)
-            par_ind += 1
         return state
     
     return _ans_out
