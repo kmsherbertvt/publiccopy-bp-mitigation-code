@@ -40,6 +40,8 @@ def rot_p(theta: float, a: int) -> np.array:
     elif a == 3:
         p = np.exp(-1j*theta/2)
         return np.array([[p, 0.0 + 0.j], [0.0 + 0.j, 1/p]])
+    else:
+        raise ValueError(f'Invalid axis given: {a}')
 
 def kron_args(*args):
     """For `args = [m1, m2, m3, ...]`, return
@@ -119,6 +121,42 @@ def zero_state(n: int) -> Array:
     res = np.zeros((2**n, 1)) * (1.0 + 0.j)
     res[0, 0] = 1.0
     return res
+
+#def hwe_ansatz(num_qubits:int, depth: int) -> Ansatz:
+#    if num_qubits % 2 != 0:
+#        raise ValueError('Only even number of qubits supported')
+#    ry = rot_p(np.pi/4, 2)
+#    n = num_qubits
+#    axes = np.random.choice([1, 2, 3], size=(depth, num_qubits))
+#
+#    def _ans_out(pars: List[float]) -> Array:
+#        initial_state = zero_state(num_qubits)
+#        initial_state = kron_args(*[ry] * num_qubits).dot(initial_state)
+#        # Make V
+#        cz = np.diag([1, 1, 1, -1])
+#        V = kron_args(*[cz]*(n//2))
+#        cz_list_2 = [np.eye(2)] + [cz] * (n//2 - 1) + [np.eye(2)]
+#        V = kron_args(*cz_list_2).dot(V)
+#
+#        assert len(pars) == num_qubits * depth
+#        pars = np.array(pars)
+#        cs = initial_state
+#
+#        for d in range(depth):
+#            theta_vec = pars[d*n:(d+1)*n]
+#            U = kron_args(*[rot_p(t, ax) for t, ax in zip(theta_vec, axes[d])])
+#            cs = U.dot(cs)
+#            cs = V.dot(cs)
+#            #cs = einsum('ab,bc->ac', U, cs)
+#            #cs = einsum('ab,bc->ac', V, cs)
+#        
+#        U = None
+#        V = None
+#        
+#        return cs
+#
+#    return _ans_out
+
 
 def hwe_ansatz(num_qubits: int, depth: int) -> Ansatz:
     if num_qubits % 2 != 0:

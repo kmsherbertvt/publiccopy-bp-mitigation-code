@@ -193,11 +193,12 @@ if __name__ == '__main__':
     # Define experiments
     num_samples = 500
     qubits = [4, 6, 8, 10]
+    depth_range = [100, 500, 1000, 1500, 2000]
 
     experiments = []
     #experiments.extend(gen_spc_exps(qubits, num_samples))
-    experiments.extend(gen_mcp_exps(qubits, num_samples, depth_range=[100, 500, 1000, 1500, 2000]))
-    #experiments.extend(gen_hwe_exps(qubits, num_samples, depth_range=[100, 500, 1000, 1500, 2000]))
+    #experiments.extend(gen_mcp_exps(qubits, num_samples, depth_range=depth_range))
+    experiments.extend(gen_hwe_exps(qubits, num_samples, depth_range=depth_range))
 
     futures = grad_futures(experiments, client=client)
     res_list = []
@@ -207,5 +208,5 @@ if __name__ == '__main__':
     logging.info('Making dataframe...')
     df = pd.DataFrame(res_list)
     logging.info('Writing to disk')
-    df.to_csv('result_mcp.csv')
+    df.to_csv('result_hwe.csv')
     logging.info('Wrote to disk, exiting!')
