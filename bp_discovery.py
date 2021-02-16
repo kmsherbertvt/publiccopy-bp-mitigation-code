@@ -175,7 +175,7 @@ def grad_comp(d: Dict) -> float:
 
 def grad_futures(l: List[dict], client: Client) -> List[Future]:
     logging.info('Submitting futures')
-    futures = client.map(grad_comp, l)
+    futures = client.map(grad_comp, l, retries=1)
     logging.info('Submitted futures')
     return futures
 
@@ -192,8 +192,8 @@ if __name__ == '__main__':
 
     # Define experiments
     num_samples = 500
-    qubits = [4, 6, 8, 10]
-    depth_range = [100, 500, 1000, 1500, 2000]
+    qubits = [4, 6, 8]
+    depth_range = [100, 200, 300, 400, 500]
 
     experiments = []
     #experiments.extend(gen_spc_exps(qubits, num_samples))
@@ -202,9 +202,15 @@ if __name__ == '__main__':
 
     futures = grad_futures(experiments, client=client)
     res_list = []
-    for future, res in as_completed(futures, with_results=True):
-        res_list.append(res)
-        del future
+    failed_futures = []
+    for future in as_completed(futures, with_results=False):
+        if future.status == 'error':
+            logging.info(f'Future failed: {future.exception()}')
+            failed_futures.append(future)
+        else:
+            res_list.append(future.result())
+            del future
+    logging.info(f'Completed running futures, {len(failed_futures)} failed')
     logging.info('Making dataframe...')
     df = pd.DataFrame(res_list)
     logging.info('Writing to disk')

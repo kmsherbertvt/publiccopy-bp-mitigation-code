@@ -8,6 +8,7 @@ from numpy import einsum
 from opt_einsum import contract
 from typing import List, Union, Optional, Tuple, Callable
 from kron_vec_product import kron_vec_prod
+from datetime import datetime
 
 Array = np.array
 
@@ -15,6 +16,19 @@ Ansatz = Callable[
     [Union[Array, List[float]]],
     Array
 ]
+
+
+def filename_format(
+    filename: str = __file__,
+    note: str = None
+):
+    file_short = filename.rsplit('/', 1)[-1].split('.')[0]
+    time = datetime.now().strftime('%Y%m%d_%H%M%S')
+    if note is None:
+        note = ''
+    res = f'{file_short}_output_{note}_{time}.dat'
+    return res
+
 
 #@lru_cache(4)
 def get_pauli(i: int) -> Array:
