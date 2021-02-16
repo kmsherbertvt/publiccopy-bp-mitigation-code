@@ -4,7 +4,7 @@
 #SBATCH -p normal_q
 #SBATCH -A jvandyke_alloc
 #SBATCH -n 1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=12
 #SBATCH --mem=60gb
 #SBATCH -t 24:00:00
 

@@ -172,6 +172,32 @@ def zero_state(n: int) -> Array:
 #    return _ans_out
 
 
+def plus_state(n: int) -> np.array:
+    return np.ones((2**n, 1)) * (1.0 + 0.j) / (2**(n/2))
+
+
+def qaoa_ansatz(H_diag: np.array, p: int) -> Ansatz:
+    num_qubits = len(H_diag).bit_length() - 1
+    initial_state = plus_state(num_qubits)
+
+    def _ans_out(pars: List[float]) -> Array:
+        cs = initial_state
+        pars = list(pars)
+        if len(pars) != 2*p:
+            raise ValueError(f'Invalid number of parameters {len(pars)}, expected {2*p}')
+        for _ in range(p):
+            gamma = pars.pop()
+            U = np.diag(np.exp(1j * gamma * H_diag))
+            cs = U.dot(cs)
+            beta = pars.pop()
+            U = kron_args(*[rot_p(beta, 1)]*num_qubits)
+            cs = U.dot(cs)
+        U = None
+        return cs
+    
+    return _ans_out
+
+
 def hwe_ansatz(num_qubits: int, depth: int) -> Ansatz:
     if num_qubits % 2 != 0:
         raise ValueError('Only even number of qubits supported')

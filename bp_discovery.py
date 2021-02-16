@@ -8,6 +8,7 @@ from dask_jobqueue import SLURMCluster
 from dask import delayed
 from distributed import Future
 from distributed import as_completed
+from simulator import filename_format
 from dask.dataframe import from_pandas, from_delayed
 from random import shuffle
 import dask
@@ -25,7 +26,8 @@ from simulator import (
     spc_ansatz,
     pauli_ansatz,
     mcp_g_list,
-    hwe_ansatz
+    hwe_ansatz,
+    qaoa_ansatz
 )
 
 logging.basicConfig(
@@ -108,6 +110,34 @@ def gen_hwe_exps(
     return inputs
 
 
+def gen_qaoa_exps(
+    qubit_range: List[int],
+    num_samples: int,
+    depth_range: List[int],
+    graph_types: List[str] = None
+):
+    inputs = []
+    if graph_types is None:
+        graph_types = 'random'
+    logging.info('Defining experiments for QAOA circs')
+    for n in qubit_range:
+        for p in depth_range:
+            for graph in graph_types:
+                H = np.random.uniform(-1, 1, size=2**n)
+                for _ in range(num_samples):
+                    inputs.append({
+                        'n': n,
+                        'p': p,
+                        'graph': graph,
+                        'H': H,
+                        'ans': 'qaoa',
+                        'num_pars': 2*p,
+                        'k': np.random.randint(0, 2*p)
+                    })
+    logging.info(f'Defined {len(inputs)} experiments')
+    return inputs
+
+
 def gen_spc_exps(
     qubits_range: List[int],
     num_samples: int,
@@ -157,6 +187,8 @@ def grad_comp(d: Dict) -> float:
         ans = spc_ansatz(num_qubits=n, num_particles=d['m'])
     elif ans_name == 'hwe':
         ans = hwe_ansatz(num_qubits=n, depth=d['l'])
+    elif ans_name == 'qaoa':
+        ans = qaoa_ansatz(d['H'], p=d['p'])
     else:
         raise ValueError(f'Invalid ansatz given: {ans_name}')
     
@@ -167,6 +199,7 @@ def grad_comp(d: Dict) -> float:
     d_out['grad'] = grad[0]
     d_out.pop('point', None)
     d_out.pop('axes', None)
+    d_out.pop('H', None)
     del ans
     del op
     del point
@@ -191,14 +224,16 @@ if __name__ == '__main__':
     client.upload_file('simulator.py')
 
     # Define experiments
-    num_samples = 500
+    num_samples = 1500
     qubits = [4, 6, 8]
-    depth_range = [100, 200, 300, 400, 500]
+    depth_range = [1, 2, 3, 4, 5, 10, 15, 20, 25, 50, 75, 100]
 
     experiments = []
     #experiments.extend(gen_spc_exps(qubits, num_samples))
     #experiments.extend(gen_mcp_exps(qubits, num_samples, depth_range=depth_range))
-    experiments.extend(gen_hwe_exps(qubits, num_samples, depth_range=depth_range))
+    #experiments.extend(gen_hwe_exps(qubits, num_samples, depth_range=depth_range))
+    experiments.extend(gen_qaoa_exps(qubits, num_samples, depth_range))
+    shuffle(experiments)
 
     futures = grad_futures(experiments, client=client)
     res_list = []
@@ -214,5 +249,5 @@ if __name__ == '__main__':
     logging.info('Making dataframe...')
     df = pd.DataFrame(res_list)
     logging.info('Writing to disk')
-    df.to_csv('result_hwe.csv')
+    df.to_csv('data/'+filename_format(__file__, 'qaoa'))
     logging.info('Wrote to disk, exiting!')
