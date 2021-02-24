@@ -4,6 +4,7 @@ from math import comb
 from scipy.linalg import kron
 from numpy.linalg import multi_dot
 import numba
+import networkx as nx
 from numpy import einsum
 from opt_einsum import contract
 from typing import List, Union, Optional, Tuple, Callable
@@ -356,3 +357,68 @@ def get_gradient_fd(ans: Ansatz, op: np.array, point: np.array, epsilon: float =
         grad.append(df)
 
     return np.array(grad)
+
+
+def _axes_map(s: str) -> int:
+    if s == 'I':
+        return 0
+    elif s == 'X':
+        return 1
+    elif s == 'Y':
+        return 2
+    elif s == 'Z':
+        return 3
+
+
+def _p_str_to_axes(s: str) -> List[int]:
+    return list(map(_axes_map, list(s)))
+
+
+_THREE_QUBIT_COMPLETE_POOL = ['ZZY', 'ZYI', 'YII', 'IYI']
+
+
+def _make_complete_pool(n_qubits: int):
+    """Construct a complete pool on `n` qubits with `2n-2` elements.
+    Parameters
+    ----------
+    n_qubits : int
+        Number of qubits.
+    Returns
+    -------
+    List[str]
+        Pauli strings for elements in pool.
+    """
+    if n_qubits == 3:
+        result = _THREE_QUBIT_COMPLETE_POOL
+    elif n_qubits > 3:
+        _lower_pool = _make_complete_pool(n_qubits-1)
+        result = ['Z'+pauli for pauli in _lower_pool]
+
+        Yn = 'Y' + 'I'*(n_qubits-1)
+        Ynm1 = 'IY' + 'I'*(n_qubits-2)
+
+        result.extend([Yn, Ynm1])
+    else:
+        raise ValueError('Invalid number of qubits: {}'.format(n_qubits))
+    
+    return result
+
+
+def make_complete_pool(n_qubits: int) -> List[List[int]]:
+    res = _make_complete_pool(n_qubits)
+    return list(map(_p_str_to_axes, res))
+
+
+def make_connectivity_pool(g: nx.Graph) -> List[List[int]]:
+    res = []
+    n = len(g)
+    for i, j in g.edges:
+        p = [0] * n
+        p[i] = 3
+        p[j] = 2
+        res.append(p)
+    for i in g.nodes:
+        p = [0] * n
+        p[i] = 2
+        res.append(p)
+    return res

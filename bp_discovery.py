@@ -2,7 +2,8 @@ import numpy as np
 from functools import lru_cache
 from math import comb
 from dask.distributed import Client, progress, wait
-from typing import List, Dict
+from itertools import product
+from typing import List, Dict, Tuple
 from math import comb
 from dask_jobqueue import SLURMCluster
 from dask import delayed
@@ -12,6 +13,7 @@ from simulator import filename_format
 from dask.dataframe import from_pandas, from_delayed
 from random import shuffle
 import dask
+import networkx as nx
 import dask.bag as db
 import pandas as pd
 import time
@@ -26,8 +28,10 @@ from simulator import (
     spc_ansatz,
     pauli_ansatz,
     mcp_g_list,
+    make_complete_pool,
     hwe_ansatz,
-    qaoa_ansatz
+    qaoa_ansatz,
+    make_connectivity_pool
 )
 
 logging.basicConfig(
@@ -73,20 +77,68 @@ def gen_rand_exps(
     return inputs
 
 
+def gen_mcp_hardware_exps(
+    graph_names: List[str],
+    qubits: List[int],
+    layers: List[int],
+    num_samples: int
+):
+    inputs = []
+    logging.info('Defining experiments for connectivity exps')
+    for gn in graph_names:
+        for n in qubits:
+            for l in layers:
+                num_pars = l
+                for _ in range(num_samples):
+                    k = np.random.randint(0, l)
+                    inputs.append({
+                        'n': n, 
+                        'l': l, 
+                        'k': k, 
+                        'ans': 'hardware', 
+                        'num_pars': num_pars, 
+                        'graph_info': {'name': gn}
+                        })
+    logging.info(f'Defined {len(inputs)} experiments')
+    return inputs
+
+
 def gen_mcp_exps(
     qubits_range: List[int],
     num_samples: int,
-    depth_range: List[int]
+    depth_range: List[int],
+    vlad_pool: bool = False
 ):
     inputs = []
     logging.info('Defining experiments for MCP circs')
     for n in qubits_range:
-        pool = mcp_g_list(n)
+        if vlad_pool:
+            pool = make_complete_pool(n)
+        else:
+            pool = mcp_g_list(n)
         for l in depth_range:
             num_pars = l
             for _ in range(num_samples):
                 axes_inds = list(np.random.choice(range(len(pool)), size=l))
                 axes = [pool[i] for i in axes_inds]
+                k = np.random.randint(0, l)
+                inputs.append({'n': n, 'l': l, 'axes': axes, 'k': k, 'ans': 'mcp', 'num_pars': num_pars})
+    logging.info(f'Defined {len(inputs)} experiments')
+    return inputs
+
+
+def gen_ocp_exps(
+    qubits_range: List[int],
+    num_samples: int,
+    depth_range: List[int]
+):
+    inputs = []
+    logging.info('Defining experiments for OCP circs')
+    for n in qubits_range:
+        for l in depth_range:
+            num_pars = l
+            for _ in range(num_samples):
+                axes = np.random.choice(list(range(4)), size=(l, n)) # type: List[List[int]]
                 k = np.random.randint(0, l)
                 inputs.append({'n': n, 'l': l, 'axes': axes, 'k': k, 'ans': 'mcp', 'num_pars': num_pars})
     logging.info(f'Defined {len(inputs)} experiments')
@@ -166,7 +218,15 @@ def gen_spc_exps(
                 it will change the result.
                 """
                 point = np.concatenate((theta_pars, phi_pars))
-                inputs.append({'n': n, 'm': m, 'point': point, 'k': k, 'ans': 'spc', 'time_rev_sym': time_reversal_symmetry})
+                inputs.append({
+                    'n': n, 
+                    'm': m, 
+                    'point': point, 
+                    'k': k, 
+                    'ans': 'spc', 
+                    'time_rev_sym': time_reversal_symmetry,
+                    'num_pars': 2*num_pars
+                    })
     logging.info(f'Defined {len(inputs)} experiments')
     return inputs
 
@@ -176,6 +236,7 @@ def grad_comp(d: Dict) -> float:
     op = get_op(d['n'])
     n = d['n']
     num_pars = d['num_pars']
+    k = d['k']
 
     point = np.random.uniform(-np.pi, +np.pi, size=num_pars)
 
@@ -184,16 +245,40 @@ def grad_comp(d: Dict) -> float:
     elif ans_name == 'mcp':
         ans = pauli_ansatz(axes=d['axes'])
     elif ans_name == 'spc':
+        point = np.concatenate([
+            np.random.uniform(-np.pi, +np.pi, size=num_pars//2),
+            np.zeros(num_pars//2)
+        ])
         ans = spc_ansatz(num_qubits=n, num_particles=d['m'])
     elif ans_name == 'hwe':
         ans = hwe_ansatz(num_qubits=n, depth=d['l'])
     elif ans_name == 'qaoa':
         ans = qaoa_ansatz(d['H'], p=d['p'])
+    elif ans_name == 'hardware':
+        graph_info = d['graph_info']
+        if graph_info['name'] == 'path':
+            graph = nx.path_graph(n)
+        elif graph_info['name'] == 'cycle':
+            graph = nx.cycle_graph(n)
+        elif graph_info['name'] == 'star':
+            graph = nx.star_graph(n-1)
+        elif graph_info['name'] == 'complete':
+            graph = nx.complete_graph(n)
+        else:
+            graph_name = graph_info['name']
+            raise ValueError(f'Graph not recognized: {graph_name}')
+        
+        pool = make_connectivity_pool(graph)
+        axes_inds = list(np.random.choice(range(len(pool)), size=d['l']))
+        axes = [pool[i] for i in axes_inds]
+        k = np.random.randint(0, d['l'])
+        ans = pauli_ansatz(axes=axes)
+
     else:
         raise ValueError(f'Invalid ansatz given: {ans_name}')
     
     logging.info(f'Computing gradient on {n} qubits')
-    grad = get_gradient_fd(ans=ans, op=op, point=point, grad_pars=[d['k']]).real
+    grad = get_gradient_fd(ans=ans, op=op, point=point, grad_pars=[k]).real
     
     d_out = d
     d_out['grad'] = grad[0]
@@ -203,6 +288,7 @@ def grad_comp(d: Dict) -> float:
     del ans
     del op
     del point
+    del graph
     return d_out
 
 
@@ -224,15 +310,19 @@ if __name__ == '__main__':
     client.upload_file('simulator.py')
 
     # Define experiments
-    num_samples = 1500
+    num_samples = 500
     qubits = [4, 6, 8]
-    depth_range = [1, 2, 3, 4, 5, 10, 15, 20, 25, 50, 75, 100]
+    depth_range = [100, 200, 300, 400, 500, 800, 1000, 1500, 2000]
+    graph_names = ['path', 'complete', 'cycle', 'star']
 
     experiments = []
+
+    experiments.extend(gen_mcp_hardware_exps(qubits=qubits, graph_names=graph_names, layers=depth_range, num_samples=num_samples))
     #experiments.extend(gen_spc_exps(qubits, num_samples))
-    #experiments.extend(gen_mcp_exps(qubits, num_samples, depth_range=depth_range))
+    #experiments.extend(gen_mcp_exps(qubits, num_samples, depth_range=depth_range, vlad_pool=False))
+    #experiments.extend(gen_ocp_exps(qubits, num_samples, depth_range=depth_range))
     #experiments.extend(gen_hwe_exps(qubits, num_samples, depth_range=depth_range))
-    experiments.extend(gen_qaoa_exps(qubits, num_samples, depth_range))
+    #experiments.extend(gen_qaoa_exps(qubits, num_samples, depth_range))
     shuffle(experiments)
 
     futures = grad_futures(experiments, client=client)
@@ -249,5 +339,5 @@ if __name__ == '__main__':
     logging.info('Making dataframe...')
     df = pd.DataFrame(res_list)
     logging.info('Writing to disk')
-    df.to_csv('data/'+filename_format(__file__, 'qaoa'))
+    df.to_csv('data/'+filename_format(__file__, 'hw_conn'))
     logging.info('Wrote to disk, exiting!')
