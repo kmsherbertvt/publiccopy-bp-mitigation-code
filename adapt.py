@@ -78,6 +78,7 @@ def adapt(
     callbacks: List[Callback],
     optimizer_args: Dict = None,
     initial_state: np.array = None,
+    new_parameter: float = 0.0
 ) -> ADAPTResult:
     
     if optimizer_args is None:
@@ -121,7 +122,7 @@ def adapt(
     # Initialize outer loop variables
     ansatz_op_inds = [np.argmax(init_grads)]
     ansatz_ops = [pool[i] for i in ansatz_op_inds]
-    opt_pars = np.array([0.0])
+    opt_pars = np.array([new_parameter])
     ans = pauli_ansatz(ansatz_ops, initial_state=initial_state)
 
     def _fn(pars) -> float:
@@ -158,7 +159,7 @@ def adapt(
         
         ansatz_op_inds.append(np.argmax(gradients))
         ansatz_ops.append(pool[np.argmax(gradients)])
-        opt_pars = np.concatenate([opt_pars, np.array([0.0])])
+        opt_pars = np.concatenate([opt_pars, np.array([new_parameter])])
         ans = pauli_ansatz(ansatz_ops, initial_state=initial_state)
 
         def _fn(pars) -> float:
