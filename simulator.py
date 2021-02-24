@@ -308,7 +308,7 @@ def spc_ansatz(num_qubits: int, num_particles: int) -> Ansatz:
     return _ans_out
         
 
-@numba.jit(nopython=True, fastmath=True)
+#@numba.jit(nopython=True, fastmath=True)
 def exp_val(op: Array, state: Array) -> float:
     res = state.conj().transpose().dot(op).dot(state)[0, 0]
     return res
