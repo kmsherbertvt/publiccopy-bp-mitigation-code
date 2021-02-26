@@ -164,10 +164,7 @@ class DeltaYStopper(Callback):
             return False
 
     def halt_reason(self, step_history):
-        return 'Best results are all within delta'.format(
-            self.delta,
-            self._close_list
-        )
+        return 'Best results are all within delta'
 
 
 class DeltaXStopper(Callback):
