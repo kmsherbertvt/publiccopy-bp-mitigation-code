@@ -422,3 +422,18 @@ def make_connectivity_pool(g: nx.Graph) -> List[List[int]]:
         p[i] = 2
         res.append(p)
     return res
+
+def _two_local(i, j, a, b, n):
+    p = [0] * n
+    p[i] = a
+    p[j] = b
+    return p
+
+def two_local_pool(n: int) -> List[List[int]]:
+    pool = []
+    for i in range(n):
+        for j in range(n):
+            for a in range(4):
+                for b in range(4):
+                    pool.append(_two_local(i, j, a, b, n))
+    return pool
