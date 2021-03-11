@@ -7,7 +7,7 @@ Credit: github.com/ahwillia
 import numpy as np
 import numpy.random as npr
 from functools import reduce
-import numba
+#import numba
 
 # Goal
 # ----
@@ -88,14 +88,38 @@ def kron_brute_force(As, v):
 # Quick demonstration.
 if __name__ == "__main__":
 
-    # Create random problem.
-    num_qubits = 5
-    As = [npr.randn(2, 2) for _ in range(num_qubits)]
-    v = npr.uniform(size=(2**num_qubits, 1))
+    ## Create random problem.
+    #num_qubits = 5
+    #As = [npr.randn(2, 2) for _ in range(num_qubits)]
+    #v = npr.uniform(size=(2**num_qubits, 1))
 
-    # Test accuracy.
-    actual = kron_vec_prod(As, v)
-    expected = kron_brute_force(As, v)
-    print(As)
-    print(v)
-    print(np.linalg.norm(actual - expected))
+    ## Test accuracy.
+    #actual = kron_vec_prod(As, v)
+    #expected = kron_brute_force(As, v)
+    #print(As)
+    #print(v)
+    #print(np.linalg.norm(actual - expected))
+
+    num_qubits = 2
+    _dims = [2]*num_qubits
+    As = []
+    for i in range(1, num_qubits+1):
+        As.append(np.array([[i, i+1], [i+2, i+3]]))
+
+    v = np.array(list(range(1, (2**num_qubits)+1)))
+
+    res_1 = kron_vec_prod(As, v)
+    res_2 = kron_brute_force(As, v)
+
+    #print(np.linalg.norm(res_1 - res_2))
+    #print(res_1)
+    #print(refold(v, 3, _dims))
+    A = reduce(np.kron, As).T
+    print(A)
+
+    _new_shape = (2,) * num_qubits*2
+    print(_new_shape)
+
+    A = np.reshape(A, _new_shape)
+    print(A)
+#    print(np.moveaxis(A, 0, 1))
