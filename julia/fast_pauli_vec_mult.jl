@@ -52,26 +52,3 @@ function pauli_vec_mult!(psi_new::Array{ComplexF64,1}, axes, psi::Array{ComplexF
         psi_new .= psi
     end
 end
-
-
-#using Random
-#import LinearAlgebra: norm
-#using Test
-#include("simulator.jl")
-#
-#@testset "Test multiplication" begin
-#    for n=2:5
-#        vac = zeros(ComplexF64, 2^n)
-#        vac[1] = 1.0 + 0.0im
-#        for _=1:10
-#            axes=[rand(0:3) for i=1:n]
-#            expected = pauli_str(axes) * vac
-#
-#            result = zeros(ComplexF64, 2^n)
-#            tmp = zeros(ComplexF64, 2^n)
-#            pauli_vec_mult!(result, axes, vac, tmp)
-#
-#            @test norm(result-expected)≈0.0
-#        end
-#    end
-#end
