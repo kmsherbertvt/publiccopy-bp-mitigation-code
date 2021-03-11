@@ -65,7 +65,8 @@ function pauli_vec_mult!(psi_new::Array{ComplexF64,1}, axes, psi::Array{ComplexF
         for j=0:N-1
             new_bit = pauli_modify_bitstring(p, k, j)
             new_phase = pauli_phase_appl(p, k, j)
-            psi_new[new_bit+1] = phase_shift(tmp[j+1], new_phase)
+            new_elt = phase_shift(tmp[j+1], new_phase)
+            psi_new[new_bit+1] = new_elt
         end
         tmp .= psi_new
     end
