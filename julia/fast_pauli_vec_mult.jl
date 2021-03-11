@@ -8,15 +8,23 @@ end
 
 function pauli_phase_appl(ax::Int64, k::Int64, b::Int64)
     if ax == 1
-        return 1.0 + 0.0im
+        return 0
     elseif ax == 2
         b_k = get_kth_bit(b, k)
-        return 0.0 + (-1.0)^b_k * 1.0im
+        if b_k == 0
+            return 1
+        else
+            return 3
+        end
     elseif ax == 3
         b_k = get_kth_bit(b, k)
-        return (-1.0)^b_k * 1.0 + 0.0im
+        if b_k == 0
+            return 0
+        else
+            return 2
+        end
     elseif ax == 0
-        return 1.0 + 0.0im
+        return 0
     end
 end
 
@@ -27,6 +35,19 @@ function pauli_modify_bitstring(ax::Int64, k::Int64, b::Int64)
         return b
     end
         return xor(b, 1<<(k-1))
+end
+
+
+function phase_shift(alpha::ComplexF64, i::Int64)
+    if i == 0
+        return alpha
+    elseif i == 1
+        return -alpha.im + im*alpha.re
+    elseif i == 2
+        return -alpha
+    elseif i == 3
+        return alpha.im - im*alpha.re
+    end
 end
 
 
@@ -44,7 +65,7 @@ function pauli_vec_mult!(psi_new::Array{ComplexF64,1}, axes, psi::Array{ComplexF
         for j=0:N-1
             new_bit = pauli_modify_bitstring(p, k, j)
             new_phase = pauli_phase_appl(p, k, j)
-            psi_new[new_bit+1] = tmp[j+1]*new_phase
+            psi_new[new_bit+1] = phase_shift(tmp[j+1], new_phase)
         end
         tmp .= psi_new
     end
