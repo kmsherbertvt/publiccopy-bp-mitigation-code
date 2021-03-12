@@ -51,6 +51,50 @@ function phase_shift(alpha::ComplexF64, i::Int64)
 end
 
 
+function pauli_masks(pauli_str::Array{Int64,1})
+    res = [0, 0, 0, 0]
+    for (i,ax)=enumerate(reverse(pauli_str))
+        res[ax+1] += 2^(i-1)
+    end
+    deleteat!(res, 1)
+    return res
+end
+
+
+function hamming_weight(a::Int64)
+    res = 0
+    for k=0:64-1 # could probably stop earlier...?
+        res += get_kth_bit(a, k)
+    return res
+end
+
+
+function pauli_phase(pm::Array{Int64, 1}, a::Int64)
+    # Compute the phase gamma where P|a> = gamma |b> for
+    # a pauli string P and basis state |a>.
+    # Convention:
+    #   0 -> 1
+    #   1 -> +i
+    #   2 -> -1
+    #   3 -> -i
+    # pm = pauli_mask input
+    px, py, pz = pm
+    x = hamming_weight((py | pz) & a) % 2
+    y = hamming_weight(py) % 4
+
+    alpha = y
+    beta = 2*x
+
+    return (alpha+beta) % 4
+end
+
+
+function pauli_apply(pm::Array{Int64, 1}, a::Int64)
+    # pm = pauli_mask input
+    return xor((pm[1]|pm[2]),a)
+end
+
+
 function pauli_vec_mult!(psi_new::Array{ComplexF64,1}, axes, psi::Array{ComplexF64,1}, tmp::Array{ComplexF64,1})
     tmp .= psi
     n = length(axes)
