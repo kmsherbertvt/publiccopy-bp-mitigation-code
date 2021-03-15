@@ -1,5 +1,6 @@
 using LinearAlgebra
 using TensorOperations
+using DataStructures
 
 include("fast_pauli_vec_mult.jl")
 
@@ -80,13 +81,14 @@ function pauli_ansatz_new!(
     if length(pars) != num_pars
         throw(ExceptionError())
     end
-
+    pm = [0, 0, 0, 0]
+    hit_bits = SortedSet{Int64}()
     for (theta,ax)=zip(pars,axes)
         c = cos(theta)
         s = sin(theta)
         
         tmp .= result
-        pauli_vec_mult!(result, ax)
+        pauli_vec_mult!(result, ax, pm, hit_bits)
         tmp *= c
         result *= -1.0im*s
         result += tmp
