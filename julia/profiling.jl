@@ -6,7 +6,7 @@ using BenchmarkTools
 include("fast_pauli_vec_mult.jl")
 include("simulator.jl")
 
-n = 10
+n = 20
 d = 100
 
 axes = [[rand(0:3) for j=1:n] for j=1:d]
