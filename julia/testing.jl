@@ -17,7 +17,7 @@ include("simulator.jl")
             actual = zeros(ComplexF64, 2^n)
             tmp1 = zeros(ComplexF64, 2^n)
             tmp2 = zeros(ComplexF64, 2^n)
-            pauli_ansatz_new!(axes, theta, actual, tmp1, tmp2)
+            pauli_ansatz_new!(axes, theta, actual, tmp1)
 
             @test norm(actual-expected)≈0.0
         end

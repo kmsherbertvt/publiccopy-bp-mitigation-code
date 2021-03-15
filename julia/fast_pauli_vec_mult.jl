@@ -1,4 +1,5 @@
 import IterTools: enumerate
+import DataStructures: SortedSet
 
 
 function get_kth_bit(n::Int64, k::Int64)
@@ -74,9 +75,9 @@ function pauli_vec_mult!(psi::Array{ComplexF64,1}, axes)
     n = length(axes)
     N = 2^n
 
-    hit_bits = Vector{Int64}()
+    hit_bits = SortedSet{Int64}()
     for i=0:N-1
-        if i in hit_bits
+        if in(i,hit_bits)
             continue
         end
         pm = pauli_masks(axes)
@@ -94,6 +95,7 @@ function pauli_vec_mult!(psi::Array{ComplexF64,1}, axes)
             psi[ip1], psi[jp1] = psi[jp1], psi[ip1]
         end
 
-        append!(hit_bits, [i, j])
+        push!(hit_bits, i)
+        push!(hit_bits, j)
     end
 end
