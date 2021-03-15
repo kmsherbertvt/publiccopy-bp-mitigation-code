@@ -87,7 +87,7 @@ function pauli_ansatz_new!(
         s = sin(theta)
         
         tmp1 .= result
-        pauli_vec_mult!(result, ax, tmp1, tmp2)
+        pauli_vec_mult!(result, ax)
         tmp1 *= c
         result *= -1.0im*s
         result += tmp1
