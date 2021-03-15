@@ -73,8 +73,7 @@ function pauli_ansatz_new!(
         axes::Array{Array{Int64,1},1}, 
         pars::Array{Float64,1}, 
         result::Union{Array{ComplexF64,1},Nothing}, # pre-alloc # also initial state
-        tmp1::Union{Array{ComplexF64,1},Nothing}, # pre-alloc
-        tmp2::Union{Array{ComplexF64,1},Nothing} # pre-alloc
+        tmp::Union{Array{ComplexF64,1},Nothing}, # pre-alloc
         )
     num_pars = length(axes)
     num_qubits = length(axes[1])
@@ -86,11 +85,11 @@ function pauli_ansatz_new!(
         c = cos(theta)
         s = sin(theta)
         
-        tmp1 .= result
+        tmp .= result
         pauli_vec_mult!(result, ax)
-        tmp1 *= c
+        tmp *= c
         result *= -1.0im*s
-        result += tmp1
+        result += tmp
     end
 end
 
