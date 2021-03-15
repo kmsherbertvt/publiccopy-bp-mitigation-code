@@ -64,6 +64,12 @@ function pauli_apply(pm::Array{Int64, 1}, a::Int64)
 end
 
 
+function invert_phase(i::Int64)
+    # equivalent to compl conj
+    return mod(i-2*(i%2),4)
+end
+
+
 function pauli_vec_mult!(psi::Array{ComplexF64,1}, axes)
     n = length(axes)
     N = 2^n
@@ -75,8 +81,12 @@ function pauli_vec_mult!(psi::Array{ComplexF64,1}, axes)
         end
         pm = pauli_masks(axes)
         j = pauli_apply(pm, i)
-        gamma = pauli_phase(pm, i) # gamma in [0 1 2 3]
-        gamma_inv = mod(i-2*(i%2),4) # equivalent to compl conj
+        if i == j
+            append!(hit_bits, [i, j])
+            continue
+        end
+        gamma = pauli_phase(pm, i)
+        gamma_inv = invert_phase(gamma) 
         
         jp1 = j+1
         ip1 = i+1
