@@ -2,11 +2,12 @@ using Random
 import LinearAlgebra: norm
 using Test
 using BenchmarkTools
+using StatProfilerHTML
 
 include("fast_pauli_vec_mult.jl")
 include("simulator.jl")
 
-n = 20
+n = 10
 d = 100
 
 axes = [[rand(0:3) for j=1:n] for j=1:d]
@@ -22,4 +23,4 @@ pauli_ansatz_new!(axes, theta, result, tmp1, tmp2)
 result = zeros(ComplexF64, 2^n)
 tmp1 = zeros(ComplexF64, 2^n)
 tmp2 = zeros(ComplexF64, 2^n)
-@btime pauli_ansatz_new!(axes, theta, result, tmp1, tmp2)
+@profilehtml pauli_ansatz_new!(axes, theta, result, tmp1, tmp2)
