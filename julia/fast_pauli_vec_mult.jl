@@ -34,7 +34,7 @@ function pauli_modify_bitstring(ax::Int64, k::Int64, b::Int64)
     if ax == 3
         return b
     end
-        return xor(b, 1<<(k-1))
+    return xor(b, 1<<(k-1))
 end
 
 
@@ -65,6 +65,7 @@ function hamming_weight(a::Int64)
     res = 0
     for k=0:64-1 # could probably stop earlier...?
         res += get_kth_bit(a, k)
+    end
     return res
 end
 
@@ -95,26 +96,28 @@ function pauli_apply(pm::Array{Int64, 1}, a::Int64)
 end
 
 
-function pauli_vec_mult!(psi_new::Array{ComplexF64,1}, axes, psi::Array{ComplexF64,1}, tmp::Array{ComplexF64,1})
-    tmp .= psi
+function pauli_vec_mult!(psi::Array{ComplexF64,1}, axes)
     n = length(axes)
     N = 2^n
-    weight = 0
-    for (kp,p)=enumerate(reverse(axes))
-        k = kp
-        if p == 0
+
+    hit_bits = Vector{Int64}()
+    for i=0:N-1
+        if i in hit_bits
             continue
         end
-        weight += 1
-        for j=0:N-1
-            new_bit = pauli_modify_bitstring(p, k, j)
-            new_phase = pauli_phase_appl(p, k, j)
-            new_elt = phase_shift(tmp[j+1], new_phase)
-            psi_new[new_bit+1] = new_elt
-        end
-        tmp .= psi_new
-    end
-    if weight == 0
-        psi_new .= psi
+        pm = pauli_masks(axes)
+        j = pauli_apply(pm, i)
+        gamma = pauli_phase(pm, i) # gamma in [0 1 2 3]
+        gamma_inv = mod(i-2*(i%2),4) # equivalent to compl conj
+        
+        jp1 = j+1
+        ip1 = i+1
+        # Apply phases
+        psi[ip1] = phase_shift(psi[ip1], gamma)
+        psi[jp1] = phase_shift(psi[jp1], gamma_inv)
+        # Swap coeffs
+        psi[ip1], psi[jp1] = psi[jp1], psi[ip1]
+
+        append!(hit_bits, [i, j])
     end
 end
