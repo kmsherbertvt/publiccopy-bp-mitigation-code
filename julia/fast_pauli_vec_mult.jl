@@ -81,10 +81,6 @@ function pauli_vec_mult!(psi::Array{ComplexF64,1}, axes)
         end
         pm = pauli_masks(axes)
         j = pauli_apply(pm, i)
-        if i == j
-            append!(hit_bits, [i, j])
-            continue
-        end
         gamma = pauli_phase(pm, i)
         gamma_inv = invert_phase(gamma) 
         
@@ -92,9 +88,11 @@ function pauli_vec_mult!(psi::Array{ComplexF64,1}, axes)
         ip1 = i+1
         # Apply phases
         psi[ip1] = phase_shift(psi[ip1], gamma)
-        psi[jp1] = phase_shift(psi[jp1], gamma_inv)
         # Swap coeffs
-        psi[ip1], psi[jp1] = psi[jp1], psi[ip1]
+        if i != j
+            psi[jp1] = phase_shift(psi[jp1], gamma_inv)
+            psi[ip1], psi[jp1] = psi[jp1], psi[ip1]
+        end
 
         append!(hit_bits, [i, j])
     end
