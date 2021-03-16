@@ -1,7 +1,6 @@
 using LinearAlgebra
 
 include("structs.jl")
-include("callbacks.jl")
 include("fast_pauli_vec_mult.jl")
 
 
