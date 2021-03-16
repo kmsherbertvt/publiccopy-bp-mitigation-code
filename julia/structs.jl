@@ -8,7 +8,7 @@ struct ADAPTHistory
 end
 
 
-struct Hamiltonian
+struct Operator
     coeffs::Array{Float64,1}
     paulis::Array{Array{Int64,1},1}
 end
