@@ -61,9 +61,10 @@ function pauli_ansatz(
         for i=1:2^num_qubits
             mat[i,i] += c
         end
-        @tensor begin
-            current_state[i] = mat[i,j]*current_state[j]
-        end
+        current_state = mat * current_state
+        #@tensor begin
+        #    current_state[i] = mat[i,j]*current_state[j]
+        #end
     end
     return current_state
 end
