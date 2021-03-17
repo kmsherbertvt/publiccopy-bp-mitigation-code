@@ -83,7 +83,7 @@ function exp_val(O::Operator, state::Array{ComplexF64,1})
     for i=1:l
         pauli_vec_mult!(Pstate, O.paulis[i], state, tmp)
         Pstate = conj(Pstate)
-        res += O.coeffs[i] * dot(Pstate, state)
+        res += O.coeffs[i] * conj(dot(Pstate, state))
     end
     return res
 end
