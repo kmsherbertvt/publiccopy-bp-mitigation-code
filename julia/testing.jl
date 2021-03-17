@@ -26,15 +26,15 @@ end
 
 @testset "Test multiplication" begin
     for n=2:5
-        vac = zeros(ComplexF64, 2^n)
-        vac[1] = 1.0 + 0.0im
+        init = rand(ComplexF64, 2^n)
+        init /= norm(init)
         for _=1:10
             axes=[rand(0:3) for i=1:n]
-            expected = pauli_str(axes) * vac
+            expected = pauli_str(axes) * init
 
             result = zeros(ComplexF64, 2^n)
             tmp = zeros(ComplexF64, 2^n)
-            pauli_vec_mult!(result, axes, vac, tmp)
+            pauli_vec_mult!(result, axes, init, tmp)
 
             @test norm(result-expected)≈0.0
         end
