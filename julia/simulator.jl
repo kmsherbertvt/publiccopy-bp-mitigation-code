@@ -84,13 +84,10 @@ function pauli_ansatz_new!(
     end
 
     for (theta,ax)=zip(pars,axes)
-        c = cos(theta)
-        s = sin(theta)
-        
         tmp1 .= result
         pauli_vec_mult!(result, ax, tmp1, tmp2)
-        tmp1 *= c
-        result *= -1.0im*s
+        result *= -1.0im*sin(theta)
+        tmp1 *= cos(theta)
         result += tmp1
     end
 end
