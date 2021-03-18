@@ -41,10 +41,9 @@ end
             tmp2 = zeros(ComplexF64, 2^n)
             pauli_ansatz_new!(axes, theta, actual, tmp1, tmp2)
 
-            @test norm(actual-vac)≈0.0
+            @test norm(actual-vac)≈0.0 || println(axes)
         end
     end
-
 end
 
 
