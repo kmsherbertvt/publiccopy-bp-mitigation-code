@@ -1,5 +1,5 @@
 using Random
-import LinearAlgebra: norm
+import LinearAlgebra: norm, abs
 using Test
 using BenchmarkTools
 
@@ -15,10 +15,12 @@ include("simulator.jl")
             expected = pauli_ansatz(axes, theta)
 
             actual = zeros(ComplexF64, 2^n)
-            tmp1 = zeros(ComplexF64, 2^n)
-            tmp2 = zeros(ComplexF64, 2^n)
-            pauli_ansatz_new!(axes, theta, actual, tmp1)
+            actual[1] = 1.0 + 0.0im
+            tmp = zeros(ComplexF64, 2^n)
+            pauli_ansatz_new!(axes, theta, actual, tmp)
 
+            @test norm(actual)≈1.0 || "Actual not norm'd: $actual"
+            @test norm(expected)≈1.0 || "Expected not norm'd: $expected"
             @test norm(actual-expected)≈0.0
         end
     end

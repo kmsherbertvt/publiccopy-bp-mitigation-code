@@ -43,7 +43,6 @@ end
 function pauli_ansatz(
         axes::Array{Array{Int64,1},1}, 
         pars::Array{Float64,1}, 
-        mat::Union{Array{ComplexF64,2},Nothing} = nothing,
         current_state::Union{Array{ComplexF64,1},Nothing} = nothing
         )
     num_pars = length(axes)
@@ -62,9 +61,7 @@ function pauli_ansatz(
         for i=1:2^num_qubits
             mat[i,i] += c
         end
-        @tensor begin
-            current_state[i] = mat[i,j]*current_state[j]
-        end
+        current_state = mat*current_state
     end
     return current_state
 end
