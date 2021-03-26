@@ -2,10 +2,6 @@ import IterTools: enumerate
 import DataStructures: SortedSet
 
 
-function get_kth_bit(n::Int64, k::Int64)
-    return ((n & (1 << (k - 1))) >> (k - 1))
-end
-
 
 function phase_shift(alpha::ComplexF64, i::Int64)
     if i == 0
@@ -28,13 +24,6 @@ function pauli_masks(res::Array{Int64,1}, pauli_str::Array{Int64,1})
 end
 
 
-function hamming_weight(a::Int64)
-    res = 0
-    for k=0:64-1 # could probably stop earlier...?
-        res += get_kth_bit(a, k)
-    end
-    return res
-end
 
 
 function pauli_phase(pm::Array{Int64, 1}, a::Int64)
@@ -46,8 +35,8 @@ function pauli_phase(pm::Array{Int64, 1}, a::Int64)
     #   2 -> -1
     #   3 -> -i
     # pm = pauli_mask input
-    x = hamming_weight((pm[3] | pm[4]) & a) % 2
-    y = hamming_weight(pm[3]) % 4
+    x = count_ones((pm[3] | pm[4]) & a) % 2
+    y = count_ones(pm[3]) % 4
 
     alpha = y
     beta = 2*x
