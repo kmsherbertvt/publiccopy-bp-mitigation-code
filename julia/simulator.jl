@@ -90,7 +90,7 @@ function pauli_ansatz_new!(
         for i=0:N-1
             j = pauli_apply(pm, i)
             phase = pauli_phase(pm, i)
-            phase = (phase+1)%4
+            phase = UInt8((phase+1)%4)
 
             tmp[j+1] -= phase_shift(result[i+1]*s, phase)
         end

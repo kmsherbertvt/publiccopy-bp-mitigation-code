@@ -3,7 +3,7 @@ import DataStructures: SortedSet
 
 
 
-function phase_shift(alpha::ComplexF64, i::Int64)
+function phase_shift(alpha::ComplexF64, i::UInt8)
     if i == 0
         return alpha
     elseif i == 1
@@ -41,7 +41,7 @@ function pauli_phase(pm::Array{Int64, 1}, a::Int64)
     alpha = y
     beta = 2*x
 
-    return (alpha+beta) % 4
+    return UInt8((alpha+beta) % 4)
 end
 
 

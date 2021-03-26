@@ -63,20 +63,21 @@ end
     end
 end
 
-@testset "Test multiplication" begin
-    for n=2:5
-        for _=1:40
-            init = rand(ComplexF64, 2^n)
-            init /= norm(init)
-            #@test norm(init)≈1.0
-            
-            axes=[rand(0:3) for i=1:n]
-            expected = pauli_str(axes) * init
-            pauli_vec_mult!(init, axes)
-
-            @test norm(init-expected)≈0.0 || "failed on $axes"
-            #@test norm(abs.(init)-abs.(expected))≈0.0
-            #@test norm(init)≈1.0
-        end
-    end
-end
+#@testset "Test multiplication" begin
+#    for n=2:5
+#        for _=1:40
+#            init = rand(ComplexF64, 2^n)
+#            init /= norm(init)
+#            #@test norm(init)≈1.0
+#            
+#            axes=[rand(0:3) for i=1:n]
+#            expected = pauli_str(axes) * init
+#            pauli_vec_mult!(init, axes)
+#
+#            @test norm(init-expected)≈0.0 || "failed on $axes"
+#            #@test norm(abs.(init)-abs.(expected))≈0.0
+#            #@test norm(init)≈1.0
+#        end
+#    end
+#end
+#
