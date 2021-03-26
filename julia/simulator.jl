@@ -92,8 +92,10 @@ function pauli_ansatz_new!(
             phase = pauli_phase(pm, i)
             phase = (phase+1)%4
 
-            tmp[j+1] = phase_shift(result[i+1]*s, phase)
+            tmp[j+1] -= phase_shift(result[i+1]*s, phase)
         end
+        pm[1] = 0; pm[2] = 0; pm[3] = 0; pm[4] = 0
+        result .= tmp
     end
 end
 
