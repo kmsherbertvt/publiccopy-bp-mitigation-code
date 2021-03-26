@@ -79,16 +79,21 @@ function pauli_ansatz_new!(
         throw(ExceptionError())
     end
     pm = [0, 0, 0, 0]
-    hit_bits = SortedSet{Int64}()
+    N = length(result)
     for (theta,ax)=zip(pars,axes)
         c = cos(theta)
         s = sin(theta)
         
-        tmp .= result
-        pauli_vec_mult!(result, ax, pm, hit_bits)
-        tmp *= c
-        result *= -1.0im*s
-        result += tmp
+        tmp .= c .* result
+
+        pauli_masks(pm, ax)
+        for i=0:N-1
+            j = pauli_apply(pm, i)
+            phase = pauli_phase(pm, i)
+            phase = (phase+1)%4
+
+            tmp[j+1] = phase_shift(result[i+1]*s, phase)
+        end
     end
 end
 
