@@ -10,7 +10,7 @@ function phase_shift(alpha::ComplexF64, i::UInt8)
         return  im*alpha.re - alpha.im 
     elseif i == 2
         return    -alpha.re - im*alpha.im
-    elseif i == 3
+    else
         return -im*alpha.re + alpha.im 
     end
 end

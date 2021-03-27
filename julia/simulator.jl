@@ -70,8 +70,8 @@ end
 function pauli_ansatz_new!(
         axes::Array{Array{Int64,1},1}, 
         pars::Array{Float64,1}, 
-        result::Union{Array{ComplexF64,1},Nothing}, # pre-alloc # also initial state
-        tmp::Union{Array{ComplexF64,1},Nothing}, # pre-alloc
+        result::Array{ComplexF64,1}, # pre-alloc # also initial state
+        tmp::Array{ComplexF64,1}, # pre-alloc
         )
     num_pars = length(axes)
     num_qubits = length(axes[1])
@@ -92,7 +92,7 @@ function pauli_ansatz_new!(
             phase = pauli_phase(pm, i)
             phase = UInt8((phase+1)%4)
 
-            tmp[j+1] -= phase_shift(result[i+1]*s, phase)
+            @inbounds tmp[j+1] -= phase_shift(result[i+1]*s, phase)
         end
         pm[1] = 0; pm[2] = 0; pm[3] = 0; pm[4] = 0
         result .= tmp
