@@ -5,13 +5,13 @@ import DataStructures: SortedSet
 
 function phase_shift(alpha::ComplexF64, i::UInt8)
     if i == 0
-        return alpha
+        return     alpha.re + im*alpha.im
     elseif i == 1
-        return -alpha.im + im*alpha.re
+        return  im*alpha.re - alpha.im 
     elseif i == 2
-        return -alpha
+        return    -alpha.re - im*alpha.im
     elseif i == 3
-        return alpha.im - im*alpha.re
+        return -im*alpha.re + alpha.im 
     end
 end
 
