@@ -91,7 +91,8 @@ function pauli_ansatz_new!(
             phase = pauli_phase(pm, i)
             phase = UInt8((phase+1)%4)
 
-            @inbounds tmp[j+1] -= phase_shift(result[i+1]*s, phase)
+            @inbounds r = result[i+1]
+            @inbounds tmp[j+1] -= phase_shift(r*s, phase)
         end
         pm[1] = 0; pm[2] = 0; pm[3] = 0; pm[4] = 0
         result .= tmp
