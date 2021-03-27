@@ -75,18 +75,17 @@ function pauli_ansatz_new!(
         )
     num_pars = length(axes)
     num_qubits = length(axes[1])
-    if length(pars) != num_pars
-        throw(ExceptionError())
-    end
     pm = [0, 0, 0, 0]
     N = length(result)
-    for (theta,ax)=zip(pars,axes)
+    D = length(pars)
+    for d=1:D
+        theta = pars[d]
         c = cos(theta)
         s = sin(theta)
         
         tmp .= c .* result
 
-        pauli_masks(pm, ax)
+        pauli_masks(pm, axes[d])
         for i=0:N-1
             j = pauli_apply(pm, i)
             phase = pauli_phase(pm, i)

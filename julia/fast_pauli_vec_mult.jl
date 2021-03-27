@@ -20,7 +20,6 @@ function pauli_masks(res::Array{Int64,1}, pauli_str::Array{Int64,1})
     for (i,ax)=enumerate(reverse(pauli_str))
         res[ax+1] += 2^(i-1)
     end
-    return res
 end
 
 
