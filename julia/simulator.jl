@@ -1,5 +1,7 @@
 using LinearAlgebra
 using TensorOperations
+using DataStructures
+using LoopVectorization
 
 include("fast_pauli_vec_mult.jl")
 
@@ -42,7 +44,6 @@ end
 function pauli_ansatz(
         axes::Array{Array{Int64,1},1}, 
         pars::Array{Float64,1}, 
-        mat::Union{Array{ComplexF64,2},Nothing} = nothing,
         current_state::Union{Array{ComplexF64,1},Nothing} = nothing
         )
     num_pars = length(axes)
@@ -61,10 +62,7 @@ function pauli_ansatz(
         for i=1:2^num_qubits
             mat[i,i] += c
         end
-        current_state = mat * current_state
-        #@tensor begin
-        #    current_state[i] = mat[i,j]*current_state[j]
-        #end
+        current_state = mat*current_state
     end
     return current_state
 end
@@ -73,22 +71,31 @@ end
 function pauli_ansatz_new!(
         axes::Array{Array{Int64,1},1}, 
         pars::Array{Float64,1}, 
-        result::Union{Array{ComplexF64,1},Nothing}, # pre-alloc # also initial state
-        tmp1::Union{Array{ComplexF64,1},Nothing}, # pre-alloc
-        tmp2::Union{Array{ComplexF64,1},Nothing} # pre-alloc
+        result::Array{ComplexF64,1}, # pre-alloc # also initial state
+        tmp::Array{ComplexF64,1}, # pre-alloc
         )
     num_pars = length(axes)
     num_qubits = length(axes[1])
-    if length(pars) != num_pars
-        throw(ExceptionError())
-    end
+    pm = [0, 0, 0, 0]
+    N = length(result)
+    D = length(pars)
+    for d=1:D
+        theta = pars[d]
+        c = cos(theta)
+        s = sin(theta)
+        
+        tmp .= c .* result
 
-    for (theta,ax)=zip(pars,axes)
-        tmp1 .= result
-        pauli_vec_mult!(result, ax, tmp1, tmp2)
-        result *= -1.0im*sin(theta)
-        tmp1 *= cos(theta)
-        result += tmp1
+        pauli_masks(pm, axes[d])
+        for i=0:N-1
+            j = pauli_apply(pm, i)
+            phase = UInt8((pauli_phase(pm, i)+1) % 4)
+
+            @inbounds r = result[i+1]
+            @inbounds tmp[j+1] -= phase_shift(r*s, phase)
+        end
+        pm[1] = 0; pm[2] = 0; pm[3] = 0; pm[4] = 0
+        result .= tmp
     end
 end
 

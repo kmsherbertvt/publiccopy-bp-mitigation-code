@@ -7,7 +7,7 @@ using StatProfilerHTML
 include("fast_pauli_vec_mult.jl")
 include("simulator.jl")
 
-n = 10
+n = 20
 d = 100
 
 axes = [[rand(0:3) for j=1:n] for j=1:d]
@@ -16,11 +16,9 @@ theta = [pi*rand() for j=1:d]
 # Compiling run
 result = zeros(ComplexF64, 2^n)
 tmp1 = zeros(ComplexF64, 2^n)
-tmp2 = zeros(ComplexF64, 2^n)
-pauli_ansatz_new!(axes, theta, result, tmp1, tmp2)
+pauli_ansatz_new!(axes, theta, result, tmp1)
 
 # Actual run
 result = zeros(ComplexF64, 2^n)
 tmp1 = zeros(ComplexF64, 2^n)
-tmp2 = zeros(ComplexF64, 2^n)
-@profilehtml pauli_ansatz_new!(axes, theta, result, tmp1, tmp2)
+@btime pauli_ansatz_new!(axes, theta, result, tmp1)
