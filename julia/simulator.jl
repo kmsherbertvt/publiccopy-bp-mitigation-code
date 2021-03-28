@@ -1,6 +1,7 @@
 using LinearAlgebra
 using TensorOperations
 using DataStructures
+using LoopVectorization
 
 include("fast_pauli_vec_mult.jl")
 
@@ -88,8 +89,7 @@ function pauli_ansatz_new!(
         pauli_masks(pm, axes[d])
         for i=0:N-1
             j = pauli_apply(pm, i)
-            phase = pauli_phase(pm, i)
-            phase = UInt8((phase+1)%4)
+            phase = UInt8((pauli_phase(pm, i)+1) % 4)
 
             @inbounds r = result[i+1]
             @inbounds tmp[j+1] -= phase_shift(r*s, phase)
