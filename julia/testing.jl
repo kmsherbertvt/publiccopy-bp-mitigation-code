@@ -14,6 +14,7 @@ include("simulator.jl")
             axes = [[rand(0:3) for i=1:n] for j=1:d]
             theta = [0.0 for j=1:d]
 
+            # Initial state is vac
             actual = zeros(ComplexF64, 2^n)
             actual[1] = 1.0 + 0.0im
             tmp = zeros(ComplexF64, 2^n)

@@ -2,6 +2,7 @@ using Random
 import LinearAlgebra: norm
 using Test
 using BenchmarkTools
+using StatProfilerHTML
 
 include("fast_pauli_vec_mult.jl")
 include("simulator.jl")
