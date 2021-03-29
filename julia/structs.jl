@@ -1,3 +1,5 @@
+include("fast_pauli_vec_mult.jl")
+
 struct Pauli{T<:Integer}
     #=
     Pauli mask representation of a Pauli string.
@@ -18,18 +20,66 @@ struct Pauli{T<:Integer}
     x::T
     y::T
     z::T
+    phase::T
 
-    function Pauli{T}(id::T, x::T, y::T, z::T) where T<:Integer
+    function Pauli{T}(id::T, x::T, y::T, z::T, phase::T) where T<:Integer
         s_id = bitstring(id)
         s_x = bitstring(x)
         s_y = bitstring(y)
         s_z = bitstring(z)
-        f = minimum(map(s -> findfirst('1', s), [s_id, s_x, s_y, s_z]))
-        for tup in zip(s_id[f:end], s_x[f:end], s_y[f:end], s_z[f:end])
-            if sum(map(c -> parse(Int, c), tup)) > 1
-                error("Invalid Pauli: $id, $x, $y, $z")
+
+        have_ones = filter(s -> '1' in s, [s_id, s_x, s_y, s_z])
+        if length(have_ones) != 0
+            f = minimum(map(s -> findfirst('1', s), have_ones))
+
+            for tup in zip(s_id[f:end], s_x[f:end], s_y[f:end], s_z[f:end])
+                if sum(map(c -> parse(Int, c), tup)) > 1
+                    error("Invalid Pauli: $id, $x, $y, $z")
+                end
             end
         end
-        new(id, x, y, z)
+        new(id, x, y, z, phase)
     end
+end
+
+
+function pauli_commute(P::Pauli, Q::Pauli)
+    id = xor(P.id, Q.id)
+    x = xor(P.x, Q.x)
+    y = xor(P.y, Q.y)
+    z = xor(P.z, Q.z)
+    
+    x = (~id)^x
+    y = (~id)^y
+    z = (~id)^z
+
+    res = 0
+    res += count_ones(x)
+    res += count_ones(y)
+    res += count_ones(z)
+
+    println(res)
+
+    return Bool((res+1)%2)
+end
+
+
+function pauli_string_to_pauli(ps::String)
+    l = zeros(Int64, length(ps))
+    for (i, c)=enumerate(ps)
+        if c == 'I'
+            l[i] = 0
+        elseif c == 'X'
+            l[i] = 1
+        elseif c == 'Y'
+            l[i] = 2
+        elseif c == 'Z'
+            l[i] = 3
+        else
+            error("Invalid character: $c")
+        end
+    end
+    pm = [0, 0, 0, 0]
+    pauli_masks(pm, l)
+    return Pauli{Int64}(pm..., 0)
 end
