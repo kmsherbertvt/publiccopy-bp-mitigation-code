@@ -138,6 +138,23 @@ function easy_pp(p::Int64, q::Int64)
 end
 
 #=
+Mathematica Script for ConsistencyCheck
+```
+ConsistencyCheck[p_, q_, r_, phase_] := PauliMatrix[p].PauliMatrix[q] == I^phase*PauliMatrix[r]
+```
+=#
+
+if false
+    for p=0:3
+        for q=0:3
+            r, ph = easy_pp(p, q)
+            println("ConsistencyCheck[$p,$q,$r,$ph]")
+        end
+    end
+end
+
+
+#=
 -------------------------------------------------------
     THIS FUNCTION IS SLOW AND JUST FOR SELF-CONSISTENCY
     IT SHOULD NOT BE USED FOR ACTUAL COMPUTATIONS
