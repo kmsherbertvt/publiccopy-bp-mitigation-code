@@ -66,14 +66,14 @@ end
 
                 disagrees = 0
                 for (p,q)=zip(Ps,Qs)
-                    if p == 'I' || 'q' == 'I'
+                    if p == 'I' || q == 'I'
                         continue
                     end
                     if p != q
                         disagrees += 1
                     end
                 end
-                actual = Bool(disagrees % 2) # commutes?
+                actual = Bool((disagrees+1) % 2) # commutes?
                 P = pauli_string_to_pauli(Ps)
                 Q = pauli_string_to_pauli(Qs)
 

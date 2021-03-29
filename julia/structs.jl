@@ -61,17 +61,17 @@ end
 
 
 function pauli_commute(P::Pauli, Q::Pauli)
-    nid = ~(P.id | Q.id)
-    x = xor(P.x, Q.x)&nid
-    y = xor(P.y, Q.y)&nid
-    z = xor(P.z, Q.z)&nid
-    
+    id = (P.id | Q.id)
+    x = (P.x & Q.x)|id
+    y = (P.y & Q.y)|id
+    z = (P.z & Q.z)|id
+
     res = 0
     res += count_ones(x)
     res += count_ones(y)
     res += count_ones(z)
 
-    return Bool(((res÷2)+1)%2)
+    return Bool((res+1)%2)
 end
 
 
