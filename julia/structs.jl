@@ -76,15 +76,15 @@ end
 
 
 function pauli_product(P::Pauli, Q::Pauli)
-    phase = 0
+    phase = typeof(P.x)(0)
 
-    out_x = (P.z & Q.y) | (Q.z & P.y)
+    out_x = (P.z & Q.y) | (Q.z & P.y) | (P.id & Q.x) | (Q.id & P.x)
     phase += 3*(count_ones(P.z & Q.y) - count_ones(Q.z & P.y))
 
-    out_y = (P.x & Q.z) | (Q.x & P.z)
-    phase += 1*(count_ones(P.x & Q.z) - count_ones(Q.x & P.z))
+    out_y = (P.x & Q.z) | (Q.x & P.z) | (P.id & Q.y) | (Q.id & P.y)
+    phase -= 1*(count_ones(P.x & Q.z) - count_ones(Q.x & P.z))
 
-    out_z = (P.x & Q.y) | (Q.x & P.y)
+    out_z = (P.x & Q.y) | (Q.x & P.y) | (P.id & Q.z) | (Q.id & P.z)
     phase += 1*(count_ones(P.x & Q.y) - count_ones(Q.x & P.y))
 
     return Pauli(out_x, out_y, out_z, phase%4)
