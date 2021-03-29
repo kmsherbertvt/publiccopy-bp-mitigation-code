@@ -23,20 +23,20 @@ struct Pauli{T<:Unsigned}
     phase::T
 
     function Pauli{T}(x::T, y::T, z::T, phase::T) where T<:Unsigned
-        s_x = bitstring(x)
-        s_y = bitstring(y)
-        s_z = bitstring(z)
+        #s_x = bitstring(x)
+        #s_y = bitstring(y)
+        #s_z = bitstring(z)
 
-        have_ones = filter(s -> '1' in s, [s_x, s_y, s_z])
-        if length(have_ones) != 0
-            f = minimum(map(s -> findfirst('1', s), have_ones))
+        #have_ones = filter(s -> '1' in s, [s_x, s_y, s_z])
+        #if length(have_ones) != 0
+        #    f = minimum(map(s -> findfirst('1', s), have_ones))
 
-            for tup in zip(s_x[f:end], s_y[f:end], s_z[f:end])
-                if sum(map(c -> parse(Int, c), tup)) > 1
-                    error("Invalid Pauli: $x, $y, $z")
-                end
-            end
-        end
+        #    for tup in zip(s_x[f:end], s_y[f:end], s_z[f:end])
+        #        if sum(map(c -> parse(Int, c), tup)) > 1
+        #            error("Invalid Pauli: $x, $y, $z")
+        #        end
+        #    end
+        #end
         
         new(~(x|y|z), x, y, z, phase)
     end
@@ -51,13 +51,13 @@ struct Pauli{T<:Unsigned}
 end
 
 
-function Base.show(io::IO, P::Pauli) 
-    num_qubits = maximum(map(i -> ndigits(i, base=2), [P.x, P.y, P.z]))
-    xs = bitstring(P.x)[end-num_qubits+1:end]
-    ys = bitstring(P.y)[end-num_qubits+1:end]
-    zs = bitstring(P.z)[end-num_qubits+1:end]
-    println("Pauli(x=$xs, y=$ys, z=$zs)")
-end
+#function Base.show(io::IO, P::Pauli) 
+#    num_qubits = maximum(map(i -> ndigits(i, base=2), [P.x, P.y, P.z]))
+#    xs = bitstring(P.x)[end-num_qubits+1:end]
+#    ys = bitstring(P.y)[end-num_qubits+1:end]
+#    zs = bitstring(P.z)[end-num_qubits+1:end]
+#    println("Pauli(x=$xs, y=$ys, z=$zs)")
+#end
 
 
 function pauli_commute(P::Pauli, Q::Pauli)
