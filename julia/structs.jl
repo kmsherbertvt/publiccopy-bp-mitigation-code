@@ -43,6 +43,11 @@ struct Pauli{T<:Unsigned}
     function Pauli{T}(id::T, x::T, y::T, z::T, phase::T) where T<:Unsigned
         return Pauli{T}(x, y, z, phase)
     end
+
+    function Pauli(x::Integer, y::Integer, z::Integer, phase::Integer)
+        t = unsigned(typeof(x))
+        return Pauli{t}(unsigned(x), unsigned(y), unsigned(z), unsigned(phase))
+    end
 end
 
 
