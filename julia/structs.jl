@@ -75,6 +75,22 @@ function pauli_commute(P::Pauli, Q::Pauli)
 end
 
 
+function pauli_product(P::Pauli, Q::Pauli)
+    phase = 0
+
+    out_x = (P.z & Q.y) | (Q.z & P.y)
+    phase += 3*(count_ones(P.z & Q.y) - count_ones(Q.z & P.y))
+
+    out_y = (P.x & Q.z) | (Q.x & P.z)
+    phase += 1*(count_ones(P.x & Q.z) - count_ones(Q.x & P.z))
+
+    out_z = (P.x & Q.y) | (Q.x & P.y)
+    phase += 1*(count_ones(P.x & Q.y) - count_ones(Q.x & P.y))
+
+    return Pauli(out_x, out_y, out_z, phase%4)
+end
+
+
 function pauli_string_to_pauli(ps::String, type_out = UInt64)
     l = zeros(Int64, length(ps))
     for (i, c)=enumerate(ps)
