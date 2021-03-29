@@ -1,6 +1,6 @@
 include("fast_pauli_vec_mult.jl")
 
-struct Pauli{T<:Integer}
+struct Pauli{T<:Unsigned}
     #=
     Pauli mask representation of a Pauli string.
     This type is parametric on `T` so that smaller
@@ -22,24 +22,36 @@ struct Pauli{T<:Integer}
     z::T
     phase::T
 
-    function Pauli{T}(id::T, x::T, y::T, z::T, phase::T) where T<:Integer
-        s_id = bitstring(id)
+    function Pauli{T}(x::T, y::T, z::T, phase::T) where T<:Unsigned
         s_x = bitstring(x)
         s_y = bitstring(y)
         s_z = bitstring(z)
 
-        have_ones = filter(s -> '1' in s, [s_id, s_x, s_y, s_z])
+        have_ones = filter(s -> '1' in s, [s_x, s_y, s_z])
         if length(have_ones) != 0
             f = minimum(map(s -> findfirst('1', s), have_ones))
 
-            for tup in zip(s_id[f:end], s_x[f:end], s_y[f:end], s_z[f:end])
+            for tup in zip(s_x[f:end], s_y[f:end], s_z[f:end])
                 if sum(map(c -> parse(Int, c), tup)) > 1
-                    error("Invalid Pauli: $id, $x, $y, $z")
+                    error("Invalid Pauli: $x, $y, $z")
                 end
             end
         end
-        new(id, x, y, z, phase)
+        
+        new(~(x|y|z), x, y, z, phase)
     end
+    function Pauli{T}(id::T, x::T, y::T, z::T, phase::T) where T<:Unsigned
+        return Pauli{T}(x, y, z, phase)
+    end
+end
+
+
+function Base.show(io::IO, P::Pauli) 
+    num_qubits = maximum(map(i -> ndigits(i, base=2), [P.x, P.y, P.z]))
+    xs = bitstring(P.x)[end-num_qubits+1:end]
+    ys = bitstring(P.y)[end-num_qubits+1:end]
+    zs = bitstring(P.z)[end-num_qubits+1:end]
+    println("Pauli(x=$xs, y=$ys, z=$zs)")
 end
 
 
