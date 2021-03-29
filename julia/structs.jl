@@ -61,27 +61,21 @@ end
 
 
 function pauli_commute(P::Pauli, Q::Pauli)
-    id = xor(P.id, Q.id)
-    x = xor(P.x, Q.x)
-    y = xor(P.y, Q.y)
-    z = xor(P.z, Q.z)
+    nid = ~(P.id | Q.id)
+    x = xor(P.x, Q.x)&nid
+    y = xor(P.y, Q.y)&nid
+    z = xor(P.z, Q.z)&nid
     
-    x = (~id)^x
-    y = (~id)^y
-    z = (~id)^z
-
     res = 0
     res += count_ones(x)
     res += count_ones(y)
     res += count_ones(z)
 
-    println(res)
-
-    return Bool((res+1)%2)
+    return Bool(((res÷2)+1)%2)
 end
 
 
-function pauli_string_to_pauli(ps::String)
+function pauli_string_to_pauli(ps::String, type_out = UInt64)
     l = zeros(Int64, length(ps))
     for (i, c)=enumerate(ps)
         if c == 'I'
@@ -98,5 +92,11 @@ function pauli_string_to_pauli(ps::String)
     end
     pm = [0, 0, 0, 0]
     pauli_masks(pm, l)
-    return Pauli{Int64}(pm..., 0)
+    _type_out = unsigned(type_out)
+    return Pauli(
+        _type_out(pm[2]),
+        _type_out(pm[3]),
+        _type_out(pm[4]),
+        _type_out(0),
+    )
 end
