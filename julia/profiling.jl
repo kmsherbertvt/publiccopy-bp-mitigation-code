@@ -16,9 +16,9 @@ theta = [pi*rand() for j=1:d]
 # Compiling run
 result = zeros(ComplexF64, 2^n)
 tmp1 = zeros(ComplexF64, 2^n)
-pauli_ansatz_new!(axes, theta, result, tmp1)
+pauli_ansatz!(axes, theta, result, tmp1)
 
 # Actual run
 result = zeros(ComplexF64, 2^n)
 tmp1 = zeros(ComplexF64, 2^n)
-@btime pauli_ansatz_new!(axes, theta, result, tmp1)
+@btime pauli_ansatz!(axes, theta, result, tmp1)

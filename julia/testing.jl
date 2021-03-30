@@ -18,7 +18,7 @@ include("simulator.jl")
             actual = zeros(ComplexF64, 2^n)
             actual[1] = 1.0 + 0.0im
             tmp = zeros(ComplexF64, 2^n)
-            pauli_ansatz_new!(axes, theta, actual, tmp)
+            pauli_ansatz!(axes, theta, actual, tmp)
 
             vac = zeros(ComplexF64, 2^n)
             vac[1] = 1.0 + 0.0im
@@ -55,7 +55,7 @@ end
             actual = zeros(ComplexF64, 2^n)
             actual[1] = 1.0 + 0.0im
             tmp = zeros(ComplexF64, 2^n)
-            pauli_ansatz_new!(axes, theta, actual, tmp)
+            pauli_ansatz!(axes, theta, actual, tmp)
 
             @test norm(actual)≈1.0 || "Actual not norm'd: $actual"
             @test norm(expected)≈1.0 || "Expected not norm'd: $expected"
@@ -63,22 +63,3 @@ end
         end
     end
 end
-
-#@testset "Test multiplication" begin
-#    for n=2:5
-#        for _=1:40
-#            init = rand(ComplexF64, 2^n)
-#            init /= norm(init)
-#            #@test norm(init)≈1.0
-#            
-#            axes=[rand(0:3) for i=1:n]
-#            expected = pauli_str(axes) * init
-#            pauli_vec_mult!(init, axes)
-#
-#            @test norm(init-expected)≈0.0 || "failed on $axes"
-#            #@test norm(abs.(init)-abs.(expected))≈0.0
-#            #@test norm(init)≈1.0
-#        end
-#    end
-#end
-#

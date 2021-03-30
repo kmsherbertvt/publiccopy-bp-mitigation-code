@@ -68,7 +68,7 @@ function pauli_ansatz(
 end
 
 
-function pauli_ansatz_new!(
+function pauli_ansatz!(
         axes::Array{Array{Int64,1},1}, 
         pars::Array{Float64,1}, 
         result::Array{ComplexF64,1}, # pre-alloc # also initial state
