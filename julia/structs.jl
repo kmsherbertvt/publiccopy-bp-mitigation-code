@@ -51,13 +51,13 @@ mutable struct Pauli{T<:Unsigned}
 end
 
 
-#function Base.show(io::IO, P::Pauli) 
-#    num_qubits = maximum(map(i -> ndigits(i, base=2), [P.x, P.y, P.z]))
-#    xs = bitstring(P.x)[end-num_qubits+1:end]
-#    ys = bitstring(P.y)[end-num_qubits+1:end]
-#    zs = bitstring(P.z)[end-num_qubits+1:end]
-#    println("Pauli(x=$xs, y=$ys, z=$zs)")
-#end
+function Base.show(io::IO, P::Pauli) 
+    num_qubits = maximum(map(i -> ndigits(i, base=2), [P.x, P.y, P.z]))
+    xs = bitstring(P.x)[end-num_qubits+1:end]
+    ys = bitstring(P.y)[end-num_qubits+1:end]
+    zs = bitstring(P.z)[end-num_qubits+1:end]
+    print("Pauli(x=$xs, y=$ys, z=$zs)")
+end
 
 
 function pauli_commute(P::Pauli, Q::Pauli)
