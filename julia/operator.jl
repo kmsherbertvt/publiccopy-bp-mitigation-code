@@ -75,14 +75,31 @@ function op_product(A::Operator, B::Operator)
 end
 
 
+function Base.:+(x::Operator, y::Operator)
+    new_paulis = vcat(x.paulis, y.paulis)
+    new_coeffs = vcat(x.coeffs, y.coeffs)
+    return Operator(new_paulis, new_coeffs)
+end
+
+
+function Base.:-(x::Operator, y::Operator)
+    new_paulis = vcat(x.paulis, y.paulis)
+    new_coeffs = vcat(x.coeffs, -y.coeffs)
+    return Operator(new_paulis, new_coeffs)
+end
+
+
+function Base.:*(x::Operator, y::Operator)
+    return op_product(x, y)
+end
+
+
 function exp_val(A::Operator, state::Array{ComplexF64,1}, tmp::Array{ComplexF64})
     result = 0.0 + 0.0*im
-    pm = [0, 0, 0, 0]
     for (c,p)=zip(A.coeffs, A.paulis)
         # This convention is fine since P=dagger(P)
         # Equiv to (<psi|P)|psi> = <psi|(P|psi>)
-        pm[1] = p.id; pm[2] = p.x; pm[3] = p.y; pm[4] = p.z;
-        pauli_mult!(pm, state, tmp) # tmp <- P.state
+        pauli_mult!(p, state, tmp) # tmp <- P.state
         result += phase_shift(c, p.phase)*dot(conj.(tmp), state)
     end
     return result

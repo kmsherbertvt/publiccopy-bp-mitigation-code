@@ -4,6 +4,7 @@ using Test
 using BenchmarkTools
 
 include("pauli.jl")
+include("operator.jl")
 
 
 @testset "Basic id tests" begin
@@ -255,6 +256,27 @@ end
 
                 @test [R_prime.x, R_prime.y, R_prime.z, _phase] == [R.x, R.y, R.z, R.phase]
             end
+        end
+    end
+end
+
+
+@testset "Parity Expectation values" begin
+    for n=2:5
+        for _=1:10
+            st_int = rand(0:2^n-1)
+            z_int = rand(0:2^n-1)
+
+            P = Pauli(0, 0, z_int, 0)
+            v = zeros(ComplexF64, 2^n)
+            tmp = zeros(ComplexF64, 2^n)
+            v[st_int+1] = 1.0+0.0im
+
+            expected = (-1.0 + 0.0im)^(count_ones(z_int & st_int))
+
+            result = exp_val(Operator([P], [1.0+0.0im]), v, tmp)
+
+            @test expected ≈ result
         end
     end
 end
