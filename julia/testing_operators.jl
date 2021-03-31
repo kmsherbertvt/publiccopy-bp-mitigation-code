@@ -89,8 +89,10 @@ end
         for _=1:10
             id = pauli_string_to_pauli(String(repeat(['I'], n)))
             p = pauli_string_to_pauli(String(rand(['I', 'X', 'Y', 'Z'], n)))
-            @test pauli_product(id, p) == p
-            @test pauli_product(p, id) == p
+            pp1 = pauli_product(id, p)
+            pp2 = pauli_product(p, id)
+            @test pp1 == p
+            @test pp2 == p
         end
     end
 end

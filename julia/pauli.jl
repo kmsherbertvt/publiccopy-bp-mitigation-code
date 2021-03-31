@@ -1,3 +1,4 @@
+import Base
 using LinearAlgebra
 import IterTools: enumerate
 
@@ -50,6 +51,9 @@ mutable struct Pauli{T<:Unsigned}
         return Pauli{t}(unsigned(x), unsigned(y), unsigned(z), unsigned(phase))
     end
 end
+
+
+Base.:(==)(lhs ::Pauli, rhs ::Pauli) = (lhs.x == rhs.x) && (lhs.y == rhs.y) && (lhs.z == rhs.z) && (lhs.id == rhs.id) && (lhs.phase == rhs.phase)
 
 
 function pauli_string_to_pauli(ps::String, type_out = UInt64)
