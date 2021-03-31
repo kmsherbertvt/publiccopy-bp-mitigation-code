@@ -3,7 +3,7 @@ using TensorOperations
 using DataStructures
 using LoopVectorization
 
-include("fast_pauli_vec_mult.jl")
+include("structs.jl")
 
 
 function get_pauli(i::Int64)
@@ -86,7 +86,7 @@ function pauli_ansatz!(
         
         tmp .= c .* result
 
-        pauli_masks(pm, axes[d])
+        _pauli_masks(pm, axes[d])
         for i=0:N-1
             j = pauli_apply(pm, i)
             phase = UInt8((pauli_phase(pm, i)+1) % 4)

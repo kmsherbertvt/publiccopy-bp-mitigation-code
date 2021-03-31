@@ -67,8 +67,13 @@ function pauli_string_to_pauli(ps::String, type_out = UInt64)
             error("Invalid character: $c")
         end
     end
+    return pauli_string_to_pauli(l, type_out)
+end
+
+
+function pauli_string_to_pauli(ps::Array{Int64,1}, type_out = UInt64)
     pm = [0, 0, 0, 0]
-    pauli_masks(pm, l)
+    _pauli_masks(pm, ps)
     _type_out = unsigned(type_out)
     return Pauli(
         _type_out(pm[2]),
@@ -79,15 +84,7 @@ function pauli_string_to_pauli(ps::String, type_out = UInt64)
 end
 
 
-function pauli_masks(res::Array{Int64,1}, pauli_str::Pauli)
-    res[1] = pauli_str.id
-    res[2] = pauli_str.x
-    res[3] = pauli_str.y
-    res[4] = pauli_str.z
-end
-
-
-function pauli_masks(res::Array{Int64,1}, pauli_str::Array{Int64,1})
+function _pauli_masks(res::Array{Int64,1}, pauli_str::Array{Int64,1})
     for (i,ax)=enumerate(reverse(pauli_str))
         res[ax+1] += 2^(i-1)
     end
