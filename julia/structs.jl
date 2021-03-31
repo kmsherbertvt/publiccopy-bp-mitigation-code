@@ -1,3 +1,5 @@
+using LinearAlgebra
+
 include("fast_pauli_vec_mult.jl")
 
 mutable struct Pauli{T<:Unsigned}
@@ -50,6 +52,12 @@ mutable struct Pauli{T<:Unsigned}
     end
 end
 
+function pauli_masks(res::Array{Int64,1}, pauli_str::Pauli)
+    res[1] = pauli_str.id
+    res[2] = pauli_str.x
+    res[3] = pauli_str.y
+    res[4] = pauli_str.z
+end
 
 function Base.show(io::IO, P::Pauli) 
     num_qubits = maximum(map(i -> ndigits(i, base=2), [P.x, P.y, P.z]))
@@ -189,4 +197,29 @@ function op_product(A::Operator, B::Operator)
         end
     end
     return Operator(new_paulis, new_coeffs)
+end
+
+
+function pauli_mult!(pm::Array{Int}, state::Array{ComplexF64,1}, result::Array{ComplexF64,1})
+    N = length(state)
+    for i=0:N-1
+        j = pauli_apply(pm, i)
+        phase = (pauli_phase(pm, i)+1) % 4
+        r = state[i+1]
+        result[j+1] = phase_shift(r, phase)
+    end
+end
+
+
+function exp_val(A::Operator, state::Array{ComplexF64,1}, tmp::Array{ComplexF64})
+    result = 0.0 + 0.0*im
+    pm = [0, 0, 0, 0]
+    for (c,p)=zip(A.coeffs, A.paulis)
+        # This convention is fine since P=dagger(P)
+        # Equiv to (<psi|P)|psi> = <psi|(P|psi>)
+        pm[1] = p.id; pm[2] = p.x; pm[3] = p.y; pm[4] = p.z;
+        pauli_mult!(pm, state, tmp) # tmp <- P.state
+        result += phase_shift(c, p.phase)*dot(conj.(tmp), state)
+    end
+    return result
 end
