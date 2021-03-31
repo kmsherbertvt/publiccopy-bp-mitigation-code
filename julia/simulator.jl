@@ -69,13 +69,13 @@ end
 
 
 function pauli_ansatz!(
-        axes::Array{Array{Int64,1},1}, 
+        axes::Union{Array{Array{Int64,1},1},Array{Pauli,1}}, 
         pars::Array{Float64,1}, 
         result::Array{ComplexF64,1}, # pre-alloc # also initial state
         tmp::Array{ComplexF64,1}, # pre-alloc
         )
     num_pars = length(axes)
-    num_qubits = length(axes[1])
+    num_qubits = Int(log2(length(result)))
     pm = [0, 0, 0, 0]
     N = length(result)
     D = length(pars)
