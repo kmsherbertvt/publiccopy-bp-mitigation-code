@@ -69,11 +69,11 @@ end
 
 
 function pauli_rotation!(
-        P::Pauli,
+        P::Pauli{T},
         theta::Float64,
         result::Array{ComplexF64,1}, # pre-alloc # also initial state
         tmp::Array{ComplexF64,1}, # pre-alloc
-    )
+    ) where T<:Unsigned
     N = length(result)
     num_qubits = Int(log2(N))
     c = cos(theta)
