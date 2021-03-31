@@ -3,7 +3,7 @@ using TensorOperations
 using DataStructures
 using LoopVectorization
 
-include("structs.jl")
+include("pauli.jl")
 
 
 function get_pauli(i::Int64)

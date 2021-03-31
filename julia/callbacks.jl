@@ -1,4 +1,4 @@
-include("structs.jl")
+include("pauli.jl")
 
 #=
 A callback is a function of the step history that

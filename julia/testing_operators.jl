@@ -3,7 +3,7 @@ import LinearAlgebra: norm, abs
 using Test
 using BenchmarkTools
 
-include("structs.jl")
+include("pauli.jl")
 
 
 @testset "Basic id tests" begin
