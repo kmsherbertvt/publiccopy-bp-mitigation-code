@@ -41,7 +41,7 @@ function mcp_g_list(n::Int64)
 end
 
 
-function pauli_ansatz(
+function legacy_pauli_ansatz(
         axes::Array{Array{Int64,1},1}, 
         pars::Array{Float64,1}, 
         current_state::Union{Array{ComplexF64,1},Nothing} = nothing
@@ -68,34 +68,43 @@ function pauli_ansatz(
 end
 
 
+function pauli_rotation!(
+        P::Pauli,
+        theta::Float64,
+        result::Array{ComplexF64,1}, # pre-alloc # also initial state
+        tmp::Array{ComplexF64,1}, # pre-alloc
+    )
+    N = length(result)
+    num_qubits = Int(log2(N))
+    c = cos(theta)
+    s = sin(theta)
+    tmp .= c .* result
+
+    for i=0:N-1
+        j = pauli_apply(P, i)
+        phase = UInt8((pauli_phase(P, i)+1) % 4)
+
+        @inbounds r = result[i+1]
+        @inbounds tmp[j+1] -= phase_shift(r*s, phase)
+    end
+    result .= tmp
+end
+
+
 function pauli_ansatz!(
-        axes::Union{Array{Array{Int64,1},1},Array{Pauli,1}}, 
+        axes::Array{Pauli{T},1}, 
         pars::Array{Float64,1}, 
         result::Array{ComplexF64,1}, # pre-alloc # also initial state
         tmp::Array{ComplexF64,1}, # pre-alloc
-        )
+        ) where T<:Unsigned
     num_pars = length(axes)
-    num_qubits = Int(log2(length(result)))
-    pm = [0, 0, 0, 0]
     N = length(result)
+    num_qubits = Int(log2(N))
     D = length(pars)
     for d=1:D
+        P = axes[d]
         theta = pars[d]
-        c = cos(theta)
-        s = sin(theta)
-        
-        tmp .= c .* result
-
-        _pauli_masks(pm, axes[d])
-        for i=0:N-1
-            j = pauli_apply(pm, i)
-            phase = UInt8((pauli_phase(pm, i)+1) % 4)
-
-            @inbounds r = result[i+1]
-            @inbounds tmp[j+1] -= phase_shift(r*s, phase)
-        end
-        pm[1] = 0; pm[2] = 0; pm[3] = 0; pm[4] = 0
-        result .= tmp
+        pauli_rotation!(P, theta, result, tmp)
     end
 end
 

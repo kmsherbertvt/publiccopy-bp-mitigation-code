@@ -96,11 +96,22 @@ function Base.show(io::IO, P::Pauli)
     xs = bitstring(P.x)[end-num_qubits+1:end]
     ys = bitstring(P.y)[end-num_qubits+1:end]
     zs = bitstring(P.z)[end-num_qubits+1:end]
-    print("Pauli(x=$xs, y=$ys, z=$zs)")
+    if P.phase == 0
+        ph = "+1"
+    elseif P.phase == 1
+        ph = "+i"
+    elseif P.phase == 2
+        ph = "-1"
+    elseif P.phase == 3
+        ph = "-i"
+    else
+        error("invalid phase...")
+    end
+    print("Pauli(x=$xs, y=$ys, z=$zs, ph=$ph)")
 end
 
 
-function phase_shift(alpha::ComplexF64, i::UInt8)
+function phase_shift(alpha::ComplexF64, i::Integer)
     if i == 0
         return     alpha.re + im*alpha.im
     elseif i == 1
@@ -113,7 +124,7 @@ function phase_shift(alpha::ComplexF64, i::UInt8)
 end
 
 
-function pauli_phase(pm::Array{Int64, 1}, a::Int64)
+function pauli_phase(pm::Pauli, a::Int64)
     # Compute the phase gamma where P|a> = gamma |b> for
     # a pauli string P and basis state |a>.
     # Convention:
@@ -122,8 +133,8 @@ function pauli_phase(pm::Array{Int64, 1}, a::Int64)
     #   2 -> -1
     #   3 -> -i
     # pm = pauli_mask input
-    x = count_ones((pm[3] | pm[4]) & a) % 2
-    y = count_ones(pm[3]) % 4
+    x = count_ones((pm.y | pm.z) & a) % 2
+    y = count_ones(pm.y) % 4
 
     alpha = y
     beta = 2*x
@@ -132,17 +143,17 @@ function pauli_phase(pm::Array{Int64, 1}, a::Int64)
 end
 
 
-function pauli_apply(pm::Array{Int64, 1}, a::Int64)
+function pauli_apply(pm::Pauli, a::Int64)
     # pm = pauli_mask input
-    return xor((pm[2]|pm[3]),a)
+    return xor((pm.x|pm.y),a)
 end
 
 
-function pauli_mult!(pm::Array{Int}, state::Array{ComplexF64,1}, result::Array{ComplexF64,1})
+function pauli_mult!(pm::Pauli, state::Array{ComplexF64,1}, result::Array{ComplexF64,1})
     N = length(state)
     for i=0:N-1
         j = pauli_apply(pm, i)
-        phase = (pauli_phase(pm, i)+1) % 4
+        phase = pauli_phase(pm, i) % 4
         r = state[i+1]
         result[j+1] = phase_shift(r, phase)
     end

@@ -3,7 +3,7 @@ import LinearAlgebra: norm, abs
 using Test
 using BenchmarkTools
 
-include("fast_pauli_vec_mult.jl")
+include("pauli.jl")
 include("simulator.jl")
 
 
@@ -11,7 +11,7 @@ include("simulator.jl")
     d = 5
     for n=2:5
         for _=1:10
-            axes = [[rand(0:3) for i=1:n] for j=1:d]
+            axes = [pauli_string_to_pauli([rand(0:3) for i=1:n]) for j=1:d]
             theta = [0.0 for j=1:d]
 
             # Initial state is vac
@@ -35,7 +35,7 @@ end
         for _=1:10
             axes = [[rand(0:3) for i=1:n] for j=1:d]
             theta = [0.0 for j=1:d]
-            expected = pauli_ansatz(axes, theta)
+            expected = legacy_pauli_ansatz(axes, theta)
 
             vac = zeros(ComplexF64, 2^n)
             vac[1] = 1.0 + 0.0im
@@ -48,9 +48,10 @@ end
     d = 5
     for n=2:5
         for _=1:10
-            axes = [[rand(0:3) for i=1:n] for j=1:d]
+            leg_axes = [[rand(0:3) for i=1:n] for j=1:d]
+            axes = map(pauli_string_to_pauli, leg_axes)
             theta = [pi*rand() for j=1:d]
-            expected = pauli_ansatz(axes, theta)
+            expected = legacy_pauli_ansatz(leg_axes, theta)
 
             actual = zeros(ComplexF64, 2^n)
             actual[1] = 1.0 + 0.0im
