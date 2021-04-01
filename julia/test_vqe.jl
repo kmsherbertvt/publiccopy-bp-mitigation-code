@@ -27,7 +27,7 @@ ansatz = [
     Pauli(0, 0, 0, 11)
 ]
 
-opt = Opt(:LN_COBYLA, 4)
+opt = Opt(:LD_MMA, 4)
 
 initial_point = [0.1, 0.2, 0.3, 0.4]
 

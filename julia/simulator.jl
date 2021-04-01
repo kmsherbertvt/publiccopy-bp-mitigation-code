@@ -1,7 +1,4 @@
 using LinearAlgebra
-using TensorOperations
-using DataStructures
-using LoopVectorization
 
 include("pauli.jl")
 

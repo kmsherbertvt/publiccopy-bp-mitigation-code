@@ -15,13 +15,18 @@ function VQE(
     tmp = zeros(ComplexF64, 2^num_qubits)
     state = zeros(ComplexF64, 2^num_qubits)
     state[1] = 1.0 + 0.0im
-    function cost_fn(x::Vector, grad::Vector) # grad::Vector?
-        #if length(grad) > 0
-        #    
-        #end
+
+    function _cost_fn(x::Vector{Float64})
         pauli_ansatz!(ansatz, x, state, tmp)
         res = exp_val(hamiltonian, state, tmp).re
         return res
+    end
+
+    function cost_fn(x::Vector{Float64}, grad::Vector{Float64})
+        if length(grad) > 0
+            error("Gradients not supported, yet...")
+        end
+        return _cost_fn(x)
     end
 
     opt.lower_bounds = -π

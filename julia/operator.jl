@@ -100,7 +100,7 @@ function exp_val(A::Operator, state::Array{ComplexF64,1}, tmp::Array{ComplexF64}
         # This convention is fine since P=dagger(P)
         # Equiv to (<psi|P)|psi> = <psi|(P|psi>)
         pauli_mult!(p, state, tmp) # tmp <- P.state
-        result += phase_shift(c, p.phase)*dot(conj.(tmp), state)
+        result += phase_shift(c, p.phase)*dot(tmp, state)
     end
     return result
 end
