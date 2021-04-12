@@ -10,15 +10,18 @@ function VQE(
     ansatz::Array{Pauli{T},1},
     opt::Opt,
     initial_point::Array{Float64,1},
-    num_qubits::Int64
+    num_qubits::Int64,
+    state::Union{Nothing,Array{Float64,1}} = nothing # Initial state
 ) where T<:Unsigned
     tmp = zeros(ComplexF64, 2^num_qubits)
+    if state === nothing
     state = zeros(ComplexF64, 2^num_qubits)
     state[1] = 1.0 + 0.0im
+    end
 
     function _cost_fn(x::Vector{Float64})
         pauli_ansatz!(ansatz, x, state, tmp)
-        res = exp_val(hamiltonian, state, tmp).re
+        res = real(exp_val(hamiltonian, state, tmp))
         return res
     end
 
