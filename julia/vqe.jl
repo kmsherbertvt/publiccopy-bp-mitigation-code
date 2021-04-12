@@ -15,8 +15,8 @@ function VQE(
 ) where T<:Unsigned
     tmp = zeros(ComplexF64, 2^num_qubits)
     if state === nothing
-    state = zeros(ComplexF64, 2^num_qubits)
-    state[1] = 1.0 + 0.0im
+        state = zeros(ComplexF64, 2^num_qubits)
+        state[1] = 1.0 + 0.0im
     end
 
     function _cost_fn(x::Vector{Float64})
