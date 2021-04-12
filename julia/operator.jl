@@ -22,7 +22,7 @@ function group_inds_by_eq(A::Array)
     return grps
 end
 
-function op_simplify(A::Operator, tol::Float64 = 0.0)
+function op_simplify!(A::Operator, tol::Float64 = 0.0)
     l = length(A.paulis)
 
     # Get rid of zero coeff ops
@@ -103,4 +103,24 @@ function exp_val(A::Operator, state::Array{ComplexF64,1}, tmp::Array{ComplexF64}
         result += phase_shift(c, p.phase)*dot(tmp, state)
     end
     return result
+end
+
+
+function commutator(A::Operator, B::Operator, simplify::Bool = True)
+    new_paulis = Array{Pauli,1}()
+    new_coeffs = Array{ComplexF64, 1}()
+    for (p, pc)=zip(A.paulis, A.coeffs)
+        for (q, qc)=zip(B.paulis, B.coeffs)
+            if !pauli_commute(p, q)
+                append!(new_paulis, pauli_product(p, q))
+                append!(new_coeffs, +pc*qc)
+
+                append!(new_paulis, pauli_product(q, p))
+                append!(new_coeffs, -pc*qc)
+            end
+    res = Operator(new_paulis, new_coeffs)
+    if simplify
+        op_simplify!(res)
+    end
+    return res
 end
