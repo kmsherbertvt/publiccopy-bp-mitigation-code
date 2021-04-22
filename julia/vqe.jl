@@ -18,9 +18,10 @@ function VQE(
         initial_state = zeros(ComplexF64, 2^num_qubits)
         initial_state[1] = 1.0 + 0.0im
     end
+    state = copy(initial_state)
 
     function _cost_fn(x::Vector{Float64})
-        state = copy(initial_state)
+        state .= initial_state
         pauli_ansatz!(ansatz, x, state, tmp)
         res = real(exp_val(hamiltonian, state, tmp))
         return res
