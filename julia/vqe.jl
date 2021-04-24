@@ -42,3 +42,92 @@ function VQE(
 
     return (minf, minx, ret)
 end
+
+mutable struct ADAPTHistory
+    energy::Array{Float64,1}
+    max_grad::Array{Float64,1}
+    max_grad_ind::Array{Int64,1}
+    grads::Array{Float64, 1}
+    opt_pars::Array{Array{Float64, 1}, 1}
+end
+
+
+function adapt_step!(
+        hist::ADAPTHistory,
+        comms,
+        tmp,
+        state,
+        hamiltonian,
+        opt_pars
+        )
+    append!(
+        hist.grads,
+        [real(exp_val(com, state, tmp)) for com in comms]
+        ) # phase?
+
+    append!(
+        hist.max_grad_ind,
+        argmax(map(x -> abs(x), hist.grads[-1]))
+    )
+
+    append!(
+        hist.max_grad,
+        abs(gradients[max_grad_ind])
+    )
+
+    append!(
+        hist.energy,
+        exp_val(hamiltonian, state, tmp)
+    )
+
+    append!(
+        hist.opt_pars,
+        opt_pars
+    )
+end
+
+
+function adapt_vqe(
+    hamiltonian::Operator,
+    pool::Array{Pauli{T},1},
+    num_qubits::Int64,
+    opt::Opt,
+    callbacks::Array{Function},
+    state::Union{Nothing,Array{Float64,1}} = nothing, # Initial state
+    tmp::Union{Nothing, Array{Float64,1}} = nothing
+) where T<:Unsigned
+    hist = ADAPTHistory([], [], [], [], [[]])
+
+    if tmp === nothing
+        tmp = zeros(ComplexF64, 2^num_qubits)
+        tmp[1] = 1.0 + 0.0im
+    end
+    if state === nothing
+        state = zeros(ComplexF64, 2^num_qubits)
+        state[1] = 1.0 + 0.0im
+    end
+
+    comms = Array{Operator, 1}()
+    for _op in pool
+        op = Operator([_op], [1.0])
+        append!(comms, commutator(hamiltonian, op))
+    end
+
+    adapt_step!(hist, comms, tmp, state, hamiltonian, [])
+    ansatz = Array{Pauli{T}, 1}()
+
+    while True
+        for c in callbacks
+            if c(hist)
+                return hist
+            end
+        end
+
+        append!(ansatz, pool[hist.max_grad_ind[-1]])
+        point = vcat(hist.opt_pars[-1], [0.0])
+
+        energy, point, ret = VQE(hamiltonian, ansatz, opt, point, num_qubits, state, tmp)
+        pauli_ansatz!(ansatz, point, state, tmp)
+        adapt_step!(hist, comms, tmp, state, hamiltonian, point)
+    end
+end
