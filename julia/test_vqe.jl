@@ -5,6 +5,24 @@ include("vqe.jl")
 include("spin_chains.jl")
 
 
+function two_local_ansatz(n::Int64, d::Int64=2)
+    res = Array{String,1}()
+    for _=1:d
+        for i=1:n
+            for j=1:n
+                if i<=j continue end
+                l = split('I'^n, "")
+                l[i] = "X"
+                l[j] = "Y"
+                s = string(l...)
+                push!(res, s)
+            end
+        end
+    end
+    return res
+end
+
+
 @testset "XXZ VQE" begin
     for L=4:5
         for Jxy=range(0.5, 2.0, length=2)
@@ -14,7 +32,7 @@ include("spin_chains.jl")
                     evals = eigvals(xxzmat)
                     xxzham = xxz_model(L,Jxy,Jz,PBCs)
 
-                    ansatz_ops = map(pauli_string_to_pauli,repeat(["IIXY","XYII","XIYI","XIIY","IXYI"],2));
+                    ansatz_ops = map(pauli_string_to_pauli, two_local_ansatz(L, 2));
 
                     init_state = zeros(ComplexF64,2^L);
                     init_state[1] = 1.0;
