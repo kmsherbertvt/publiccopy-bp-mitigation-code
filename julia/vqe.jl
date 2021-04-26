@@ -77,7 +77,7 @@ function adapt_step!(
 
     push!(
         hist.energy,
-        exp_val(hamiltonian, state, tmp)
+        real(exp_val(hamiltonian, state, tmp))
     )
 
     push!(
