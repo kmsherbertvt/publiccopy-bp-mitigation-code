@@ -62,7 +62,7 @@ function adapt_step!(
         )
     push!(
         hist.grads,
-        [real(exp_val(com, state, tmp)) for com in comms]
+        [imag(exp_val(com, state, tmp)) for com in comms]
         ) # phase?
 
     push!(
