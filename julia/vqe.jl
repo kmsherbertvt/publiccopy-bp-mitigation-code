@@ -47,7 +47,7 @@ mutable struct ADAPTHistory
     energy::Array{Float64,1}
     max_grad::Array{Float64,1}
     max_grad_ind::Array{Int64,1}
-    grads::Array{Float64, 1}
+    grads::Array{Array{Float64, 1}, 1}
     opt_pars::Array{Array{Float64, 1}, 1}
 end
 
@@ -60,27 +60,27 @@ function adapt_step!(
         hamiltonian,
         opt_pars
         )
-    append!(
+    push!(
         hist.grads,
         [real(exp_val(com, state, tmp)) for com in comms]
         ) # phase?
 
-    append!(
+    push!(
         hist.max_grad_ind,
-        argmax(map(x -> abs(x), hist.grads[-1]))
+        argmax(map(x -> abs(x), hist.grads[end]))
     )
 
-    append!(
+    push!(
         hist.max_grad,
-        abs(gradients[max_grad_ind])
+        abs(hist.grads[end][hist.max_grad_ind[end]])
     )
 
-    append!(
+    push!(
         hist.energy,
         exp_val(hamiltonian, state, tmp)
     )
 
-    append!(
+    push!(
         hist.opt_pars,
         opt_pars
     )
@@ -91,10 +91,10 @@ function adapt_vqe(
     hamiltonian::Operator,
     pool::Array{Pauli{T},1},
     num_qubits::Int64,
-    opt::Opt,
+    optimizer::String,
     callbacks::Array{Function},
-    state::Union{Nothing,Array{Float64,1}} = nothing, # Initial state
-    tmp::Union{Nothing, Array{Float64,1}} = nothing
+    state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
+    tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
 ) where T<:Unsigned
     hist = ADAPTHistory([], [], [], [], [[]])
 
@@ -110,23 +110,23 @@ function adapt_vqe(
     comms = Array{Operator, 1}()
     for _op in pool
         op = Operator([_op], [1.0])
-        append!(comms, commutator(hamiltonian, op))
+        push!(comms, commutator(hamiltonian, op))
     end
 
     adapt_step!(hist, comms, tmp, state, hamiltonian, [])
     ansatz = Array{Pauli{T}, 1}()
 
-    while True
+    while true
         for c in callbacks
             if c(hist)
                 return hist
             end
         end
 
-        append!(ansatz, pool[hist.max_grad_ind[-1]])
-        point = vcat(hist.opt_pars[-1], [0.0])
-
-        energy, point, ret = VQE(hamiltonian, ansatz, opt, point, num_qubits, state, tmp)
+        push!(ansatz, pool[hist.max_grad_ind[end]])
+        point = vcat(hist.opt_pars[end], [0.0])
+        opt = Opt(Symbol(optimizer), length(point))
+        energy, point, ret = VQE(hamiltonian, ansatz, opt, point, num_qubits, state)#, tmp)  note that VQE doesn't take a tmp, it makes its own
         pauli_ansatz!(ansatz, point, state, tmp)
         adapt_step!(hist, comms, tmp, state, hamiltonian, point)
     end

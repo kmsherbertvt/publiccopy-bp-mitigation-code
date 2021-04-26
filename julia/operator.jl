@@ -12,11 +12,11 @@ function group_inds_by_eq(A::Array)
     hit_elts = []
     for i=1:l
         el = A[i]
-        if el in hit_elts
-            append!(grps[el], i)
+        if el in keys(hit_elts)
+            push!(grps[el], i)
         else
             grps[el] = [i]
-            append!(hit_elts, el)
+            push!(hit_elts, el)
         end
     end
     return grps
@@ -24,7 +24,9 @@ end
 
 function op_simplify!(A::Operator, tol::Float64 = 0.0)
     l = length(A.paulis)
-
+    if l==0
+        return
+    end
     # Get rid of zero coeff ops
     for i=reverse(1:l)
         if abs(A.coeffs[i]) <= tol
@@ -42,7 +44,7 @@ function op_simplify!(A::Operator, tol::Float64 = 0.0)
     end
 
     # Sum duplicate paulis
-    dict = group_inds_by_eq(A.paulis)
+    d = group_inds_by_eq(A.paulis)
     new_coeffs = Array{ComplexF64,1}()
     new_paulis = Array{Pauli,1}()
 
@@ -51,10 +53,10 @@ function op_simplify!(A::Operator, tol::Float64 = 0.0)
         for i in inds
             c += A.coeffs[i]
         end
-        append!(new_paulis, pauli)
-        append!(new_coeffs, c)
+        push!(new_paulis, pauli)
+        push!(new_coeffs, c)
     end
-    
+
     A.coeffs = new_coeffs
     A.paulis = new_paulis
 end
@@ -67,8 +69,8 @@ function op_product(A::Operator, B::Operator)
     for i=1:length(A.paulis)
         for j=1:length(B.paulis)
             q = pauli_product(A.paulis[i], B.paulis[j])
-            append!(new_paulis, q)
-            append!(new_coeffs, A.coeffs[i]*B.coeffs[j])
+            push!(new_paulis, q)
+            push!(new_coeffs, A.coeffs[i]*B.coeffs[j])
         end
     end
     return Operator(new_paulis, new_coeffs)
@@ -106,18 +108,20 @@ function exp_val(A::Operator, state::Array{ComplexF64,1}, tmp::Array{ComplexF64}
 end
 
 
-function commutator(A::Operator, B::Operator, simplify::Bool = True)
+function commutator(A::Operator, B::Operator, simplify::Bool = true)
     new_paulis = Array{Pauli,1}()
     new_coeffs = Array{ComplexF64, 1}()
     for (p, pc)=zip(A.paulis, A.coeffs)
         for (q, qc)=zip(B.paulis, B.coeffs)
             if !pauli_commute(p, q)
-                append!(new_paulis, pauli_product(p, q))
-                append!(new_coeffs, +pc*qc)
+                push!(new_paulis, pauli_product(p, q))
+                push!(new_coeffs, +pc*qc)
 
-                append!(new_paulis, pauli_product(q, p))
-                append!(new_coeffs, -pc*qc)
+                push!(new_paulis, pauli_product(q, p))
+                push!(new_coeffs, -pc*qc)
             end
+        end
+    end
     res = Operator(new_paulis, new_coeffs)
     if simplify
         op_simplify!(res)
