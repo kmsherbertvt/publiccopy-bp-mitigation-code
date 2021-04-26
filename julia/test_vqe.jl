@@ -1,38 +1,36 @@
-using NLopt
+using LinearAlgebra
+using Test
 
 include("vqe.jl")
-include("operator.jl")
-include("pauli.jl")
+include("spin_chains.jl")
 
 
-ham = Operator(
-    [
-        Pauli(0, 0, 3, 0),
-        Pauli(0, 0, 6, 0),
-        Pauli(0, 0, 11, 0),
-        Pauli(0, 0, 1, 2),
-    ],
-    [
-        0.1,
-        1.2,
-        8.9,
-        3.6
-    ]
-)
+@testset "XXZ VQE" begin
+    for L=4:5
+        for Jxy=range(0.5, 2.0, length=2)
+            for Jz=range(0.3, 1.0, length=2)
+                for PBCs in [true]
+                    xxzmat = xxz_matrix(L,Jxy,Jz,PBCs)
+                    evals = eigvals(xxzmat)
+                    xxzham = xxz_model(L,Jxy,Jz,PBCs)
 
-ansatz = [
-    Pauli(15, 0, 0, 0),
-    Pauli(0, 13, 0, 0),
-    Pauli(0, 0, 5, 0),
-    Pauli(0, 0, 0, 11)
-]
+                    ansatz_ops = map(pauli_string_to_pauli,repeat(["IIXY","XYII","XIYI","XIIY","IXYI"],2));
 
-opt = Opt(:LD_MMA, 4)
+                    init_state = zeros(ComplexF64,2^L);
+                    init_state[1] = 1.0;
 
-initial_point = [0.1, 0.2, 0.3, 0.4]
+                    tmp_state = zeros(ComplexF64,2^L)
+                    #print("init state energy: ",exp_val(xxzham,init_state,tmp_state),'\n')
 
-num_qubits = 4
+                    opt = Opt(:LN_COBYLA, length(ansatz_ops))
+                    init_pt = ones(Float64,length(ansatz_ops))
 
-result = VQE(ham, ansatz, opt, initial_point, num_qubits)
+                    vqe_results = VQE(xxzham,ansatz_ops,opt,init_pt,L,init_state)
 
-println(result)
+                    #println("energy difference exact - vqe = ",evals[1]-vqe_results[1])
+                    @test abs(evals[1]-vqe_results[1]) <= 1e-8
+                end
+            end
+        end
+    end
+end
