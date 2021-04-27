@@ -131,3 +131,18 @@ function adapt_vqe(
         adapt_step!(hist, comms, tmp, state, hamiltonian, point)
     end
 end
+
+function minimal_complete_pool(n::Int64)
+    res = Array{String,1}(["ZY","YI"])
+    for i=3:n
+        println(i)
+        tempres = Array{String,1}()
+        for pstr in res
+            push!(tempres,"Z"*pstr)
+        end
+        push!(tempres,"Y"*("I"^(i-1)))
+        push!(tempres,"IY"*("I"^(i-2)))
+        res = copy(tempres)
+    end
+    return map(pauli_string_to_pauli,res)
+end
