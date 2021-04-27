@@ -135,7 +135,6 @@ end
 function minimal_complete_pool(n::Int64)
     res = Array{String,1}(["ZY","YI"])
     for i=3:n
-        println(i)
         tempres = Array{String,1}()
         for pstr in res
             push!(tempres,"Z"*pstr)
