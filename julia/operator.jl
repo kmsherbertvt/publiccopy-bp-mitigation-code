@@ -2,7 +2,7 @@ include("pauli.jl")
 
 
 mutable struct Operator
-    paulis::Array{Pauli,1}
+    paulis::Array{Pauli{UInt64},1}
     coeffs::Array{ComplexF64,1}
 end
 
