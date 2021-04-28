@@ -91,12 +91,20 @@ function adapt_vqe(
     hamiltonian::Operator,
     pool::Array{Pauli{T},1},
     num_qubits::Int64,
-    optimizer::String,
+    optimizer::Union{String,Dict},
     callbacks::Array{Function},
     state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
     tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
 ) where T<:Unsigned
     hist = ADAPTHistory([], [], [], [], [[]])
+
+    if optimizer isa String
+        opt_dict = Dict("name" => optimizer)
+    elseif optimizer isa Dict
+        opt_dict = optimizer
+    else
+        throw(ArgumentError("optimizer should be String or Dict"))
+    end
 
     if tmp === nothing
         tmp = zeros(ComplexF64, 2^num_qubits)
@@ -125,7 +133,18 @@ function adapt_vqe(
 
         push!(ansatz, pool[hist.max_grad_ind[end]])
         point = vcat(hist.opt_pars[end], [0.0])
-        opt = Opt(Symbol(optimizer), length(point))
+
+        opt = Opt(Symbol(opt_dict["name"]), length(point))
+        if haskey(opt_dict,"maxeval")
+            opt.maxeval = opt_dict["maxeval"]
+        end
+        if haskey(opt_dict,"ftol_rel")
+            opt.ftol_rel = opt_dict["ftol_rel"]
+        end
+        if haskey(opt_dict,"xtol_rel")
+            opt.xtol_rel = opt_dict["xtol_rel"]
+        end
+
         energy, point, ret = VQE(hamiltonian, ansatz, opt, point, num_qubits, state)#, tmp)  note that VQE doesn't take a tmp, it makes its own
         pauli_ansatz!(ansatz, point, state, tmp)
         adapt_step!(hist, comms, tmp, state, hamiltonian, point)
