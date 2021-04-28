@@ -2,6 +2,7 @@ using IterTools
 
 include("pauli.jl")
 include("simulator.jl")
+include("simulator.jl")
 
 
 mutable struct Operator
@@ -154,4 +155,25 @@ function matrix_to_operator(A)
     end
     
     return operator
+end
+
+
+function num_qubits(O::Operator)
+    n = 0
+    for p in O.paulis
+        if num_qubits(p) > n
+            n = num_qubits(p)
+        end
+    end
+    return n
+end
+
+
+function operator_to_matrix(O::Operator)
+    n = num_qubits(O)
+    result = zeros(ComplexF64, 2^n, 2^n)
+    for (c,p) in zip(O.coeffs, O.paulis)
+        result += c*pauli_str(pauli_to_axes(p, n))
+    end
+    return result
 end

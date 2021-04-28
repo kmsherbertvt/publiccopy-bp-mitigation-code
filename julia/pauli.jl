@@ -56,6 +56,30 @@ end
 Base.:(==)(lhs ::Pauli, rhs ::Pauli) = (lhs.x == rhs.x) && (lhs.y == rhs.y) && (lhs.z == rhs.z) && (lhs.id == rhs.id) && (lhs.phase == rhs.phase)
 
 
+function num_qubits(P::Pauli)
+    return maximum(map(k -> ndigits(k, base=2), [P.x, P.y, P.z]))
+end
+
+
+function pauli_to_axes(P::Pauli{T}, n::Int) where T<:Unsigned
+    if num_qubits(P) > n
+        error("Needs more qubits")
+    end
+
+    l = zeros(Int64, n)
+
+    for i=1:n
+        for (ax, p_comp) in zip([1, 2, 3], [P.x, P.y, P.z])
+            res = ((p_comp >> (i-1)) & 1)
+            if res == 1
+                l[i] = ax
+            end
+        end
+    end
+    return l
+end
+
+
 function pauli_string_to_pauli(ps::String, type_out = UInt64)
     l = zeros(Int64, length(ps))
     for (i, c)=enumerate(ps)
