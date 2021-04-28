@@ -96,7 +96,7 @@ function adapt_vqe(
     state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
     tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
 ) where T<:Unsigned
-    hist = ADAPTHistory([], [], [], [], [[]])
+    hist = ADAPTHistory([], [], [], [], [])
 
     if optimizer isa String
         opt_dict = Dict("name" => optimizer)
