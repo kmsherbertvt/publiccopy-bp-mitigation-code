@@ -92,7 +92,8 @@ function adapt_vqe(
     pool::Array{Pauli{T},1},
     num_qubits::Int64,
     optimizer::String,
-    callbacks::Array{Function},
+    callbacks::Array{Function};
+    initial_parameter::Float64 = 0.0,
     state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
     tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
 ) where T<:Unsigned
@@ -124,7 +125,7 @@ function adapt_vqe(
         end
 
         push!(ansatz, pool[hist.max_grad_ind[end]])
-        point = vcat(hist.opt_pars[end], [0.0])
+        point = vcat(hist.opt_pars[end], [initial_parameter])
         opt = Opt(Symbol(optimizer), length(point))
         energy, point, ret = VQE(hamiltonian, ansatz, opt, point, num_qubits, state)#, tmp)  note that VQE doesn't take a tmp, it makes its own
         pauli_ansatz!(ansatz, point, state, tmp)

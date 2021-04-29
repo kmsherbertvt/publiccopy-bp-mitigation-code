@@ -17,7 +17,7 @@ end
 
 
 function two_local_pool(n::Int64, axes=[1,2,3])
-    pool = Array{Pauli,1}()
+    pool = Array{Pauli{UInt64},1}()
 
     for pair in Iterators.product(ntuple(i->1:n, 2)...)
         i,j = pair
