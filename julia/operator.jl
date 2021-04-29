@@ -1,4 +1,7 @@
+using IterTools
+
 include("pauli.jl")
+include("simulator.jl")
 
 
 mutable struct Operator
@@ -35,6 +38,7 @@ function op_simplify!(A::Operator, tol::Float64 = 0.0)
         end
     end
 
+    l = length(A.paulis)
     # Bring all phases out of Paulis
     for i=1:l
         ph = A.paulis[i].phase
@@ -127,4 +131,48 @@ function commutator(A::Operator, B::Operator, simplify::Bool = true)
         op_simplify!(res)
     end
     return res
+end
+
+
+function matrix_to_operator(A)
+    if size(A)[1] != size(A)[2] || length(size(A)) > 2
+        error("Invalid shape: $(size(A))")
+    else
+        N = size(A)[1]
+        n = Int(log2(N))
+    end
+
+    operator = Operator([], [])
+
+    for axes in Iterators.product(ntuple(i->[0, 1, 2, 3], n)...)
+        pauli_mat = pauli_str([i for i in axes])
+        pauli = pauli_string_to_pauli([i for i in axes])
+        coeff = tr(pauli_mat*A) / N
+
+        push!(operator.paulis, pauli)
+        push!(operator.coeffs, coeff)
+    end
+    
+    return operator
+end
+
+
+function num_qubits(O::Operator)
+    n = 0
+    for p in O.paulis
+        if num_qubits(p) > n
+            n = num_qubits(p)
+        end
+    end
+    return n
+end
+
+
+function operator_to_matrix(O::Operator)
+    n = num_qubits(O)
+    result = zeros(ComplexF64, 2^n, 2^n)
+    for (c,p) in zip(O.coeffs, O.paulis)
+        result += c*pauli_str(pauli_to_axes(p, n))
+    end
+    return result
 end

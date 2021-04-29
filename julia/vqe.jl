@@ -93,6 +93,7 @@ function adapt_vqe(
     num_qubits::Int64,
     optimizer::Union{String,Dict},
     callbacks::Array{Function},
+    initial_parameter::Float64 = 0.0,
     state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
     tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
 ) where T<:Unsigned
@@ -132,7 +133,7 @@ function adapt_vqe(
         end
 
         push!(ansatz, pool[hist.max_grad_ind[end]])
-        point = vcat(hist.opt_pars[end], [0.0])
+        point = vcat(hist.opt_pars[end], [initial_parameter])
 
         opt = Opt(Symbol(opt_dict["name"]), length(point))
         if haskey(opt_dict,"maxeval")
