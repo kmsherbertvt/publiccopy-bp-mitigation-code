@@ -139,8 +139,20 @@ function adapt_vqe(
         if haskey(opt_dict,"maxeval")
             opt.maxeval = opt_dict["maxeval"]
         end
+        if haskey(opt_dict,"maxtime")
+            opt.maxtime = opt_dict["maxtime"]
+        end
+        if haskey(opt_dict,"stopval")
+            opt.stopval = opt_dict["stopval"]
+        end
+        if haskey(opt_dict,"ftol_abs")
+            opt.ftol_abs = opt_dict["ftol_abs"]
+        end
         if haskey(opt_dict,"ftol_rel")
             opt.ftol_rel = opt_dict["ftol_rel"]
+        end
+        if haskey(opt_dict,"xtol_abs")
+            opt.xtol_rel = opt_dict["xtol_abs"]
         end
         if haskey(opt_dict,"xtol_rel")
             opt.xtol_rel = opt_dict["xtol_rel"]
