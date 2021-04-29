@@ -4,7 +4,7 @@ include("pauli.jl")
 include("simulator.jl")
 
 
-struct Operator
+mutable struct Operator
     paulis::Array{Pauli{UInt64},1}
     coeffs::Array{ComplexF64,1}
 end
@@ -152,7 +152,7 @@ function matrix_to_operator(A)
         push!(operator.paulis, pauli)
         push!(operator.coeffs, coeff)
     end
-    
+
     return operator
 end
 

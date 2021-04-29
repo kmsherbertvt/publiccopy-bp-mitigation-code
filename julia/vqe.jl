@@ -136,26 +136,11 @@ function adapt_vqe(
         point = vcat(hist.opt_pars[end], [initial_parameter])
 
         opt = Opt(Symbol(opt_dict["name"]), length(point))
-        if haskey(opt_dict,"maxeval")
-            opt.maxeval = opt_dict["maxeval"]
-        end
-        if haskey(opt_dict,"maxtime")
-            opt.maxtime = opt_dict["maxtime"]
-        end
-        if haskey(opt_dict,"stopval")
-            opt.stopval = opt_dict["stopval"]
-        end
-        if haskey(opt_dict,"ftol_abs")
-            opt.ftol_abs = opt_dict["ftol_abs"]
-        end
-        if haskey(opt_dict,"ftol_rel")
-            opt.ftol_rel = opt_dict["ftol_rel"]
-        end
-        if haskey(opt_dict,"xtol_abs")
-            opt.xtol_rel = opt_dict["xtol_abs"]
-        end
-        if haskey(opt_dict,"xtol_rel")
-            opt.xtol_rel = opt_dict["xtol_rel"]
+
+        opt_keys = collect(keys(opt_dict))
+        deleteat!(opt_keys,findall(x->x=="name",opt_keys))
+        for akey in opt_keys
+            setproperty!(opt,Symbol(akey),opt_dict[akey])
         end
 
         energy, point, ret = VQE(hamiltonian, ansatz, opt, point, num_qubits, state)#, tmp)  note that VQE doesn't take a tmp, it makes its own
