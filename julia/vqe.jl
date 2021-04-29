@@ -92,7 +92,7 @@ function adapt_vqe(
     pool::Array{Pauli{T},1},
     num_qubits::Int64,
     optimizer::Union{String,Dict},
-    callbacks::Array{Function},
+    callbacks::Array{Function};
     initial_parameter::Float64 = 0.0,
     state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
     tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
