@@ -4,7 +4,7 @@ include("pauli.jl")
 include("simulator.jl")
 
 
-mutable struct Operator
+struct Operator
     paulis::Array{Pauli{UInt64},1}
     coeffs::Array{ComplexF64,1}
 end
