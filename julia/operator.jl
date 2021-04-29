@@ -2,7 +2,6 @@ using IterTools
 
 include("pauli.jl")
 include("simulator.jl")
-include("simulator.jl")
 
 
 mutable struct Operator
