@@ -152,7 +152,7 @@ function matrix_to_operator(A)
         push!(operator.paulis, pauli)
         push!(operator.coeffs, coeff)
     end
-    
+
     return operator
 end
 
