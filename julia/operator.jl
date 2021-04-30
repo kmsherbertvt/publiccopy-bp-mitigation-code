@@ -114,7 +114,7 @@ function ham_state_mult!(O::Operator,
     tmp1 .= 0.0 + 0.0im
     for (c,p) in zip(O.coeffs, O.paulis)
         pauli_mult!(p, state, tmp2)
-        tmp1 .+= tmp2
+        @. tmp1 += phase_shift(c, p.phase)*tmp2
     end
     state = tmp1
 end
