@@ -99,8 +99,30 @@ function Base.:*(x::Operator, y::Operator)
     return op_product(x, y)
 end
 
+function ham_state_mult!(O::Operator,
+                         state::Array{ComplexF64,1},
+                         tmp1::Array{ComplexF64},
+                         tmp2::Array{ComplexF64}
+                         )
+    """Note: The resulting 'state' will not be normalized!
+
+    The temporary vector and the state are mutated, but the assignment
+    is  `|state> <- H|state>` so that the result is stored in `state`.
+
+    Not yet tested!
+    """
+    tmp1 .= 0.0 + 0.0im
+    for (c,p) in zip(O.coeffs, O.paulis)
+        pauli_mult!(p, state, tmp2)
+        tmp1 .+= tmp2
+    end
+    state = tmp1
+end
+
 
 function exp_val(A::Operator, state::Array{ComplexF64,1}, tmp::Array{ComplexF64})
+    """This can potentially use `ham_state_mult!`, but will require an extra temporary vector.
+    """
     result = 0.0 + 0.0*im
     for (c,p)=zip(A.coeffs, A.paulis)
         # This convention is fine since P=dagger(P)
