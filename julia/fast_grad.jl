@@ -19,23 +19,34 @@ function fast_grad!(
 
     N = length(ansatz)
 
-    # Construct:
+    # First we want to assign
     #   sigma <- |sigma_N>
     #   psi <- |psi_N>
+    # these can be done simultaneously
+
+    # sigma <- |phi>
     pauli_ansatz!(ansatz, pars, sigma, tmp1)
+
+    # psi <- |phi>
     psi .= sigma
+
+    # sigma <- H|sigma>
     ham_state_mult!(ham, sigma, tmp1, tmp2)
 
+    # Now we'll start the main loop, starting at i=N
     for i=reverse(1:N)
         # Compute grad
-        # tmp1 <- P_N|psi_N>
+        #  tmp1 <- P_N|psi_N>
         pauli_mult!(ansatz[i], psi, tmp1)
+        #  e_val <- factor*<sigma|P_N|psi>
         e_val = dot(sigma, tmp1)
         grad = 2.0 * real(-1.0im * e_val)
         result[i] = grad
 
         # Unfold to time-reversed states
+        #  sigma <- exp(-im*theta_i*P_i)|sigma>
         pauli_rotation!(ansatz[i], -pars[i], sigma, tmp1)
+        #  psi <- exp(-im*theta_i*P_i)|psi>
         pauli_rotation!(ansatz[i], -pars[i], psi, tmp1)
     end
 end
