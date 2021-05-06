@@ -8,11 +8,14 @@ function fast_grad!(
         ansatz::Vector{Pauli{T}},
         pars::Vector{Float64},
         result::Vector{Float64},
-        sigma::Vector{ComplexF64},
+        psi::Vector{ComplexF64},
+        sigma::Vector{ComplexF64}, # Initial state goes here!
         tmp1::Vector{ComplexF64},
-        tmp2::Vector{ComplexF64},
-        psi::Vector{ComplexF64}
+        tmp2::Vector{ComplexF64}
     ) where T <: Unsigned
+
+    # I think something is going wrong with the initial state being mutated
+    # as the algorithm progresses...
 
     N = length(ansatz)
 
@@ -34,5 +37,38 @@ function fast_grad!(
         # Unfold to time-reversed states
         pauli_rotation!(ansatz[i], -pars[i], sigma, tmp1)
         pauli_rotation!(ansatz[i], -pars[i], psi, tmp1)
+    end
+end
+
+
+function finite_difference!(
+        ham::Operator,
+        ansatz::Vector{Pauli{T}},
+        pars::Vector{Float64},
+        result::Vector{Float64},
+        initial_state::Vector{ComplexF64},
+        tmp1::Vector{ComplexF64},
+        tmp2::Vector{ComplexF64},
+        eps::Float64 = 1e-8
+    ) where T <: Unsigned
+
+    N = length(ansatz)
+
+    for i=1:N
+        eps_vec = zeros(Float64, length(pars))
+        eps_vec[i] = eps
+
+        # f(p+eps)
+        tmp2 .= initial_state
+        pauli_ansatz!(ansatz, pars + eps_vec, tmp2, tmp1)
+        fn_plus = real(exp_val(ham, tmp2, tmp1))
+        
+        # f(p-eps)
+        tmp2 .= initial_state
+        pauli_ansatz!(ansatz, pars - eps_vec, tmp2, tmp1)
+        fn_minu = real(exp_val(ham, tmp2, tmp1))
+
+        # Compute grad
+        result[i] = (fn_plus - fn_minu) / (2*eps)
     end
 end
