@@ -9,7 +9,7 @@ mutable struct Pauli{T<:Unsigned}
     sized integers can be used to represent the Pauli
     string, if possible. This also performs a check that
     the given integers constitute a valid Pauli string.
-    
+
     Example:
     Pauli string: "IIXYZYZIYIZ"
               id:  11000001010 -> 1546
@@ -39,7 +39,7 @@ mutable struct Pauli{T<:Unsigned}
         #        end
         #    end
         #end
-        
+
         new(~(x|y|z), x, y, z, phase)
     end
     function Pauli{T}(id::T, x::T, y::T, z::T, phase::T) where T<:Unsigned
@@ -54,6 +54,30 @@ end
 
 
 Base.:(==)(lhs ::Pauli, rhs ::Pauli) = (lhs.x == rhs.x) && (lhs.y == rhs.y) && (lhs.z == rhs.z) && (lhs.id == rhs.id) && (lhs.phase == rhs.phase)
+
+
+function num_qubits(P::Pauli)
+    return maximum(map(k -> ndigits(k, base=2), [P.x, P.y, P.z]))
+end
+
+
+function pauli_to_axes(P::Pauli{T}, n::Int) where T<:Unsigned
+    if num_qubits(P) > n
+        error("Needs more qubits")
+    end
+
+    l = zeros(Int64, n)
+
+    for i=1:n
+        for (ax, p_comp) in zip([1, 2, 3], [P.x, P.y, P.z])
+            res = ((p_comp >> (i-1)) & 1)
+            if res == 1
+                l[i] = ax
+            end
+        end
+    end
+    return l
+end
 
 
 function pauli_string_to_pauli(ps::String, type_out = UInt64)
@@ -87,6 +111,15 @@ function pauli_string_to_pauli(ps::Array{Int64,1}, type_out = UInt64)
     )
 end
 
+function pauli_to_pauli_string(P::Pauli{T}, n::Int) where T<:Unsigned
+    plist = ["I","X","Y","Z"]
+    pax = pauli_to_axes(P,n) .+ 1
+    pstr = []
+    for el in reverse(pax)
+        push!(pstr,plist[el])
+    end
+    return join(pstr)
+end
 
 function _pauli_masks(res::Array{Int64,1}, pauli_str::Array{Int64,1})
     for (i,ax)=enumerate(reverse(pauli_str))
@@ -95,7 +128,7 @@ function _pauli_masks(res::Array{Int64,1}, pauli_str::Array{Int64,1})
 end
 
 
-function Base.show(io::IO, P::Pauli) 
+function Base.show(io::IO, P::Pauli)
     num_qubits = maximum(map(i -> ndigits(i, base=2), [P.x, P.y, P.z]))
     xs = bitstring(P.x)[end-num_qubits+1:end]
     ys = bitstring(P.y)[end-num_qubits+1:end]
@@ -119,11 +152,11 @@ function phase_shift(alpha::ComplexF64, i::Integer)
     if i == 0
         return     alpha.re + im*alpha.im
     elseif i == 1
-        return  im*alpha.re - alpha.im 
+        return  im*alpha.re - alpha.im
     elseif i == 2
         return    -alpha.re - im*alpha.im
     else
-        return -im*alpha.re + alpha.im 
+        return -im*alpha.re + alpha.im
     end
 end
 

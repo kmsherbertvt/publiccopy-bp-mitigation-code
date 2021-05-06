@@ -21,7 +21,7 @@ end
 
 function ParameterStopper(max_pars::Int64)
     function stopper(hist::ADAPTHistory)
-        if length(hist.opt_pars[-1]) >= max_pars
+        if length(hist.opt_pars) >= max_pars + 1
             return true
         else
             return false

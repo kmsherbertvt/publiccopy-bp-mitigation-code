@@ -4,7 +4,7 @@ include("pauli.jl")
 include("operator.jl")
 include("simulator.jl")
 
-
+eval_count = 0
 function VQE(
     hamiltonian::Operator,
     ansatz::Array{Pauli{T},1},
@@ -21,6 +21,7 @@ function VQE(
     state = copy(initial_state)
 
     function _cost_fn(x::Vector{Float64})
+        eval_count += 1
         state .= initial_state
         pauli_ansatz!(ansatz, x, state, tmp)
         res = real(exp_val(hamiltonian, state, tmp))
@@ -38,7 +39,128 @@ function VQE(
     opt.upper_bounds = +π
     opt.min_objective = cost_fn
 
+    eval_count = 0
     (minf,minx,ret) = optimize(opt, initial_point)
 
-    return (minf, minx, ret)
+    return (minf, minx, ret, eval_count)
+end
+
+mutable struct ADAPTHistory
+    energy::Array{Float64,1}
+    max_grad::Array{Float64,1}
+    max_grad_ind::Array{Int64,1}
+    grads::Array{Array{Float64, 1}, 1}
+    opt_pars::Array{Array{Float64, 1}, 1}
+    paulis::Array{Any,1}
+    opt_numevals::Array{Any,1}
+end
+
+
+function adapt_step!(
+        hist::ADAPTHistory,
+        comms,
+        tmp,
+        state,
+        hamiltonian,
+        opt_pars,
+        pauli_chosen,
+        numevals
+        )
+    push!(
+        hist.grads,
+        [imag(exp_val(com, state, tmp)) for com in comms]
+        ) # phase?
+
+    push!(
+        hist.max_grad_ind,
+        argmax(map(x -> abs(x), hist.grads[end]))
+    )
+
+    push!(
+        hist.max_grad,
+        abs(hist.grads[end][hist.max_grad_ind[end]])
+    )
+
+    push!(
+        hist.energy,
+        real(exp_val(hamiltonian, state, tmp))
+    )
+
+    push!(
+        hist.opt_pars,
+        opt_pars
+    )
+
+    push!(
+        hist.paulis,
+        pauli_chosen
+    )
+
+    push!(
+        hist.opt_numevals,
+        numevals
+    )
+end
+
+
+function adapt_vqe(
+    hamiltonian::Operator,
+    pool::Array{Pauli{T},1},
+    num_qubits::Int64,
+    optimizer::Union{String,Dict},
+    callbacks::Array{Function};
+    initial_parameter::Float64 = 0.0,
+    state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
+    tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
+) where T<:Unsigned
+    hist = ADAPTHistory([], [], [], [], [], [], [])
+
+    if optimizer isa String
+        opt_dict = Dict("name" => optimizer)
+    elseif optimizer isa Dict
+        opt_dict = optimizer
+    else
+        throw(ArgumentError("optimizer should be String or Dict"))
+    end
+
+    if tmp === nothing
+        tmp = zeros(ComplexF64, 2^num_qubits)
+        tmp[1] = 1.0 + 0.0im
+    end
+    if state === nothing
+        state = zeros(ComplexF64, 2^num_qubits)
+        state[1] = 1.0 + 0.0im
+    end
+
+    comms = Array{Operator, 1}()
+    for _op in pool
+        op = Operator([_op], [1.0])
+        push!(comms, commutator(hamiltonian, op))
+    end
+
+    adapt_step!(hist, comms, tmp, state, hamiltonian, [], nothing, nothing)
+    ansatz = Array{Pauli{T}, 1}()
+
+    while true
+        for c in callbacks
+            if c(hist)
+                return hist
+            end
+        end
+
+        push!(ansatz, pool[hist.max_grad_ind[end]])
+        point = vcat(hist.opt_pars[end], [initial_parameter])
+
+        opt = Opt(Symbol(opt_dict["name"]), length(point))
+
+        opt_keys = collect(keys(opt_dict))
+        deleteat!(opt_keys,findall(x->x=="name",opt_keys))
+        for akey in opt_keys
+            setproperty!(opt,Symbol(akey),opt_dict[akey])
+        end
+
+        energy, point, ret, opt_evals = VQE(hamiltonian, ansatz, opt, point, num_qubits, state)#, tmp)  note that VQE doesn't take a tmp, it makes its own
+        pauli_ansatz!(ansatz, point, state, tmp)
+        adapt_step!(hist, comms, tmp, state, hamiltonian, point,pool[hist.max_grad_ind[end]],opt_evals) # pool operator of the step that just finished
+    end
 end

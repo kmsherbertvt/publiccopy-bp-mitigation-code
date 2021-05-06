@@ -105,3 +105,11 @@ function pauli_ansatz!(
     end
 end
 
+
+function qaoa_layer!(
+        hamiltonian::Array{Float64,1},
+        gamma::Float64,
+        result::Array{ComplexF64,1}
+        )
+    @. result *= exp(-im*gamma*hamiltonian)
+end
