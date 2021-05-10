@@ -19,35 +19,30 @@ function fast_grad!(
 
     N = length(ansatz)
 
-    # First we want to assign
-    #   sigma <- |sigma_N>
-    #   psi <- |psi_N>
-    # these can be done simultaneously
+    # psi <- |psi_1>
+    psi .= sigma
+    pauli_rotation!(ansatz[1], pars[1], psi, tmp1)
 
     # sigma <- |phi>
     pauli_ansatz!(ansatz, pars, sigma, tmp1)
 
-    # psi <- |phi>
-    psi .= sigma
-
     # sigma <- H|sigma>
     ham_state_mult!(ham, sigma, tmp1, tmp2)
 
-    # Now we'll start the main loop, starting at i=N
-    for i=reverse(1:N)
-        # Compute grad
-        #  tmp1 <- P_N|psi_N>
-        pauli_mult!(ansatz[i], psi, tmp1)
-        #  e_val <- factor*<sigma|P_N|psi>
-        e_val = dot(sigma, tmp1)
-        grad = 2.0 * real(-1.0im * e_val)
-        result[i] = grad
+    # sigma <- |sigma_1>
+    # Does `pauli_ansatz!` assume the state is normalized?
+    pauli_ansatz!(reverse(ansatz[2:N]), -reverse(pars[2:N]), sigma, tmp1)
 
-        # Unfold to time-reversed states
-        #  sigma <- exp(-im*theta_i*P_i)|sigma>
-        pauli_rotation!(ansatz[i], -pars[i], sigma, tmp1)
-        #  psi <- exp(-im*theta_i*P_i)|psi>
-        pauli_rotation!(ansatz[i], -pars[i], psi, tmp1)
+    for k=1:N
+        # Compute grad
+        # tmp1 <- P_k|psi_k>
+        pauli_mult!(ansatz[k], psi, tmp1)
+        result[k] = 2.0 * real(-1.0im * @show dot(sigma, tmp1))
+
+        # Exit loop since N+1 element doesn't exist
+        if k == N break end
+        pauli_rotation!(ansatz[k+1], pars[k+1], sigma, tmp1)
+        pauli_rotation!(ansatz[k+1], pars[k+1], psi, tmp1)
     end
 end
 
