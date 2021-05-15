@@ -15,7 +15,7 @@ function group_inds_by_eq(A::Array)
     hit_elts = []
     for i=1:l
         el = A[i]
-        if el in keys(hit_elts)
+        if el in hit_elts
             push!(grps[el], i)
         else
             grps[el] = [i]
