@@ -1,3 +1,4 @@
+using Random
 using Test
 using StatsBase
 using LinearAlgebra
@@ -9,6 +10,8 @@ include("pools.jl")
 include("spin_chains.jl")
 
 include("fast_grad.jl")
+
+Random.seed!(42)
 
 @testset "Random Gradient" begin
     # Idea: Random ansatz, random Hamiltonian, random parameters
