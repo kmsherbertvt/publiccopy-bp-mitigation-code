@@ -37,7 +37,7 @@ function fast_grad!(
         # Compute grad
         # tmp1 <- P_k|psi_k>
         pauli_mult!(ansatz[k], psi, tmp1)
-        result[k] = 2.0 * real(-1.0im * @show dot(sigma, tmp1))
+        result[k] = 2.0 * real(-1.0im * dot(sigma, tmp1))
 
         # Exit loop since N+1 element doesn't exist
         if k == N break end
