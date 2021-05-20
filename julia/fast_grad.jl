@@ -14,9 +14,6 @@ function fast_grad!(
         tmp2::Vector{ComplexF64}
     ) where T <: Unsigned
 
-    # I think something is going wrong with the initial state being mutated
-    # as the algorithm progresses...
-
     N = length(ansatz)
 
     # psi <- |psi_1>
@@ -30,7 +27,6 @@ function fast_grad!(
     ham_state_mult!(ham, sigma, tmp1, tmp2)
 
     # sigma <- |sigma_1>
-    # Does `pauli_ansatz!` assume the state is normalized?
     pauli_ansatz!(reverse(ansatz[2:N]), -reverse(pars[2:N]), sigma, tmp1)
 
     for k=1:N
