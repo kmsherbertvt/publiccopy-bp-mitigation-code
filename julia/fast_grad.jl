@@ -13,32 +13,37 @@ function fast_grad!(
         tmp1::Vector{ComplexF64},
         tmp2::Vector{ComplexF64}
     ) where T <: Unsigned
+    """ Counting matrix multiplications:
+    1 + N + |support(ham)| + N-1 + N*(1+1+1) = 2*N + 3*N = 5*N ~ O(N)
+    This could in principle be reduced to 3*N multiplications, but at
+    this point I don't want to spend more time optimizing this.
+    """
 
     N = length(ansatz)
 
     # psi <- |psi_1>
     psi .= sigma
-    pauli_rotation!(ansatz[1], pars[1], psi, tmp1)
+    pauli_rotation!(ansatz[1], pars[1], psi, tmp1) # COUNT: 1 mult
 
     # sigma <- |phi>
-    pauli_ansatz!(ansatz, pars, sigma, tmp1)
+    pauli_ansatz!(ansatz, pars, sigma, tmp1) # COUNT: N mult
 
     # sigma <- H|sigma>
-    ham_state_mult!(ham, sigma, tmp1, tmp2)
+    ham_state_mult!(ham, sigma, tmp1, tmp2) # COUNT: |support(ham)| mult
 
     # sigma <- |sigma_1>
-    pauli_ansatz!(reverse(ansatz[2:N]), -reverse(pars[2:N]), sigma, tmp1)
+    pauli_ansatz!(reverse(ansatz[2:N]), -reverse(pars[2:N]), sigma, tmp1) # COUNT: N-1 mult
 
     for k=1:N
         # Compute grad
         # tmp1 <- P_k|psi_k>
-        pauli_mult!(ansatz[k], psi, tmp1)
+        pauli_mult!(ansatz[k], psi, tmp1) # COUNT: 1 mult
         result[k] = 2.0 * real(-1.0im * dot(sigma, tmp1))
 
         # Exit loop since N+1 element doesn't exist
         if k == N break end
-        pauli_rotation!(ansatz[k+1], pars[k+1], sigma, tmp1)
-        pauli_rotation!(ansatz[k+1], pars[k+1], psi, tmp1)
+        pauli_rotation!(ansatz[k+1], pars[k+1], sigma, tmp1) # COUNT: 1 mult
+        pauli_rotation!(ansatz[k+1], pars[k+1], psi, tmp1) # COUNT: 1 mult
     end
 end
 
