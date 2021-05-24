@@ -3,15 +3,16 @@ using NLopt
 include("pauli.jl")
 include("operator.jl")
 include("simulator.jl")
+include("fast_grad.jl")
 
-eval_count = 0
 function VQE(
     hamiltonian::Operator,
     ansatz::Array{Pauli{T},1},
     opt::Opt,
     initial_point::Array{Float64,1},
     num_qubits::Int64,
-    initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing # Initial state
+    initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
+    path = nothing # Should be a CSV file
 ) where T<:Unsigned
     tmp = zeros(ComplexF64, 2^num_qubits)
     if initial_state === nothing
@@ -19,27 +20,45 @@ function VQE(
         initial_state[1] = 1.0 + 0.0im
     end
     state = copy(initial_state)
+    eval_count = 0
 
-    function _cost_fn(x::Vector{Float64})
+    if path !== nothing
+        """ Idea: Write the header of the CSV files (also for grad.csv) here
+        then append to them at each iteration of `cost_fn`. This way there is
+        no dataframe, and the results are visible in real-time.
+        """
+        # Write header for CSV file in `$path.csv`
+        # iter, point, cost, grad
+        open(path, "w") do io
+            write(io, "iter; cost; point; grad\n")
+        end
+    end
+
+    function cost_fn(x::Vector{Float64}, grad::Vector{Float64})
         eval_count += 1
         state .= initial_state
         pauli_ansatz!(ansatz, x, state, tmp)
         res = real(exp_val(hamiltonian, state, tmp))
-        return res
-    end
 
-    function cost_fn(x::Vector{Float64}, grad::Vector{Float64})
         if length(grad) > 0
-            error("Gradients not supported, yet...")
+            # This is not yet tested!
+            state .= initial_state
+            fast_grad!(hamiltonian, ansatz, x, grad, psi, state, tmp1, tmp2)
         end
-        return _cost_fn(x)
+
+        if path !== nothing
+            open(path, "a") do io
+                write(io, "$eval_count; $res; $x; $grad\n")
+            end
+        end
+
+        return res
     end
 
     opt.lower_bounds = -π
     opt.upper_bounds = +π
     opt.min_objective = cost_fn
 
-    eval_count = 0
     (minf,minx,ret) = optimize(opt, initial_point)
 
     return (minf, minx, ret, eval_count)
@@ -53,6 +72,17 @@ mutable struct ADAPTHistory
     opt_pars::Array{Array{Float64, 1}, 1}
     paulis::Array{Any,1}
     opt_numevals::Array{Any,1}
+end
+
+
+function adapt_history_dump!(hist::ADAPTHistory, path::String)
+    l = length(hist.energy)
+    open(path, "w") do io
+        write(io, "layer; energy; max_grad; max_grad_ind; grads; opt_pars; opt_numevals; paulis\n")
+        for (i, en, mg, mgi, gr, op, ne)=zip(1:l, hist.energy, hist.max_grad, hist.max_grad_ind, hist.grads, hist.opt_pars, hist.opt_numevals)
+            write(io, "$i; $en; $mg; $mgi; $gr; $op; $ne; $nothing\n")
+        end
+    end
 end
 
 
@@ -111,9 +141,17 @@ function adapt_vqe(
     callbacks::Array{Function};
     initial_parameter::Float64 = 0.0,
     state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
-    tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
+    tmp::Union{Nothing, Array{ComplexF64,1}} = nothing,
+    path = nothing # should be a directory! Does not include final '/'
 ) where T<:Unsigned
     hist = ADAPTHistory([], [], [], [], [], [], [])
+
+    if path !== nothing
+        """ in $path the following files will be written
+            $path/layer_*.csv - indexed by integer
+            $path/adapt_history.csv
+        """
+    end
 
     if optimizer isa String
         opt_dict = Dict("name" => optimizer)
@@ -141,9 +179,14 @@ function adapt_vqe(
     adapt_step!(hist, comms, tmp, state, hamiltonian, [], nothing, nothing)
     ansatz = Array{Pauli{T}, 1}()
 
+    layer_count = 0
+
     while true
         for c in callbacks
             if c(hist)
+                if path !== nothing
+                    adapt_history_dump!(hist, "$path/adapt_history.csv")
+                end
                 return hist
             end
         end
@@ -159,8 +202,16 @@ function adapt_vqe(
             setproperty!(opt,Symbol(akey),opt_dict[akey])
         end
 
-        energy, point, ret, opt_evals = VQE(hamiltonian, ansatz, opt, point, num_qubits, state)#, tmp)  note that VQE doesn't take a tmp, it makes its own
+        if path !== nothing
+            vqe_path = "$path/layer_$layer_count.csv"
+        else
+            vqe_path = nothing
+        end
+
+        energy, point, ret, opt_evals = VQE(hamiltonian, ansatz, opt, point, num_qubits, state, vqe_path)
         pauli_ansatz!(ansatz, point, state, tmp)
         adapt_step!(hist, comms, tmp, state, hamiltonian, point,pool[hist.max_grad_ind[end]],opt_evals) # pool operator of the step that just finished
+
+        layer_count += 1
     end
 end
