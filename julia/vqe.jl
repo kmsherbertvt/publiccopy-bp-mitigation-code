@@ -135,7 +135,7 @@ function adapt_vqe(
     comms = Array{Operator, 1}()
     for _op in pool
         op = Operator([_op], [1.0])
-        push!(comms, commutator(hamiltonian, op))
+        push!(comms, commutator(hamiltonian, op, false))
     end
 
     adapt_step!(hist, comms, tmp, state, hamiltonian, [], nothing, nothing)
