@@ -21,6 +21,11 @@ function pauli_str(axes::Array{Int64})
 end
 
 
+function diag_pauli_str(axes::Array{Int64})
+    return foldl(kron, map(a -> diag(get_pauli(a)), axes))
+end
+
+
 function mcp_g_list(n::Int64)
     result = Array{Array{Int64, 1}, 1}()
     for i = 1:n
