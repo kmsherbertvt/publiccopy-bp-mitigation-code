@@ -4,9 +4,9 @@ include("operator.jl")
 
 
 function max_cut_hamiltonian(g)
-    if has_edge_property(g, "weight")
-        error("Graph must be unweighted")
-    end
+    #if has_edge_property(g, "weight")
+    #    error("Graph must be unweighted")
+    #end
     operator = Operator([], [])
     n = length(Erdos.vertices(g))
 
