@@ -15,6 +15,8 @@ function VQE(
     path = nothing # Should be a CSV file
 ) where T<:Unsigned
     tmp = zeros(ComplexF64, 2^num_qubits)
+    tmp1 = similar(tmp)
+    tmp2 = similar(tmp)
     if initial_state === nothing
         initial_state = zeros(ComplexF64, 2^num_qubits)
         initial_state[1] = 1.0 + 0.0im
@@ -41,9 +43,8 @@ function VQE(
         res = real(exp_val(hamiltonian, state, tmp))
 
         if length(grad) > 0
-            # This is not yet tested!
             state .= initial_state
-            fast_grad!(hamiltonian, ansatz, x, grad, psi, state, tmp1, tmp2)
+            fast_grad!(hamiltonian, ansatz, x, grad, tmp, state, tmp1, tmp2)
         end
 
         if path !== nothing
