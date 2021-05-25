@@ -10,7 +10,7 @@ include("qaoa_hamiltonians.jl")
 
 
 @testset "ADAPT Random Diagonal" begin
-    for _=1:10
+    for _=[1]
         for n in [4]
             operator = random_regular_max_cut_hamiltonian(n, 2)
             op_simplify!(operator)
@@ -18,13 +18,13 @@ include("qaoa_hamiltonians.jl")
             ground_state_energy = minimum(real(diag(hamiltonian)))
 
             pool = two_local_pool(n)
-            optimizer = "LN_COBYLA"
+            optimizer = "LD_LBFGS"
             callbacks = Function[ParameterStopper(20)]
             
             state = ones(ComplexF64, 2^n)
             state /= norm(state)
 
-            result = adapt_vqe(operator, pool, n, optimizer, callbacks; initial_parameter=1e-5, state=state)
+            result = adapt_vqe(operator, pool, n, optimizer, callbacks; initial_parameter=1e-5, state=state, path="/home/gbarron/new_projects/barren_plateaus/julia/adapt_data")
 
             en_adapt = last(result.energy)
 

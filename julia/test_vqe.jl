@@ -24,9 +24,9 @@ end
 
 
 @testset "XXZ VQE" begin
-    for L=4:5
-        for Jxy=range(0.5, 2.0, length=2)
-            for Jz=range(0.3, 1.0, length=2)
+    for L=[4]
+        for Jxy=[0.5]
+            for Jz=[0.3]
                 for PBCs in [true]
                     xxzmat = xxz_matrix(L,Jxy,Jz,PBCs)
                     evals = eigvals(xxzmat)
@@ -43,7 +43,7 @@ end
                     opt = Opt(:LN_COBYLA, length(ansatz_ops))
                     init_pt = ones(Float64,length(ansatz_ops))
 
-                    vqe_results = VQE(xxzham,ansatz_ops,opt,init_pt,L,init_state)
+                    vqe_results = VQE(xxzham,ansatz_ops,opt,init_pt,L,init_state, "/home/gbarron/new_projects/barren_plateaus/julia/test_vqe.csv")
 
                     #println("energy difference exact - vqe = ",evals[1]-vqe_results[1])
                     @test abs(evals[1]-vqe_results[1]) <= 1e-8
