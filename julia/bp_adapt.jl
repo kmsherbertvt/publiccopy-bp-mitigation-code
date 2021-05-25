@@ -1,5 +1,6 @@
 using Random
 using LinearAlgebra
+using StatsBase
 using Erdos
 using Glob
 
@@ -14,44 +15,67 @@ include("qaoa_hamiltonians.jl")
 
 Random.seed!(42)
 
+pool_of_hope = [
+    "YXYYZIYZXY",
+    "ZZZYYIYXII",
+    "YYXYIIZYZY",
+    "XYIXXXXYZY",
+    "YZZYIXIXYI",
+    "XZYYYZXIII",
+    "XIIZIXXZZY",
+    "YYIXYXXXII", 
+    "ZZXZYYIZZY", 
+    "IXZXXXXYII", 
+    "IIZYXIIIII", 
+    "IYIZZYXIZY", 
+    "XYXYXIXXYI", 
+    "ZIZIIZYYZY", 
+    "IXXIXZZIYI", 
+    "IZIZIYYZZY", 
+    "YXYZZXXXZY", 
+    "ZYIYIYXYXY"
+]
+
+pool_of_hope = map(s -> pauli_string_to_pauli(s), pool_of_hope)
+
+
+function random_hamiltonian(n, k)
+    pauli_strings = []
+    support = k * n^4
+    while length(pauli_strings) <= support
+        new_string = String(sample(['I', 'X', 'Y', 'Z'], 10, replace=true))
+        if !(new_string in pauli_strings)
+            push!(pauli_strings, new_string)
+        end
+    end
+    coeffs = rand(Float64, support)
+    paulis = map(s -> pauli_string_to_pauli(s), pauli_strings)
+    return Operator(paulis, coeffs)
+end
+
 
 function run_experiment(n, seed, pool_name)
+    n = 10
     Random.seed!(seed)
-    # Construct pool
-    if pool_name == "nchoose2local"
-        pool = two_local_pool(n)
-    elseif pool_name == "mcp2local"
-        pool = minimal_complete_pool(n)
-    end
+    pool = pool_of_hope
 
-    # Define graph and Hamiltonian
-    graph = Erdos.random_regular_graph(n, 3)
-    ham = max_cut_hamiltonian(graph)
+    # Define Hamiltonian
+    ham = random_hamiltonian(n, 1)
 
     # Define optimizer
     optimizer = "LD_LBFGS"
 
     # Callbacks
-    callbacks = Function[ParameterStopper(20)]
+    callbacks = Function[ParameterStopper(2000)]
 
     # Define path for data storage
-    path = "/home/gbarron/data/bps/maxcut/$n/$pool_name/$seed"
+    path = "/home/gbarron/data/mcp_random_vlad/$n"
     mkpath(path)
     #rm.(glob("$path/*.csv"))
 
-    # Store exact result
-    ham_vec = diagonal_operator_to_vector(ham)
-    min_ind = argmin(real(ham_vec))
-    min_val = real(ham_vec[min_ind])
-    min_bs = bitstring(min_ind)[64-n+1:end]
-    open("$path/exact_result.csv", "w") do io
-        write(io, "min_ind; min_val; min_bs\n")
-        write(io, "$min_ind; $min_val; $min_bs\n")
-    end
-
     # Allocate arrays
-    state = ones(ComplexF64, 2^n)
-    state /= norm(state)
+    state = zeros(ComplexF64, 2^n)
+    state[1] = 1.0 + 0.0im
 
     # Run ADAPT-VQE
     result = adapt_vqe(ham, pool, n, optimizer, callbacks, initial_parameter=1e-5, state=state, path=path)
@@ -61,10 +85,10 @@ function run_experiment(n, seed, pool_name)
 end
 
 
-for n=[4, 6, 8, 10, 12, 14, 16]
+for n=[10]
     println("Num qubits: $n")
-    for seed=1:4
-        for pool_name in ["nchoose2local"]
+    for seed=[1]
+        for pool_name in ["asdf"]
             @time run_experiment(n, seed, pool_name)
         end
     end
