@@ -55,13 +55,17 @@ function run_experiment(n, seed, pool_name)
 
     # Run ADAPT-VQE
     result = adapt_vqe(ham, pool, n, optimizer, callbacks, initial_parameter=1e-5, state=state, path=path)
+
+    # Do gradient sampling on resulting ansatz
+    ansatz = result.paulis
 end
 
 
-for n=[4]
-    for seed=1:2
-        for pool_name in ["nchoose2local", "mcp2local"]
-            run_experiment(n, seed, pool_name)
+for n=[4, 6, 8, 10, 12, 14, 16]
+    println("Num qubits: $n")
+    for seed=1:4
+        for pool_name in ["nchoose2local"]
+            @time run_experiment(n, seed, pool_name)
         end
     end
 end
