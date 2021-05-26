@@ -32,7 +32,10 @@ function run_experiment(n, seed, pool_name)
     optimizer = "LD_LBFGS"
 
     # Callbacks
-    callbacks = Function[ParameterStopper(20)]
+    callbacks = Function[
+        ParameterStopper(200),
+        MaxGradientStopper(1e-6)
+        ]
 
     # Define path for data storage
     path = "/home/gbarron/data/bps/maxcut/$n/$pool_name/$seed"
@@ -54,7 +57,7 @@ function run_experiment(n, seed, pool_name)
     state /= norm(state)
 
     # Run ADAPT-VQE
-    result = adapt_vqe(ham, pool, n, optimizer, callbacks, initial_parameter=1e-5, state=state, path=path)
+    result = adapt_vqe(ham, pool, n, optimizer, callbacks, initial_parameter=1e-10, state=state, path=path)
 
     # Do gradient sampling on resulting ansatz
     ansatz = result.paulis
@@ -63,7 +66,7 @@ end
 
 for n=[4, 6, 8, 10, 12, 14, 16]
     println("Num qubits: $n")
-    for seed=1:4
+    for seed=1:40
         for pool_name in ["nchoose2local"]
             @time run_experiment(n, seed, pool_name)
         end

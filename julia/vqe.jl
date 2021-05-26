@@ -76,12 +76,13 @@ mutable struct ADAPTHistory
 end
 
 
-function adapt_history_dump!(hist::ADAPTHistory, path::String)
+function adapt_history_dump!(hist::ADAPTHistory, path::String, num_qubits::Int64)
     l = length(hist.energy)
     open(path, "w") do io
         write(io, "layer; energy; max_grad; max_grad_ind; grads; opt_pars; opt_numevals; paulis\n")
-        for (i, en, mg, mgi, gr, op, ne)=zip(1:l, hist.energy, hist.max_grad, hist.max_grad_ind, hist.grads, hist.opt_pars, hist.opt_numevals)
-            write(io, "$i; $en; $mg; $mgi; $gr; $op; $ne; $nothing\n")
+        for (i, en, mg, mgi, gr, op, ne, paulis)=zip(1:l, hist.energy, hist.max_grad, hist.max_grad_ind, hist.grads, hist.opt_pars, hist.opt_numevals, hist.paulis)
+            pss = map(p -> pauli_to_pauli_string(p, num_qubits), paulis)
+            write(io, "$i; $en; $mg; $mgi; $gr; $op; $ne; $pss\n")
         end
     end
 end
@@ -186,7 +187,7 @@ function adapt_vqe(
         for c in callbacks
             if c(hist)
                 if path !== nothing
-                    adapt_history_dump!(hist, "$path/adapt_history.csv")
+                    adapt_history_dump!(hist, "$path/adapt_history.csv", num_qubits)
                 end
                 return hist
             end
