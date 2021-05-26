@@ -80,9 +80,9 @@ function adapt_history_dump!(hist::ADAPTHistory, path::String, num_qubits::Int64
     l = length(hist.energy)
     open(path, "w") do io
         write(io, "layer; energy; max_grad; max_grad_ind; grads; opt_pars; opt_numevals; paulis\n")
-        for (i, en, mg, mgi, gr, op, ne, paulis)=zip(1:l, hist.energy, hist.max_grad, hist.max_grad_ind, hist.grads, hist.opt_pars, hist.opt_numevals, hist.paulis)
-            pss = map(p -> pauli_to_pauli_string(p, num_qubits), paulis)
-            write(io, "$i; $en; $mg; $mgi; $gr; $op; $ne; $pss\n")
+        for (i, en, mg, mgi, gr, op, ne, pauli)=zip(1:l, hist.energy, hist.max_grad, hist.max_grad_ind, hist.grads, hist.opt_pars, hist.opt_numevals, hist.paulis)
+            ps = pauli_to_pauli_string(pauli, num_qubits)
+            write(io, "$i; $en; $mg; $mgi; $gr; $op; $ne; $ps\n")
         end
     end
 end
@@ -178,7 +178,7 @@ function adapt_vqe(
         push!(comms, commutator(hamiltonian, op, false))
     end
 
-    adapt_step!(hist, comms, tmp, state, hamiltonian, [], nothing, nothing)
+    adapt_step!(hist, comms, tmp, state, hamiltonian, [], Pauli(0, 0, 0, 0), 0)
     ansatz = Array{Pauli{T}, 1}()
 
     layer_count = 0
