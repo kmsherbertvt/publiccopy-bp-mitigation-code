@@ -36,6 +36,8 @@ pool_of_hope = [
     "ZYIYIYXYXY"
 ]
 
+#pool_of_hope = ["YYYZII", "YYXIZY", "YYXZYI", "IIZIYI", "IYYXYI", "XZYXII", "IXZZZY", "YZIIII", "XXXYII", "ZIIIXY", "YXYIXY", "IXXXXY", "YIZIII", "ZIIXYI", "XXYYXY", "XXZZZY", "IZZIYI", "ZZYXII"]
+
 pool_of_hope = map(s -> pauli_string_to_pauli(s), pool_of_hope)
 
 
@@ -43,7 +45,7 @@ function random_hamiltonian(n, k)
     pauli_strings = []
     support = k * n^4
     while length(pauli_strings) <= support
-        new_string = String(sample(['I', 'X', 'Y', 'Z'], 10, replace=true))
+        new_string = String(sample(['I', 'X', 'Y', 'Z'], n, replace=true))
         if !(new_string in pauli_strings)
             push!(pauli_strings, new_string)
         end
