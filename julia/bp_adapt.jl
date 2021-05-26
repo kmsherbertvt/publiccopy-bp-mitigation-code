@@ -74,8 +74,10 @@ function run_experiment(n, seed, pool_name)
     #rm.(glob("$path/*.csv"))
 
     # Allocate arrays
-    state = zeros(ComplexF64, 2^n)
-    state[1] = 1.0 + 0.0im
+    #state = zeros(ComplexF64, 2^n)
+    #state[1] = 1.0 + 0.0im
+    state = rand(ComplexF64, 2^n)
+    state /= norm(state)
 
     # Run ADAPT-VQE
     result = adapt_vqe(ham, pool, n, optimizer, callbacks, initial_parameter=1e-5, state=state, path=path)
