@@ -1,21 +1,22 @@
-using Random
-using LinearAlgebra
-using Erdos
-using Glob
+using Distributed
+@everywhere using Random
+@everywhere using LinearAlgebra
+@everywhere using Erdos
+@everywhere using Glob
 
 
-include("operator.jl")
-include("pauli.jl")
-include("vqe.jl")
-include("pools.jl")
-include("callbacks.jl")
-include("qaoa_hamiltonians.jl")
+@everywhere include("operator.jl")
+@everywhere include("pauli.jl")
+@everywhere include("vqe.jl")
+@everywhere include("pools.jl")
+@everywhere include("callbacks.jl")
+@everywhere include("qaoa_hamiltonians.jl")
 
 
-Random.seed!(42)
+@everywhere Random.seed!(42)
 
 
-function run_experiment(n, seed, pool_name)
+@everywhere function run_experiment(n, seed, pool_name)
     Random.seed!(seed)
     # Construct pool
     if pool_name == "nchoose2local"
@@ -63,12 +64,15 @@ function run_experiment(n, seed, pool_name)
     ansatz = result.paulis
 end
 
+inputs = []
 
-for n=[4, 6, 8, 10, 12, 14, 16]
-    println("Num qubits: $n")
+for n=[4, 6, 8, 10, 12, 14, 16, 18, 20]
     for seed=1:40
         for pool_name in ["nchoose2local"]
-            @time run_experiment(n, seed, pool_name)
+            push!(inputs, [n, seed, pool_name])
+            #@time run_experiment(n, seed, pool_name)
         end
     end
 end
+
+pmap(i -> run_experiment(i...), inputs)
