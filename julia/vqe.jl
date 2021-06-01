@@ -20,19 +20,18 @@ function VQE(
     end
     state = copy(initial_state)
 
-    function _cost_fn(x::Vector{Float64})
+    function cost_fn(x::Vector{Float64}, grad::Vector{Float64})
         eval_count += 1
         state .= initial_state
         pauli_ansatz!(ansatz, x, state, tmp)
         res = real(exp_val(hamiltonian, state, tmp))
-        return res
-    end
 
-    function cost_fn(x::Vector{Float64}, grad::Vector{Float64})
         if length(grad) > 0
-            error("Gradients not supported, yet...")
+            state .= initial_state
+            fast_grad!(hamiltonian, ansatz, x, grad, tmp, state, tmp1, tmp2)
         end
-        return _cost_fn(x)
+
+        return res
     end
 
     opt.lower_bounds = -π
