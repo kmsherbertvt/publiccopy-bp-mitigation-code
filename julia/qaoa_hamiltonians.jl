@@ -3,15 +3,15 @@ using Erdos
 include("operator.jl")
 
 
-function max_cut_hamiltonian(g::Network)
-    if !has_edge_property(g, "weight")
-        error("Graph must be weighted (potentially all equal weights)")
+function max_cut_hamiltonian(g)
+    if has_edge_property(g, "weight")
+        error("Graph must be unweighted")
     end
     operator = Operator([], [])
-    n = length(vertices(g))
+    n = length(Erdos.vertices(g))
 
-    for e in edges(g)
-        w = edge_property(g, e)["weight"]
+    for e in Erdos.edges(g)
+        w = 1.0
         i, j = e
 
         l = zeros(Int64, n)
