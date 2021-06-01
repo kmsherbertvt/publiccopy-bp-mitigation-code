@@ -2,7 +2,7 @@ import Base
 using LinearAlgebra
 import IterTools: enumerate
 
-mutable struct Pauli{T<:Unsigned}
+struct Pauli{T<:Unsigned}
     #=
     Pauli mask representation of a Pauli string.
     This type is parametric on `T` so that smaller
