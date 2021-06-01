@@ -3,6 +3,7 @@ using NLopt
 include("pauli.jl")
 include("operator.jl")
 include("simulator.jl")
+include("fast_grad.jl")
 
 eval_count = 0
 function VQE(
@@ -14,6 +15,8 @@ function VQE(
     initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing # Initial state
 ) where T<:Unsigned
     tmp = zeros(ComplexF64, 2^num_qubits)
+    tmp1 = similar(tmp)
+    tmp2 = similar(tmp)
     if initial_state === nothing
         initial_state = zeros(ComplexF64, 2^num_qubits)
         initial_state[1] = 1.0 + 0.0im
