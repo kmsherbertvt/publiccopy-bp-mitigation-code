@@ -3,6 +3,7 @@ using NLopt
 include("pauli.jl")
 include("operator.jl")
 include("simulator.jl")
+include("fast_grad.jl")
 
 eval_count = 0
 function VQE(
@@ -14,25 +15,26 @@ function VQE(
     initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing # Initial state
 ) where T<:Unsigned
     tmp = zeros(ComplexF64, 2^num_qubits)
+    tmp1 = similar(tmp)
+    tmp2 = similar(tmp)
     if initial_state === nothing
         initial_state = zeros(ComplexF64, 2^num_qubits)
         initial_state[1] = 1.0 + 0.0im
     end
     state = copy(initial_state)
 
-    function _cost_fn(x::Vector{Float64})
+    function cost_fn(x::Vector{Float64}, grad::Vector{Float64})
         eval_count += 1
         state .= initial_state
         pauli_ansatz!(ansatz, x, state, tmp)
         res = real(exp_val(hamiltonian, state, tmp))
-        return res
-    end
 
-    function cost_fn(x::Vector{Float64}, grad::Vector{Float64})
         if length(grad) > 0
-            error("Gradients not supported, yet...")
+            state .= initial_state
+            fast_grad!(hamiltonian, ansatz, x, grad, tmp, state, tmp1, tmp2)
         end
-        return _cost_fn(x)
+
+        return res
     end
 
     opt.lower_bounds = -π
