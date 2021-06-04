@@ -15,7 +15,7 @@ function group_inds_by_eq(A::Array)
     hit_elts = []
     for i=1:l
         el = A[i]
-        if el in keys(hit_elts)
+        if el in hit_elts
             push!(grps[el], i)
         else
             grps[el] = [i]
@@ -42,7 +42,7 @@ function op_simplify!(A::Operator, tol::Float64 = 0.0)
     # Bring all phases out of Paulis
     for i=1:l
         ph = A.paulis[i].phase
-        A.paulis[i].phase = 0
+        A.paulis[i] = Pauli(A.paulis[i].x,A.paulis[i].y,A.paulis[i].z,0)
         alpha = A.coeffs[i]
         A.coeffs[i] = phase_shift(alpha, ph)
     end
