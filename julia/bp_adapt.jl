@@ -4,13 +4,7 @@ using Distributed
 @everywhere using Erdos
 @everywhere using Glob
 
-@everywhere include("src/operator.jl")
-@everywhere include("src/pauli.jl")
-@everywhere include("src/vqe.jl")
-@everywhere include("src/pools.jl")
-@everywhere include("src/callbacks.jl")
-@everywhere include("src/qaoa_hamiltonians.jl")
-
+@everywhere using AdaptBarren
 
 @everywhere Random.seed!(42)
 
