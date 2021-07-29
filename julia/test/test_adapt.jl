@@ -1,13 +1,6 @@
 using LinearAlgebra
 using Test
-
-include("vqe.jl")
-include("spin_chains.jl")
-include("operator.jl")
-include("pools.jl")
-include("callbacks.jl")
-include("qaoa_hamiltonians.jl")
-
+using AdaptBarren
 
 @testset "ADAPT Random Diagonal" begin
     for _=[1]
@@ -24,7 +17,7 @@ include("qaoa_hamiltonians.jl")
             state = ones(ComplexF64, 2^n)
             state /= norm(state)
 
-            result = adapt_vqe(operator, pool, n, optimizer, callbacks; initial_parameter=1e-5, state=state, path="/home/gbarron/new_projects/barren_plateaus/julia/adapt_data")
+            result = adapt_vqe(operator, pool, n, optimizer, callbacks; initial_parameter=1e-5, state=state)
 
             en_adapt = last(result.energy)
 

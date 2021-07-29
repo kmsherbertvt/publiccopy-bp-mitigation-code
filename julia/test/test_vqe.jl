@@ -1,9 +1,6 @@
 using LinearAlgebra
 using Test
-
-include("vqe.jl")
-include("spin_chains.jl")
-
+using AdaptBarren
 
 function two_local_ansatz(n::Int64, d::Int64=2)
     res = Array{String,1}()
