@@ -1,5 +1,3 @@
-include("pauli.jl")
-
 #=
 A callback is a function of the step history that
 returns true if the outer loop should halt,

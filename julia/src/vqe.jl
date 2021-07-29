@@ -1,10 +1,5 @@
 using NLopt
 
-include("pauli.jl")
-include("operator.jl")
-include("simulator.jl")
-include("fast_grad.jl")
-
 function VQE(
     hamiltonian::Operator,
     ansatz::Array{Pauli{T},1},

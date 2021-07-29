@@ -1,8 +1,5 @@
 using Erdos
 
-include("operator.jl")
-
-
 function max_cut_hamiltonian(g)
     #if has_edge_property(g, "weight")
     #    error("Graph must be unweighted")

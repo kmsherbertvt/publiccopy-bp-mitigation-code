@@ -1,8 +1,5 @@
 using LinearAlgebra
 
-include("pauli.jl")
-
-
 function get_pauli(i::Int64)
     if i == 0
         return [1.0+0.0im 0.0+0.0im; 0.0+0.0im 1.0+0.0im]
