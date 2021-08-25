@@ -37,6 +37,43 @@ function heisenberg_model(L,J,PBCs)
     return xyz_model(L,J,J,J,PBCs)
 end
 
+function magnetic_field(L,Bx,By,Bz)
+    if typeof(Bx) == Float64
+        Bxvec = fill(Bx,L)
+    else
+        Bxvec = Bx
+    end
+    if typeof(By) == Float64
+        Byvec = fill(By,L)
+    else
+        Byvec = By
+    end
+    if typeof(Bz) == Float64
+        Bzvec = fill(Bz,L)
+    else
+        Bzvec = Bz
+    end
+    ham = Operator([],[])
+    for site=1:L
+        Bx_str = "I"^(site-1)*"X"*"I"^(L-site)
+        By_str = "I"^(site-1)*"Y"*"I"^(L-site)
+        Bz_str = "I"^(site-1)*"Z"*"I"^(L-site)
+        if abs(Bxvec[site]) > 1.0e-15
+            push!(ham.paulis,pauli_string_to_pauli(Bx_str))
+            push!(ham.coeffs,Bxvec[site])
+        end
+        if abs(Byvec[site]) > 1.0e-15
+            push!(ham.paulis,pauli_string_to_pauli(By_str))
+            push!(ham.coeffs,Byvec[site])
+        end
+        if abs(Bzvec[site]) > 1.0e-15
+            push!(ham.paulis,pauli_string_to_pauli(Bz_str))
+            push!(ham.coeffs,Bzvec[site])
+        end
+    end
+    return ham
+end
+
 # functions to construct matrix forms of models - for purposes of exact diagonalization
 pdict = Dict('I' => [1.0+0.0im 0.0+0.0im; 0.0+0.0im 1.0+0.0im], 'X' => [0.0+0.0im 1.0+0.0im; 1.0+0.0im 0.0+0.0im],
              'Y' => [0.0+0.0im 0.0-1.0im; 0.0+1.0im 0.0+0.0im], 'Z' => [1.0+0.0im 0.0+0.0im; 0.0+0.0im -1.0+0.0im])
@@ -72,4 +109,30 @@ end
 
 function heisenberg_matrix(L,J,PBCs)
     return xyz_matrix(L,J,J,J,PBCs)
+end
+
+function magnetic_field_matrix(L,Bx,By,Bz)
+    if typeof(Bx) == Float64
+        Bxvec = fill(Bx,L)
+    else
+        Bxvec = Bx
+    end
+    if typeof(By) == Float64
+        Byvec = fill(By,L)
+    else
+        Byvec = By
+    end
+    if typeof(Bz) == Float64
+        Bzvec = fill(Bz,L)
+    else
+        Bzvec = Bz
+    end
+    ham = zeros(ComplexF64,2^L,2^L)
+    for site=1:L
+        Bx_str = "I"^(site-1)*"X"*"I"^(L-site)
+        By_str = "I"^(site-1)*"Y"*"I"^(L-site)
+        Bz_str = "I"^(site-1)*"Z"*"I"^(L-site)
+        ham .= ham .+ Bxvec[site]*paulis_matrix(Bx_str) .+ Byvec[site]*paulis_matrix(By_str) .+ Bzvec[site]*paulis_matrix(Bz_str)
+    end
+    return ham
 end
