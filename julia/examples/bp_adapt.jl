@@ -59,8 +59,8 @@ end
 
 inputs = []
 
-for n=[4, 6, 8, 10, 12, 14, 16, 18, 20]
-    for seed=1:40
+for n=[4, 6, 8]
+    for seed=1:2
         for pool_name in ["nchoose2local"]
             push!(inputs, [n, seed, pool_name])
             #@time run_experiment(n, seed, pool_name)
