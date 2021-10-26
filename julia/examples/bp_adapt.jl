@@ -1,11 +1,10 @@
 using Distributed
+
 @everywhere using Random
 @everywhere using LinearAlgebra
 @everywhere using Erdos
 @everywhere using Glob
-
 @everywhere using AdaptBarren
-
 @everywhere Random.seed!(42)
 
 
@@ -32,7 +31,7 @@ using Distributed
         ]
 
     # Define path for data storage
-    path = "/home/gbarron/data/bps/maxcut/$n/$pool_name/$seed"
+    path = "./bps/maxcut/$n/$pool_name/$seed"
     mkpath(path)
     #rm.(glob("$path/*.csv"))
 
@@ -51,16 +50,15 @@ using Distributed
     state /= norm(state)
 
     # Run ADAPT-VQE
-    result = adapt_vqe(ham, pool, n, optimizer, callbacks, initial_parameter=1e-10, state=state, path=path)
+    result = adapt_vqe(ham, pool, n, optimizer, callbacks, initial_parameter=1e-10, initial_state=state, path=path)
 
-    # Do gradient sampling on resulting ansatz
-    ansatz = result.paulis
+    result
 end
 
 inputs = []
 
-for n=[4, 6, 8]
-    for seed=1:2
+for n=[4, 6, 8, 10, 12]
+    for seed=1:15
         for pool_name in ["nchoose2local"]
             push!(inputs, [n, seed, pool_name])
             #@time run_experiment(n, seed, pool_name)
@@ -68,4 +66,6 @@ for n=[4, 6, 8]
     end
 end
 
-pmap(i -> run_experiment(i...), inputs)
+#result = run_experiment(inputs[1]...)
+
+result = pmap(i -> run_experiment(i...), inputs)
