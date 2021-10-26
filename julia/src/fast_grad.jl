@@ -1,8 +1,3 @@
-include("operator.jl")
-include("pauli.jl")
-include("simulator.jl")
-
-
 function fast_grad!(
         ham::Operator,
         ansatz::Vector{Pauli{T}},

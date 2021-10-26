@@ -1,8 +1,5 @@
 using LinearAlgebra
 
-include("pauli.jl")
-
-
 function get_pauli(i::Int64)
     if i == 0
         return [1.0+0.0im 0.0+0.0im; 0.0+0.0im 1.0+0.0im]
@@ -18,6 +15,11 @@ end
 
 function pauli_str(axes::Array{Int64})
     return foldl(kron, map(get_pauli, axes))
+end
+
+
+function diag_pauli_str(axes::Array{Int64})
+    return foldl(kron, map(a -> diag(get_pauli(a)), axes))
 end
 
 

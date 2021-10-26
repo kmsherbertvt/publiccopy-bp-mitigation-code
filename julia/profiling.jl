@@ -4,8 +4,7 @@ using Test
 using BenchmarkTools
 using StatProfilerHTML
 
-include("fast_pauli_vec_mult.jl")
-include("simulator.jl")
+using AdaptBarren
 
 n = 20
 d = 100

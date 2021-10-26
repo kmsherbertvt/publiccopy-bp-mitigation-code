@@ -1,0 +1,11 @@
+data_config_version=1
+
+[[datasets]]
+name="barren_plateaus_adapt_sampling"
+description="Data generated for analyzing the relationship between ADAPT-VQE and Barren Plateaus"
+uuid="59907696-6e64-4bb6-a055-25f3ba84053c"
+
+    [datasets.storage]
+    driver="FileSystem"
+    type="BlobTree"
+    path="/home/gbarron/data/bps"

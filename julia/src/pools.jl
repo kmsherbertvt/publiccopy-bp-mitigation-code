@@ -1,6 +1,3 @@
-include("pauli.jl")
-
-
 function minimal_complete_pool(n::Int64)
     res = Array{String,1}(["ZY","YI"])
     for i=3:n

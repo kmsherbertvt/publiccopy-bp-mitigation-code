@@ -12,7 +12,8 @@ function VQE(
     opt::Opt,
     initial_point::Array{Float64,1},
     num_qubits::Int64,
-    initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing # Initial state
+    initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
+    path = nothing # Should be a CSV file
 ) where T<:Unsigned
     tmp = zeros(ComplexF64, 2^num_qubits)
     tmp1 = similar(tmp)
@@ -22,6 +23,7 @@ function VQE(
         initial_state[1] = 1.0 + 0.0im
     end
     state = copy(initial_state)
+    eval_count = 0
 
     function cost_fn(x::Vector{Float64}, grad::Vector{Float64})
         eval_count += 1
@@ -41,7 +43,6 @@ function VQE(
     opt.upper_bounds = +π
     opt.min_objective = cost_fn
 
-    eval_count = 0
     (minf,minx,ret) = optimize(opt, initial_point)
 
     return (minf, minx, ret, eval_count)
@@ -55,6 +56,18 @@ mutable struct ADAPTHistory
     opt_pars::Array{Array{Float64, 1}, 1}
     paulis::Array{Any,1}
     opt_numevals::Array{Any,1}
+end
+
+
+function adapt_history_dump!(hist::ADAPTHistory, path::String, num_qubits::Int64)
+    l = length(hist.energy)
+    open(path, "w") do io
+        write(io, "layer; energy; max_grad; max_grad_ind; grads; opt_pars; opt_numevals; paulis\n")
+        for (i, en, mg, mgi, gr, op, ne, pauli)=zip(1:l, hist.energy, hist.max_grad, hist.max_grad_ind, hist.grads, hist.opt_pars, hist.opt_numevals, hist.paulis)
+            ps = pauli_to_pauli_string(pauli, num_qubits)
+            write(io, "$i; $en; $mg; $mgi; $gr; $op; $ne; $ps\n")
+        end
+    end
 end
 
 
@@ -117,6 +130,13 @@ function adapt_vqe(
 ) where T<:Unsigned
     hist = ADAPTHistory([], [], [], [], [], [], [])
 
+    if path !== nothing
+        """ in $path the following files will be written
+            $path/layer_*.csv - indexed by integer
+            $path/adapt_history.csv
+        """
+    end
+
     if optimizer isa String
         opt_dict = Dict("name" => optimizer)
     elseif optimizer isa Dict
@@ -137,16 +157,21 @@ function adapt_vqe(
     comms = Array{Operator, 1}()
     for _op in pool
         op = Operator([_op], [1.0])
-        push!(comms, commutator(hamiltonian, op))
+        push!(comms, commutator(hamiltonian, op, false))
     end
 
     state = copy(initial_state)
     adapt_step!(hist, comms, tmp, state, hamiltonian, [], nothing, nothing)
     ansatz = Array{Pauli{T}, 1}()
 
+    layer_count = 0
+
     while true
         for c in callbacks
             if c(hist)
+                if path !== nothing
+                    adapt_history_dump!(hist, "$path/adapt_history.csv", num_qubits)
+                end
                 return hist
             end
         end
@@ -167,5 +192,7 @@ function adapt_vqe(
         state .= initial_state
         pauli_ansatz!(ansatz, point, state, tmp)
         adapt_step!(hist, comms, tmp, state, hamiltonian, point,pool[hist.max_grad_ind[end]],opt_evals) # pool operator of the step that just finished
+
+        layer_count += 1
     end
 end

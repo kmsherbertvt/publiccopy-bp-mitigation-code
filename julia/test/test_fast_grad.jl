@@ -2,14 +2,7 @@ using Random
 using Test
 using StatsBase
 using LinearAlgebra
-
-include("operator.jl")
-include("pauli.jl")
-include("simulator.jl")
-include("pools.jl")
-include("spin_chains.jl")
-
-include("fast_grad.jl")
+using AdaptBarren
 
 Random.seed!(42)
 

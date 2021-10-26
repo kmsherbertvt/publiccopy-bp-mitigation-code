@@ -1,5 +1,3 @@
-include("pauli.jl")
-
 #=
 A callback is a function of the step history that
 returns true if the outer loop should halt,
@@ -9,7 +7,7 @@ and false if it should continue.
 
 function MaxGradientStopper(eps::Float64 = 1e-8)
     function stopper(hist::ADAPTHistory)
-        if abs(hist.max_grad[-1]) < eps
+        if abs(hist.max_grad[end]) < eps
             return true
         else
             return false

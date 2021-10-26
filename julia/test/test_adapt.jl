@@ -1,16 +1,9 @@
 using LinearAlgebra
 using Test
-
-include("vqe.jl")
-include("spin_chains.jl")
-include("operator.jl")
-include("pools.jl")
-include("callbacks.jl")
-include("qaoa_hamiltonians.jl")
-
+using AdaptBarren
 
 @testset "ADAPT Random Diagonal" begin
-    for _=1:10
+    for _=[1]
         for n in [4]
             operator = random_regular_max_cut_hamiltonian(n, 2)
             op_simplify!(operator)
@@ -18,7 +11,7 @@ include("qaoa_hamiltonians.jl")
             ground_state_energy = minimum(real(diag(hamiltonian)))
 
             pool = two_local_pool(n)
-            optimizer = "LN_COBYLA"
+            optimizer = "LD_LBFGS"
             callbacks = Function[ParameterStopper(20)]
             
             state = ones(ComplexF64, 2^n)

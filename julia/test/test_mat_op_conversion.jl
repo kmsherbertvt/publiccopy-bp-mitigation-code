@@ -1,14 +1,11 @@
-include("operator.jl")
-include("pauli.jl")
-
 using Random
 using Test
 using StatsBase
 using LinearAlgebra
 
+using AdaptBarren
+
 Random.seed!(42)
-
-
 
 @testset "Ham Op Convert" begin
     for _=1:5

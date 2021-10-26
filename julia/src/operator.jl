@@ -1,9 +1,5 @@
 using IterTools
 
-include("pauli.jl")
-include("simulator.jl")
-
-
 mutable struct Operator
     paulis::Array{Pauli{UInt64},1}
     coeffs::Array{ComplexF64,1}
@@ -195,6 +191,19 @@ function operator_to_matrix(O::Operator)
     result = zeros(ComplexF64, 2^n, 2^n)
     for (c,p) in zip(O.coeffs, O.paulis)
         result += phase_shift(c, p.phase)*pauli_str(pauli_to_axes(p, n))
+    end
+    return result
+end
+
+
+function diagonal_operator_to_vector(O::Operator)
+    n = num_qubits(O)
+    result = zeros(ComplexF64, 2^n)
+    for (c,p) in zip(O.coeffs, O.paulis)
+        if (p.x != 0) | (p.y != 0)
+            throw("Found invalid Pauli in supposedly diagonal operator")
+        end
+        result += phase_shift(c, p.phase)*diag_pauli_str(pauli_to_axes(p, n))
     end
     return result
 end

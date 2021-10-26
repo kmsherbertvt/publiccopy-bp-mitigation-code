@@ -2,10 +2,7 @@ using Random
 import LinearAlgebra: norm, abs
 using Test
 using BenchmarkTools
-
-include("pauli.jl")
-include("operator.jl")
-
+using AdaptBarren
 
 @testset "Basic id tests" begin
     P = pauli_string_to_pauli("IIIX")

@@ -2,10 +2,7 @@ using Random
 import LinearAlgebra: norm, abs
 using Test
 using BenchmarkTools
-
-include("pauli.jl")
-include("simulator.jl")
-
+using AdaptBarren
 
 @testset "Test empty ansatz: New" begin
     d = 5
