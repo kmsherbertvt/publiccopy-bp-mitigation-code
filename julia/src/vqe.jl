@@ -64,7 +64,17 @@ function adapt_history_dump!(hist::ADAPTHistory, path::String, num_qubits::Int64
     open(path, "w") do io
         write(io, "layer; energy; max_grad; max_grad_ind; grads; opt_pars; opt_numevals; paulis\n")
         for (i, en, mg, mgi, gr, op, ne, pauli)=zip(1:l, hist.energy, hist.max_grad, hist.max_grad_ind, hist.grads, hist.opt_pars, hist.opt_numevals, hist.paulis)
-            ps = pauli_to_pauli_string(pauli, num_qubits)
+            if pauli === nothing
+                ps = nothing
+	    else
+		ps = pauli_to_pauli_string(pauli, num_qubits)
+	    end
+
+            if length(op) == 0
+	        op = nothing
+	    end
+              
+
             write(io, "$i; $en; $mg; $mgi; $gr; $op; $ne; $ps\n")
         end
     end
@@ -126,6 +136,7 @@ function adapt_vqe(
     callbacks::Array{Function};
     initial_parameter::Float64 = 0.0,
     initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
+    path = nothing,
     tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
 ) where T<:Unsigned
     hist = ADAPTHistory([], [], [], [], [], [], [])
