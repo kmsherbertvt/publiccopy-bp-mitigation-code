@@ -1,3 +1,4 @@
+using HDF5
 using NLopt
 
 include("pauli.jl")
@@ -25,6 +26,9 @@ function VQE(
     state = copy(initial_state)
     eval_count = 0
 
+    fn_evals = Vector{Float64}()
+    grad_evals = Vector{Float64}()
+
     function cost_fn(x::Vector{Float64}, grad::Vector{Float64})
         eval_count += 1
         state .= initial_state
@@ -36,6 +40,9 @@ function VQE(
             fast_grad!(hamiltonian, ansatz, x, grad, tmp, state, tmp1, tmp2)
         end
 
+	push!(fn_evals, res)
+	append!(grad_evals, grad)
+
         return res
     end
 
@@ -44,6 +51,13 @@ function VQE(
     opt.min_objective = cost_fn
 
     (minf,minx,ret) = optimize(opt, initial_point)
+
+    if path != nothing
+        fid = h5open(path, "w")
+        fid["fn_evals"] = fn_evals
+        fid["grad_evals"] = grad_evals
+	close(fid)
+    end
 
     return (minf, minx, ret, eval_count)
 end
@@ -198,8 +212,10 @@ function adapt_vqe(
             setproperty!(opt,Symbol(akey),opt_dict[akey])
         end
 
+	vqe_path = "$path/vqe_layer_$layer_count.h5"
+
         state .= initial_state
-        energy, point, ret, opt_evals = VQE(hamiltonian, ansatz, opt, point, num_qubits, state)#, tmp)  note that VQE doesn't take a tmp, it makes its own
+        energy, point, ret, opt_evals = VQE(hamiltonian, ansatz, opt, point, num_qubits, state, vqe_path)
         state .= initial_state
         pauli_ansatz!(ansatz, point, state, tmp)
         adapt_step!(hist, comms, tmp, state, hamiltonian, point,pool[hist.max_grad_ind[end]],opt_evals) # pool operator of the step that just finished
