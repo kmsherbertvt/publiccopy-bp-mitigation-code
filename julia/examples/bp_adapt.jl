@@ -57,11 +57,13 @@ end
 
 inputs = []
 
-for n=[4, 6, 8, 10, 12]
-    for seed=1:15
+NMAX = parse(Int,ARGS[1])
+SEEDS = parse(Int,ARGS[2])
+
+for seed=1:SEEDS
+    for n=4:2:NMAX
         for pool_name in ["nchoose2local"]
             push!(inputs, [n, seed, pool_name])
-            #@time run_experiment(n, seed, pool_name)
         end
     end
 end
