@@ -7,7 +7,7 @@ start_time=$SECONDS
 echo "Starting job at $(date)" >> $out_file
 
 
-SEEDS=100
+SEEDS=200
 NMAX=14
 julia --threads auto --project=.. bp_adapt.jl $NMAX $SEEDS >> $out_file
 
