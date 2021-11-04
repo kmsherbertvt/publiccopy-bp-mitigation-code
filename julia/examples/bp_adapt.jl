@@ -52,7 +52,32 @@ using Distributed
     # Run ADAPT-VQE
     result = adapt_vqe(ham, pool, n, optimizer, callbacks, initial_parameter=1e-10, initial_state=state, path=path)
 
-    result
+    n_layers = length(result.paulis)
+
+    for i=1:n_layers
+	# Just to make sure this bug doesn't happen again
+        state = ones(ComplexF64, 2^n)
+        state /= norm(state)
+
+	ansatz = result.paulis[2:i] # The first entry is nothing
+	if length(ansatz) == 0
+            continue
+	end
+	ansatz = map(x -> x, ansatz)
+	@show ansatz
+
+	VQE(
+	    ham,
+	    ansatz,
+	    "random_sampling",
+	    zeros(Float64, i), # This isn't actually used in random sampling"
+            n,
+            state,
+	    "$path/rand_layer_$i.h5"#;
+	    #rand_range=(-pi, +pi),
+	    #num_samples=500
+	)
+    end
 end
 
 inputs = []

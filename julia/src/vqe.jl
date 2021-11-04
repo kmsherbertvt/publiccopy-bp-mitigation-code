@@ -1,4 +1,5 @@
 using HDF5
+using Distributions
 using NLopt
 
 include("pauli.jl")
@@ -10,11 +11,13 @@ eval_count = 0
 function VQE(
     hamiltonian::Operator,
     ansatz::Array{Pauli{T},1},
-    opt::Opt,
+    opt::Union{Opt,String},
     initial_point::Array{Float64,1},
     num_qubits::Int64,
     initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
-    path = nothing # Should be a CSV file
+    path = nothing; # Should be a CSV file
+    rand_range = (-π,+π),
+    num_samples = 500
 ) where T<:Unsigned
     tmp = zeros(ComplexF64, 2^num_qubits)
     tmp1 = similar(tmp)
@@ -46,11 +49,23 @@ function VQE(
         return res
     end
 
-    opt.lower_bounds = -π
-    opt.upper_bounds = +π
-    opt.min_objective = cost_fn
+    if opt !== "random_sampling"
+        opt.lower_bounds = -π
+        opt.upper_bounds = +π
+        opt.min_objective = cost_fn
 
-    (minf,minx,ret) = optimize(opt, initial_point)
+        (minf,minx,ret) = optimize(opt, initial_point)
+    else
+        k = length(ansatz)
+	grad = zeros(Float64, k)
+	d = Uniform(-π,+π)
+        for _=1:num_samples
+	    x = rand(d, k)
+	    cost_fn(x, grad)
+	end
+
+	(minf, minx, ret)=(nothing, nothing, nothing)
+    end
 
     if path != nothing
         fid = h5open(path, "w")
