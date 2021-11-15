@@ -9,7 +9,7 @@ echo "Starting job at $(date)" >> $out_file
 
 SEEDS=200
 NMAX=14
-julia --threads auto --project=.. bp_adapt.jl $NMAX $SEEDS >> $out_file
+julia --threads auto --project=.. adapt_qaoa.jl $NMAX $SEEDS >> $out_file
 
 
 elapsed=$(( SECONDS - start_time ))
