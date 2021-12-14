@@ -22,7 +22,7 @@ import ast
 plt.rcParams['figure.dpi'] = 150
 plt.rcParams['savefig.dpi'] = 150
 
-data_path = './bps/maxcut/'
+data_path = './bps/maxcut-full/'
 sns.set_palette('viridis', n_colors=100)
 
 def array_interpret(s: str) -> np.array:
@@ -48,13 +48,7 @@ def gate_counts(l):
     return Counter(map(lambda s: n - s.count("I"), l))
 
 
-# In[5]:
-
-
 num_instances = len(glob.glob(data_path+"8/nchoose2local/*"))
-
-
-# In[6]:
 
 
 """ `df_result` contains information about the final convergence properties
@@ -221,7 +215,7 @@ import h5py
 df_cost_list = []
 df_grad_list = []
 
-for fn in glob.glob("./bps/maxcut/**/vqe_*.h5", recursive=True):
+for fn in glob.glob(data_path+"**/vqe_*.h5", recursive=True):
     _, _, _, num_qubits, pool, seed, vqe_layer_ind = fn.split("/")
     layer = int(vqe_layer_ind.split("_")[2].split(".")[0])
     f = h5py.File(fn, 'r')
@@ -293,7 +287,7 @@ import h5py
 df_cost_list = []
 df_grad_list = []
 
-for fn in glob.glob("./bps/maxcut/**/rand_*.h5", recursive=True):
+for fn in glob.glob(data_path+"**/rand_*.h5", recursive=True):
     _, _, _, num_qubits, pool, seed, vqe_layer_ind = fn.split("/")
     layer = int(vqe_layer_ind.split("_")[2].split(".")[0])
     f = h5py.File(fn, 'r')
@@ -359,55 +353,47 @@ plt.close()
 df_cost_list = []
 df_grad_list = []
 
-for fn in glob.glob("./bps/maxcut/**/sampans_*.h5", recursive=True):
-    print(f"Loading {fn}")
+data_in = []
+
+for fn in glob.glob(data_path+"**/sampans_*.h5", recursive=True):
     _, _, _, num_qubits, pool, seed, vqe_layer_ind = fn.split("/")
     layer = int(vqe_layer_ind.split("_")[2].split(".")[0])
     f = h5py.File(fn, 'r')
-    
-    _df_cost = pd.DataFrame(f["fn_evals"], columns=["fn_eval"])
-    _df_grad = pd.DataFrame(f["grad_evals"], columns=["grad_eval"])
 
-    f.close()
-    
-    for _df in [_df_grad]:
-        _df["num_qubits"] = int(num_qubits)
-        _df["pool"] = pool
-        _df["seed"] = int(seed)
-        _df["layer"] = layer
-        _df["abs_grad_eval"] = _df["grad_eval"].map(abs)
-        _df["log_grad_eval"] = _df["abs_grad_eval"].map(lambda x: np.log10(x + 1e-20))
-        df_grad_list.append(_df)
-    
-    for _df in [_df_cost]:
-        _df["num_qubits"] = int(num_qubits)
-        _df["pool"] = pool
-        _df["seed"] = int(seed)
-        _df["layer"] = layer
-        df_cost_list.append(_df)
+    attrs = {
+        'num_qubits': int(num_qubits),
+        'pool': pool,
+        'seed': int(seed),
+        'vqe_layer_ind': vqe_layer_ind,
+        'fn': fn,
+        'layer': layer
+    }
 
-df_cost = pd.concat(df_cost_list)
-df_grad = pd.concat(df_grad_list)
+    df_cost_list.append({'fn_evals': list(f["fn_evals"]), **attrs})
+    df_grad_list.append({'grad_evals': list(f["grad_evals"]), **attrs})
 
+_df_fn = pd.DataFrame(df_cost_list)
+_df_grad = pd.DataFrame(df_grad_list)
 
-# In[ ]:
+df_cost_list = None
+df_grad_list = None
 
+print("Exploding...")
+_df_fn = _df_fn.explode(column=["fn_evals"])
+_df_grad = _df_grad.explode(column=["grad_evals"])
+print("Done exploding...")
 
-df_stat_cost = df_cost.drop(columns=["seed"]).groupby(["layer", "num_qubits"]).aggregate(["mean", "var"])
-df_stat_grad = df_grad.drop(columns=["seed"]).groupby(["layer", "num_qubits"]).aggregate(["mean", "var"])
-
-
-# In[ ]:
-
+df_stat_cost = _df_fn.drop(columns=["seed"]).groupby(["layer", "num_qubits"]).aggregate(["mean", "var"])
+df_stat_grad = _df_grad.drop(columns=["seed"]).groupby(["layer", "num_qubits"]).aggregate(["mean", "var"])
 
 fig, ax = plt.subplots( nrows=1, ncols=1 )
 
 ax = sns.lineplot(
-    data=df_stat_grad.grad_eval,
+    data=df_stat_grad.grad_evals,
     x="layer",
     hue="num_qubits",
     y="var",
-    palette=sns.color_palette("Spectral", n_colors=len(df_grad["num_qubits"].unique()))
+    palette=sns.color_palette("Spectral", n_colors=len(_df_grad["num_qubits"].unique()))
 )
 
 ax.set_xlabel("Layers")
@@ -418,10 +404,3 @@ ax.set_title(f"ADAPT with Max-Cut Hamiltonian, 500 samples (for each n)")
 
 plt.savefig("./plots/grad_var_random_ansatze_par_space.pdf")
 plt.close()
-
-
-# In[ ]:
-
-
-
-
