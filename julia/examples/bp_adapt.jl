@@ -32,7 +32,7 @@ using Distributed
         ]
 
     # Define path for data storage
-    path = "./bps/maxcut/$n/$pool_name/$seed"
+    path = "./bps/maxcut-full/$n/$pool_name/$seed"
     mkpath(path)
     #rm.(glob("$path/*.csv"))
 
@@ -101,11 +101,10 @@ inputs = []
 
 NMAX = parse(Int,ARGS[1])
 SEEDS = parse(Int,ARGS[2])
-DEPTHMAX = 20
 
 for seed=1:SEEDS
     for n=4:2:NMAX
-	for d=[100,200,300,400]
+	for d=[2, 5, 10, 20, 40, 60, 80, 100, 200, 300]
             for pool_name in ["nchoose2local"]
                 push!(inputs, [n, seed, pool_name, d])
                 push!(inputs, [n, seed, pool_name])
