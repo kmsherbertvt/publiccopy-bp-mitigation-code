@@ -1,73 +1,87 @@
-using Distributed
+using LinearAlgebra
+using Test
+using AdaptBarren
+using NLopt
+using Random
+using ProgressBars
 
-@everywhere using Random
-@everywhere using LinearAlgebra
-@everywhere using Erdos
-@everywhere using Glob
-@everywhere using AdaptBarren
-@everywhere Random.seed!(42)
+rng = MersenneTwister(14)
 
-
-@everywhere function run_experiment(n, seed, pool_name)
-    Random.seed!(seed)
-    # Construct pool
-    if pool_name == "nchoose2local"
-        pool = two_local_pool(n)
-    elseif pool_name == "mcp2local"
-        pool = minimal_complete_pool(n)
-    end
-
-    # Define graph and Hamiltonian
-    graph = Erdos.random_regular_graph(n, 3)
-    ham = max_cut_hamiltonian(graph)
-
-    # Define optimizer
-    optimizer = "LD_LBFGS"
-
-    # Callbacks
-    callbacks = Function[
-        ParameterStopper(200),
-        MaxGradientStopper(1e-6)
-        ]
-
-    # Define path for data storage
-    path = "./bps/maxcut/$n/$pool_name/$seed"
-    mkpath(path)
-    #rm.(glob("$path/*.csv"))
-
-    # Store exact result
-    ham_vec = diagonal_operator_to_vector(ham)
-    min_ind = argmin(real(ham_vec))
-    min_val = real(ham_vec[min_ind])
-    min_bs = bitstring(min_ind)[64-n+1:end]
-    open("$path/exact_result.csv", "w") do io
-        write(io, "min_ind; min_val; min_bs\n")
-        write(io, "$min_ind; $min_val; $min_bs\n")
-    end
-
-    # Allocate arrays
-    state = ones(ComplexF64, 2^n)
-    state /= norm(state)
-
-    # Run ADAPT-VQE
-    result = adapt_vqe(ham, pool, n, optimizer, callbacks, initial_parameter=1e-10, initial_state=state, path=path)
-
-    result
+function _id_x_str(n::Int, k::Int)
+    s = repeat(["I"], n)
+    s[k] = "X"
+    return join(s)
 end
 
-inputs = []
+function qaoa_mixer(n::Int)
+    paulis = [pauli_string_to_pauli(_id_x_str(n, k)) for k in range(1,n)]
+    coeffs = repeat([1.0], n)
+    return Operator(paulis, coeffs)
+end
 
-NMAX = parse(Int,ARGS[1])
-SEEDS = parse(Int,ARGS[2])
+num_samples = 50
+n = 6
+d = 3
+opt_alg = "LD_LBFGS"
+max_p = 20
+max_pars = 2*max_p+1
+max_grad = 1e-4
+path="test_data"
 
-for seed=1:SEEDS
-    for n=4:2:NMAX
-        for pool_name in ["nchoose2local"]
-            push!(inputs, [n, seed, pool_name])
-        end
+function run_qaoa(hamiltonian)
+    #hamiltonian = random_regular_max_cut_hamiltonian(n, d)
+    energy_result = []
+    ground_state_energy = minimum(real(diag(operator_to_matrix(hamiltonian))))
+    for current_p in range(2,max_p)
+        mixers = repeat([qaoa_mixer(n)], current_p)
+        initial_point = rand(rng, Float64, 2*current_p+1)
+        opt = Opt(Symbol(opt_alg), length(initial_point))
+        initial_state = ones(ComplexF64, 2^n) / sqrt(2^n)
+        result = QAOA(hamiltonian, mixers, opt, initial_point, n, initial_state)
+        qaoa_energy = result[1]
+        en_err = abs(ground_state_energy - qaoa_energy)
+        push!(energy_result, en_err)
+    end
+    return energy_result
+end
+
+function run_adapt_qaoa(hamiltonian)
+    #hamiltonian = random_regular_max_cut_hamiltonian(n, d)
+    ground_state_energy = minimum(real(diag(operator_to_matrix(hamiltonian))))
+
+    pool = two_local_pool(n)
+    pool = map(p -> Operator([p], [1.0]), pool)
+    push!(pool, qaoa_mixer(n))
+
+    initial_state = ones(ComplexF64, 2^n) / sqrt(2^n)
+    initial_state /= norm(initial_state)
+    callbacks = Function[ParameterStopper(max_pars), MaxGradientStopper(max_grad)]
+
+    result = adapt_qaoa(hamiltonian, pool, n, opt_alg, callbacks; initial_parameter=1e-2, initial_state=initial_state, path=path)
+
+    adapt_qaoa_energy = last(result.energy)
+    en_err = abs(ground_state_energy - adapt_qaoa_energy)
+
+    return result.energy - repeat([ground_state_energy], length(result.energy))
+end
+
+results_qaoa = []
+results_adapt = []
+
+lk = ReentrantLock()
+
+Threads.@threads for i in ProgressBar(1:num_samples, printing_delay=0.1)
+    hamiltonian = random_regular_max_cut_hamiltonian(n, d)
+    _res_qaoa = run_qaoa(hamiltonian);
+    _res_adapt = run_adapt_qaoa(hamiltonian);
+
+    lock(lk) do
+        push!(results_adapt, _res_adapt)
+        push!(results_qaoa, _res_qaoa)
     end
 end
 
-#result = run_experiment(inputs[1]...)
+@show results_adapt
+@show results_qaoa
 
-result = pmap(i -> run_experiment(i...), inputs)
+"Done"
