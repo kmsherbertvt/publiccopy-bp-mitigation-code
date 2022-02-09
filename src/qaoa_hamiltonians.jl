@@ -1,3 +1,4 @@
+using Random
 using Erdos
 
 function max_cut_hamiltonian(g)
@@ -8,7 +9,7 @@ function max_cut_hamiltonian(g)
     n = length(Erdos.vertices(g))
 
     for e in Erdos.edges(g)
-        w = 1.0
+        w = rand(Float64)
         i, j = e
 
         l = zeros(Int64, n)
