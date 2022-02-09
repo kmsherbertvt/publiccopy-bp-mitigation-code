@@ -18,12 +18,21 @@ from collections import Counter
 import glob
 import ast
 
+mpl.rc('font', **{'size': 16})
 
 plt.rcParams['figure.dpi'] = 150
 plt.rcParams['savefig.dpi'] = 150
 
 data_path = './bps/maxcut-full/'
 sns.set_palette('viridis', n_colors=100)
+
+
+def my_save_fig(s: str):
+    plt.tight_layout()
+    plt.savefig(f"./plots/{s}.pdf")
+    plt.savefig(f"./plots/{s}.png")
+    plt.close()
+
 
 def array_interpret(s: str) -> np.array:
     try:
@@ -142,16 +151,17 @@ df_result['num_qubits'].value_counts()
 
 fig, ax = plt.subplots( nrows=1, ncols=1 )
 
-sns.lineplot(data=df_adapt, x='layer', y='norm_c', hue='num_qubits', ax=ax)
+sns.lineplot(
+    data=df_adapt, x='layer', y='norm_c', hue='num_qubits', ax=ax,
+    palette=sns.color_palette("Spectral", n_colors=len(df_adapt["num_qubits"].unique()))
+    )
 #ax = sns.scatterplot(data=df_adapt, x='layer', y='norm_c', hue='num_qubits')
-ax.set_xlabel("ADAPT Layer")
-ax.set_ylabel("<C>/C_min")
-ax.set_xticks(np.arange(0, 20+1, step=4))
+ax.set_xlabel("Layers")
+ax.set_ylabel(r"$\left< C \right> / C_{min}$")
+#ax.set_xticks(np.arange(0, 20+1, step=4))
 ax.legend(title="Num Qubits", loc='lower right');
 
-plt.savefig("./plots/approximation_ratio_convergence.pdf")
-plt.close()
-
+my_save_fig("approximation_ratio_convergence")
 
 # ## Layers to Convergence
 
@@ -162,14 +172,16 @@ plt.close()
 
 fig, ax = plt.subplots( nrows=1, ncols=1 )
 
-sns.regplot(data=df_result, x='num_qubits', y='layer', ax=ax)
+sns.regplot(
+    data=df_result, x='num_qubits', y='layer', ax=ax,
+    #palette=sns.color_palette("Spectral", n_colors=len(df_adapt["num_qubits"].unique()))
+    )
 ax.set_xlabel("Num Qubits")
-ax.set_ylabel("Layers to Convergence")
-ax.set_xticks(np.arange(4, 20+1, step=4))
-ax.set_yticks(np.arange(4, 20+1, step=4));
+ax.set_ylabel("Number of Layers")
+#ax.set_xticks(np.arange(4, 20+1, step=4))
+#ax.set_yticks(np.arange(4, 20+1, step=4));
 
-plt.savefig("./plots/layers_to_convergence.pdf")
-plt.close()
+my_save_fig("layers_to_convergence")
 
 
 # ## Detail of Approximation Ratio
@@ -191,13 +203,11 @@ sns.lineplot(data=df_result, x='num_qubits', y='norm_c', ax=ax)
 sns.scatterplot(data=df_result, x='num_qubits', y='norm_c', ax=ax)
 #ax = sns.boxplot(data=df_result, x='num_qubits', y='norm_c', whis=np.inf)
 ax.set_xlabel("Num Qubits")
-ax.set_ylabel("<C>/C_min");
+ax.set_ylabel(r"$\left< C \right>/C_{min}$");
 #ax.set_xticks(np.arange(0, 20+1, step=4));
 #ax.set_ylim(0, 1)
 
-plt.savefig("./plots/approximation_ratio_detail.pdf")
-plt.close()
-
+my_save_fig("approximation_ratio_detail")
 
 # # Inner Loop Analysis
 
@@ -266,12 +276,10 @@ ax = sns.lineplot(
 ax.set_xlabel("Layers")
 ax.set_ylabel(r'Var$(\partial_\theta C)$')
 ax.set_yscale("log")
-ax.legend().set_title("n")
-ax.set_title(f"ADAPT with Max-Cut Hamiltonian, {num_instances} instances (for each n)")
+ax.legend().set_title("Num Qubits")
+#ax.set_title(f"ADAPT with Max-Cut Hamiltonian, {num_instances} instances (for each n)")
 
-plt.savefig("./plots/grad_var_vqe_path.pdf")
-plt.close()
-
+my_save_fig("grad_var_vqe_path")
 
 # ## Gradient Convergence - VQE Sampling
 
@@ -338,12 +346,11 @@ ax = sns.lineplot(
 ax.set_xlabel("Layers")
 ax.set_ylabel(r'Var$(\partial_\theta C)$')
 ax.set_yscale("log")
-ax.legend().set_title("n")
-ax.set_title(f"ADAPT with Max-Cut Hamiltonian, 500 samples (for each n)")
+#ax.legend().set_title("Num Qubits")
+ax.legend(loc='lower right', title="Num Qubits")
+#ax.set_title(f"ADAPT with Max-Cut Hamiltonian, 500 samples (for each n)")
 
-plt.savefig("./plots/grad_var_ansatz_par_space.pdf")
-plt.close()
-
+my_save_fig("grad_var_ansatz_par_space")
 
 # ## Gradient Convergence - Ansatz Sampling
 
@@ -399,8 +406,8 @@ ax = sns.lineplot(
 ax.set_xlabel("Layers")
 ax.set_ylabel(r'Var$(\partial_\theta C)$')
 ax.set_yscale("log")
-ax.legend().set_title("n")
-ax.set_title(f"ADAPT with Max-Cut Hamiltonian, 500 samples (for each n)")
+#ax.legend().set_title("Num Qubits")
+#ax.set_title(f"ADAPT with Max-Cut Hamiltonian, 500 samples (for each n)")
 
-plt.savefig("./plots/grad_var_random_ansatze_par_space.pdf")
-plt.close()
+ax.legend(loc='lower right', title="Num Qubits")
+my_save_fig("grad_var_random_ansatze_par_space")
