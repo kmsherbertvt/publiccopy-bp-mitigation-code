@@ -2,12 +2,6 @@ using HDF5
 using Distributions
 using NLopt
 
-include("pauli.jl")
-include("operator.jl")
-include("simulator.jl")
-include("fast_grad.jl")
-
-eval_count = 0
 function VQE(
     hamiltonian::Operator,
     ansatz::Array{Pauli{T},1},
