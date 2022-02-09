@@ -17,6 +17,17 @@ function MaxGradientStopper(eps::Float64 = 1e-8)
 end
 
 
+function EnergyErrorPrinter(gse::Float64)
+    function stopper(hist::ADAPTHistory)
+        num_pars = length(hist.opt_pars[end])
+        en_err = hist.energy[end] - gse
+        println("Pars: $num_pars, EnErr: $en_err")
+        return false
+    end
+    return stopper
+end
+
+
 function ParameterStopper(max_pars::Int64)
     function stopper(hist::ADAPTHistory)
         if length(hist.opt_pars) >= max_pars + 1
