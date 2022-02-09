@@ -760,7 +760,7 @@ uuid = "d3d80556-e9d4-5f37-9878-2ab0fcc64255"
 version = "7.1.1"
 
 [[LinearAlgebra]]
-deps = ["Libdl"]
+deps = ["Libdl", "libblastrampoline_jll"]
 uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
 [[LinearMaps]]
@@ -1076,6 +1076,12 @@ version = "0.5.0"
 deps = ["Unicode"]
 uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
+[[ProgressBars]]
+deps = ["Printf"]
+git-tree-sha1 = "938525cc66a4058f6ed75b84acd13a00fbecea11"
+uuid = "49802e3a-d2f1-5c88-81d8-b72133a6f568"
+version = "1.4.0"
+
 [[PyCall]]
 deps = ["Conda", "Dates", "Libdl", "LinearAlgebra", "MacroTools", "Serialization", "VersionParsing"]
 git-tree-sha1 = "169bb8ea6b1b143c5cf57df6d34d022a7b60c6db"
@@ -1111,7 +1117,7 @@ deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
 uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 
 [[Random]]
-deps = ["Serialization"]
+deps = ["SHA", "Serialization"]
 uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [[Random123]]
@@ -1392,7 +1398,7 @@ deps = ["Libdl", "LinearAlgebra", "Serialization", "SparseArrays"]
 uuid = "4607b0f0-06f3-5cda-b6b1-a6196a1729e9"
 
 [[SuiteSparse_jll]]
-deps = ["Artifacts", "Libdl", "OpenBLAS_jll"]
+deps = ["Artifacts", "Libdl", "Pkg", "libblastrampoline_jll"]
 uuid = "bea87d4a-7f5b-5778-9afe-8cc45184846c"
 
 [[Sundials]]
@@ -1590,6 +1596,10 @@ deps = ["MacroTools"]
 git-tree-sha1 = "8c1a8e4dfacb1fd631745552c8db35d0deb09ea0"
 uuid = "700de1a5-db45-46bc-99cf-38207098b444"
 version = "0.2.2"
+
+[[libblastrampoline_jll]]
+deps = ["Artifacts", "Libdl", "OpenBLAS_jll"]
+uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
 
 [[libsodium_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
