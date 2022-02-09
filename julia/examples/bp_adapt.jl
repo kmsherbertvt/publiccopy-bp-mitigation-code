@@ -1,6 +1,7 @@
 using Distributed
 
 @everywhere using Random
+@everywhere using StatsBase
 @everywhere using LinearAlgebra
 @everywhere using Erdos
 @everywhere using Glob
@@ -8,7 +9,7 @@ using Distributed
 @everywhere Random.seed!(42)
 
 
-@everywhere function run_experiment(n, seed, pool_name)
+@everywhere function run_experiment(n, seed, pool_name, depth = nothing)
     Random.seed!(seed)
     # Construct pool
     if pool_name == "nchoose2local"
@@ -31,7 +32,7 @@ using Distributed
         ]
 
     # Define path for data storage
-    path = "./bps/maxcut/$n/$pool_name/$seed"
+    path = "./bps/maxcut-full/$n/$pool_name/$seed"
     mkpath(path)
     #rm.(glob("$path/*.csv"))
 
@@ -49,10 +50,51 @@ using Distributed
     state = ones(ComplexF64, 2^n)
     state /= norm(state)
 
-    # Run ADAPT-VQE
-    result = adapt_vqe(ham, pool, n, optimizer, callbacks, initial_parameter=1e-10, initial_state=state, path=path)
+    if depth === nothing
+        # Run ADAPT-VQE
+        result = adapt_vqe(ham, pool, n, optimizer, callbacks, initial_parameter=1e-10, initial_state=state, path=path)
 
-    result
+        n_layers = length(result.paulis)
+
+        for i=1:n_layers
+            # Just to make sure this bug doesn't happen again
+            state = ones(ComplexF64, 2^n)
+            state /= norm(state)
+
+            ansatz = result.paulis[2:i] # The first entry is nothing
+            if length(ansatz) == 0
+                continue
+            end
+            ansatz = map(x -> x, ansatz)
+
+            VQE(
+                ham,
+                ansatz,
+                "random_sampling",
+                zeros(Float64, i), # This isn't actually used in random sampling"
+                n,
+                state,
+                "$path/rand_layer_$i.h5"#;
+                #rand_range=(-pi, +pi),
+                #num_samples=500
+            )
+        end
+    else
+	ansatz = sample(pool, depth; replace=true)
+        state = ones(ComplexF64, 2^n)
+        state /= norm(state)
+        VQE(
+            ham,
+            ansatz,
+            "random_sampling",
+            zeros(Float64, depth), # This isn't actually used in random sampling"
+            n,
+            state,
+            "$path/sampans_layer_$depth.h5"#;
+            #rand_range=(-pi, +pi),
+            #num_samples=500
+        )
+    end
 end
 
 inputs = []
@@ -62,9 +104,12 @@ SEEDS = parse(Int,ARGS[2])
 
 for seed=1:SEEDS
     for n=4:2:NMAX
-        for pool_name in ["nchoose2local"]
-            push!(inputs, [n, seed, pool_name])
-        end
+	for d=[2, 5, 10, 20, 40, 60, 80, 100, 200, 300]
+            for pool_name in ["nchoose2local"]
+                push!(inputs, [n, seed, pool_name, d])
+                push!(inputs, [n, seed, pool_name])
+            end
+	end
     end
 end
 

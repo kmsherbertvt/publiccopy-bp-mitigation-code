@@ -7,10 +7,13 @@ start_time=$SECONDS
 echo "Starting job at $(date)" >> $out_file
 
 
-SEEDS=200
+SEEDS=50
 NMAX=14
-julia --threads auto --project=.. bp_adapt.jl $NMAX $SEEDS >> $out_file
+echo "Running simulations" >> $out_file
+#julia --threads auto --project=.. bp_adapt.jl $NMAX $SEEDS >> $out_file
 
+echo "Generating plots" >> $out_file
+python data_analysis.py
 
 elapsed=$(( SECONDS - start_time ))
 echo "Done! with NMAX=$NMAX, SEEDS=$SEEDS" >> $out_file
