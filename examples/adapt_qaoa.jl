@@ -19,7 +19,7 @@ function qaoa_mixer(n::Int)
     return Operator(paulis, coeffs)
 end
 
-num_samples = 50
+num_samples = 20
 n = 6
 d = 3
 opt_alg = "LD_LBFGS"
@@ -39,7 +39,7 @@ function run_qaoa(hamiltonian)
         initial_state = ones(ComplexF64, 2^n) / sqrt(2^n)
         result = QAOA(hamiltonian, mixers, opt, initial_point, n, initial_state)
         qaoa_energy = result[1]
-        en_err = abs(ground_state_energy - qaoa_energy)
+        en_err = qaoa_energy - ground_state_energy
         push!(energy_result, en_err)
     end
     return energy_result
@@ -60,7 +60,7 @@ function run_adapt_qaoa(hamiltonian)
     result = adapt_qaoa(hamiltonian, pool, n, opt_alg, callbacks; initial_parameter=1e-2, initial_state=initial_state, path=path)
 
     adapt_qaoa_energy = last(result.energy)
-    en_err = abs(ground_state_energy - adapt_qaoa_energy)
+    en_err = adapt_qaoa_energy - ground_state_energy
 
     return result.energy - repeat([ground_state_energy], length(result.energy))
 end
@@ -70,10 +70,19 @@ results_adapt = []
 
 lk = ReentrantLock()
 
+function safe_floor(x, eps = 1e-5, delta = 1e-10)
+    if x <= -eps error("Too negative: $x < -$eps") end
+    if x <= 0.0 return delta end
+    return x
+end
+
 Threads.@threads for i in ProgressBar(1:num_samples, printing_delay=0.1)
     hamiltonian = random_regular_max_cut_hamiltonian(n, d)
     _res_qaoa = run_qaoa(hamiltonian);
     _res_adapt = run_adapt_qaoa(hamiltonian);
+
+    _res_qaoa = map(safe_floor, _res_qaoa)
+    _res_adapt = map(safe_floor, _res_adapt)
 
     lock(lk) do
         push!(results_adapt, _res_adapt)
@@ -81,7 +90,15 @@ Threads.@threads for i in ProgressBar(1:num_samples, printing_delay=0.1)
     end
 end
 
-@show results_adapt
-@show results_qaoa
+### Plotting
+using Plots; pgfplotsx()
 
-"Done"
+for res in results_adapt
+    plot!(1:length(res), res, c=:blue, yaxis=:log)
+end
+
+for res in results_qaoa
+        plot!(1:length(res), res, c=:red, yaxis=:log)
+end
+
+savefig("test_qaoa_comp.pdf")
