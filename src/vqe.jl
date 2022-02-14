@@ -80,18 +80,9 @@ function commuting_vqe(
     opt.upper_bounds = +π
     opt.min_objective = cost_fn
 
-    # Test #
     cost_fn(initial_point, similar(initial_point))
-    ########
 
     (minf,minx,ret) = optimize(opt, initial_point)
-
-    #if path != nothing
-    #    fid = h5open(path, "w")
-    #    fid["fn_evals"] = fn_evals
-    #    fid["grad_evals"] = grad_evals
-    #    close(fid)
-    #end
 
     return (minf, minx, ret, eval_count)
 end
@@ -143,7 +134,6 @@ function adapt_history_dump!(hist::ADAPTHistory, path::String, num_qubits::Int64
                 ps = nothing
 	    else
 		ps = "null"
-		#ps = pauli_to_pauli_string(pauli, num_qubits)
 	    end
 
             if length(op) == 0
@@ -262,9 +252,7 @@ end
 
 function adapt_qaoa(
     hamiltonian::Operator,
-    ### CHANGE
     pool::Array{Operator,1},
-    ##########
     num_qubits::Int64,
     optimizer::Union{String,Dict},
     callbacks::Array{Function};
@@ -300,39 +288,29 @@ function adapt_qaoa(
     end
 
     comms = Array{Operator, 1}()
-    ##### CHANGE
     for _op in pool
         push!(comms, commutator(hamiltonian, _op, false))
     end
-    ############
 
     state = copy(initial_state)
     adapt_step!(hist, comms, tmp, state, hamiltonian, [], nothing, nothing)
 
-    ##### CHANGE
     ansatz = Array{Operator, 1}()
-    ############
 
     layer_count = 0
 
     while true
         for c in callbacks
             if c(hist)
-                #if path !== nothing
-                #    adapt_history_dump!(hist, "$path/adapt_history.csv", num_qubits)
-                #end
                 return hist
             end
         end
 
         push!(ansatz, pool[hist.max_grad_ind[end]])
-        ##### CHANGE
         point = vcat(hist.opt_pars[end], [initial_parameter, initial_parameter])
         if length(point) == 2
             push!(point, initial_parameter)
         end
-        #point = vcat(hist.opt_pars[end], [initial_parameter, initial_parameter])
-        ############
 
         opt = Opt(Symbol(opt_dict["name"]), length(point))
         opt_keys = collect(keys(opt_dict))
@@ -346,9 +324,7 @@ function adapt_qaoa(
         state .= initial_state
 
         energy, point, ret, opt_evals = QAOA(hamiltonian, ansatz, opt, point, num_qubits, state, vqe_path, tmp)
-        ##### CHANGE
         state = copy(tmp)
-        ############
         adapt_step!(hist, comms, tmp, state, hamiltonian, point,pool[hist.max_grad_ind[end]],opt_evals) # pool operator of the step that just finished
 
         layer_count += 1
