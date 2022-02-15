@@ -19,13 +19,14 @@ function qaoa_mixer(n::Int)
     return Operator(paulis, coeffs)
 end
 
-num_samples = 20
+num_samples = 100
 n = 6
 d = 3
 opt_alg = "LD_LBFGS"
+#opt_alg = "LN_NELDERMEAD"
 max_p = 20
 max_pars = 2*max_p+1
-max_grad = 1e-4
+max_grad = 1e-15
 path="test_data"
 
 function run_qaoa(hamiltonian)
@@ -93,12 +94,8 @@ end
 ### Plotting
 using Plots; pgfplotsx()
 
-for res in results_adapt
-    plot!(1:length(res), res, c=:blue, yaxis=:log)
-end
-
-for res in results_qaoa
-        plot!(1:length(res), res, c=:red, yaxis=:log)
-end
+plot()
+plot!(results_qaoa, c=:red, yaxis=:log, legend=false)
+plot!(results_adapt, c=:blue, yaxis=:log, legend=false)
 
 savefig("test_qaoa_comp.pdf")
