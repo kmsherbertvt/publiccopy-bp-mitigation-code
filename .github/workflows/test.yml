@@ -10,7 +10,7 @@ jobs:
         julia-version: ['1.7']
         julia-arch: [x64, x86]
         os: [ubuntu-latest]
-
+    
     steps:
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
