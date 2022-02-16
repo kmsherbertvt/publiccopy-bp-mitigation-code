@@ -17,7 +17,7 @@ using AdaptBarren
             state = ones(ComplexF64, 2^n)
             state /= norm(state)
 
-            result = adapt_vqe(operator, pool, n, optimizer, callbacks; initial_parameter=1e-5, state=state)
+            result = adapt_vqe(operator, pool, n, optimizer, callbacks; initial_parameter=1e-5, initial_state=state)
 
             en_adapt = last(result.energy)
 
