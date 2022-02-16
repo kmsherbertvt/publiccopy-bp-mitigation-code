@@ -5,8 +5,6 @@ using LinearAlgebra
 
 using AdaptBarren
 
-Random.seed!(42)
-
 @testset "Handmade Ham Op Mult" begin
     n = 2
     ham = Operator(
