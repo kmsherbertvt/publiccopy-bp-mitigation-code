@@ -40,7 +40,7 @@ end
     end
 end
 
-testset "ADAPT-QAOA Test" begin
+@testset "ADAPT-QAOA Test" begin
    n = 6
    d = 3
    opt = "LD_LBFGS"
