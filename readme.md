@@ -1,9 +1,9 @@
 # Barren Plateaus and the ADAPT Algorithm
 
-Workflow:
+To install and set up
 ```
-git clone git@github.com:georgesbarron/bp-mitigation-code.git
-cd bp-mitigation-code/julia
-pkg> activate .
-pkg> instantiate
+git clone git@github.com:virginia-tech-quantum/bp-mitigation-code.git
+cd bp-mitigation-code/
+julia --project=.
+julia> using Pkg; Pkg.instantiate();
 ```
