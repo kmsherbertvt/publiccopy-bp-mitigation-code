@@ -61,7 +61,7 @@ end
         psi   = zeros(ComplexF64, 2^n)
         tmp1  = zeros(ComplexF64, 2^n)
         tmp2  = zeros(ComplexF64, 2^n)
-        @time fast_grad!(ham, ansatz, pars, result_fg, psi, copy(initial_state), tmp1, tmp2)
+        fast_grad!(ham, ansatz, pars, result_fg, psi, copy(initial_state), tmp1, tmp2)
 
         # Construction using finite difference
         result_fd = zeros(Float64, N)
