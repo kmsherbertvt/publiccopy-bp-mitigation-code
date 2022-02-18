@@ -5,6 +5,8 @@ using NLopt
 using Random
 using ProgressBars
 
+Random.seed!(42)
+
 rng = MersenneTwister(14)
 
 function _id_x_str(n::Int, k::Int)
@@ -19,14 +21,14 @@ function qaoa_mixer(n::Int)
     return Operator(paulis, coeffs)
 end
 
-num_samples = 100
+num_samples = 20
 n = 6
-d = 3
+d = 5
 opt_alg = "LD_LBFGS"
 #opt_alg = "LN_NELDERMEAD"
-max_p = 20
+max_p = 14
 max_pars = 2*max_p+1
-max_grad = 1e-15
+max_grad = 1e-4
 path="test_data"
 
 function run_qaoa(hamiltonian)
@@ -90,9 +92,12 @@ Threads.@threads for i in ProgressBar(1:num_samples, printing_delay=0.1)
         push!(results_qaoa, _res_qaoa)
     end
 end
+println("Done with simulations, plotting...")
 
 ### Plotting
-using Plots; pgfplotsx()
+#using Plots; pgfplotsx()
+#using Plots; plotly()
+using Plots; gr()
 
 plot()
 plot!(results_qaoa, c=:red, yaxis=:log, legend=false)
