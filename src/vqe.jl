@@ -370,7 +370,8 @@ function adapt_qaoa(
         end
 
         push!(ansatz, pool[hist.max_grad_ind[end]])
-        point = vcat(hist.opt_pars[end], [initial_parameter, initial_parameter])
+        #point = vcat(hist.opt_pars[end], [0.0, initial_parameter])
+        point = vcat(hist.opt_pars[end], [initial_parameter, 0.0])
         if length(point) == 2
             push!(point, initial_parameter)
         end
