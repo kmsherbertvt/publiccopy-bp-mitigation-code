@@ -1,6 +1,97 @@
 using HDF5
 using NLopt
 
+function _cost_fn_vqe(
+    x::Vector{Float64}, 
+    grad::Vector{Float64}, 
+    ansatz,
+    hamiltonian,
+    fn_evals,
+    grad_evals,
+    eval_count, 
+    state, 
+    initial_state, 
+    tmp, 
+    tmp1, 
+    tmp2,
+    )
+    eval_count += 1
+    state .= initial_state
+    pauli_ansatz!(ansatz, x, state, tmp)
+    res = real(exp_val(hamiltonian, state, tmp))
+    if length(grad) > 0
+        state .= initial_state
+        fast_grad!(hamiltonian, ansatz, x, grad, tmp, state, tmp1, tmp2)
+    end
+
+    push!(fn_evals, res)
+    append!(grad_evals, grad)
+
+    return res
+end
+
+
+function _cost_fn_commuting_vqe(
+    x::Vector{Float64}, 
+    grad::Vector{Float64},
+    ansatz,
+    hamiltonian,
+    fn_evals,
+    grad_evals,
+    eval_count, 
+    state, 
+    initial_state, 
+    tmp, 
+    tmp1, 
+    tmp2,
+    output_state
+    )
+    state .= initial_state
+    
+    unpacked_x = []
+    unpacked_ansatz = []
+
+    for (xi, op) in zip(x,ansatz)
+        xp = xi*real(op.coeffs)
+        append!(unpacked_ansatz, op.paulis)
+        append!(unpacked_x, xp)
+        pauli_ansatz!(op.paulis, xp, state, tmp)
+    end
+    
+    res = real(exp_val(hamiltonian, state, tmp))
+
+    if output_state !== nothing
+        output_state .= state
+    end
+
+    if length(grad) > 0
+        state .= initial_state
+
+        repeat_lengths = map(o -> length(o.paulis), ansatz)
+        unpacked_grad = similar(unpacked_x)
+
+        unpacked_grad = convert(Array{Float64,1},unpacked_grad)
+        unpacked_x = convert(Array{Float64,1},unpacked_x)
+        unpacked_ansatz = convert(Array{Pauli{UInt64},1},unpacked_ansatz)
+
+        fast_grad!(hamiltonian, unpacked_ansatz, unpacked_x, unpacked_grad, tmp, state, tmp1, tmp2)
+
+        
+        inds_begin = accumulate(+,repeat_lengths,init=1)-repeat_lengths
+        inds_end = accumulate(+,repeat_lengths)
+
+        grad_list = [unpacked_grad[i1:i2] for (i1,i2) in zip(inds_begin,inds_end)]
+        grad .= map(sum, grad_list)
+    end
+
+    push!(fn_evals, res)
+    append!(grad_evals, grad)
+
+    eval_count += 1
+
+    return res
+end
+
 function VQE(
     hamiltonian::Operator,
     ansatz::Array{Pauli{T},1},
@@ -25,20 +116,8 @@ function VQE(
     fn_evals = Vector{Float64}()
     grad_evals = Vector{Float64}()
 
-    function cost_fn(x::Vector{Float64}, grad::Vector{Float64})
-        eval_count += 1
-        state .= initial_state
-        pauli_ansatz!(ansatz, x, state, tmp)
-        res = real(exp_val(hamiltonian, state, tmp))
-        if length(grad) > 0
-            state .= initial_state
-            fast_grad!(hamiltonian, ansatz, x, grad, tmp, state, tmp1, tmp2)
-        end
-
-        push!(fn_evals, res)
-        append!(grad_evals, grad)
-
-        return res
+    function cost_fn(x, grad)
+        return _cost_fn_vqe(x, grad, ansatz, hamiltonian, fn_evals, grad_evals, eval_count, state, initial_state, tmp, tmp1, tmp2)
     end
 
     if opt !== "random_sampling"
@@ -92,51 +171,8 @@ function commuting_vqe(
     fn_evals = Vector{Float64}()
     grad_evals = Vector{Float64}()
 
-    function cost_fn(x::Vector{Float64}, grad::Vector{Float64})
-        state .= initial_state
-        
-        unpacked_x = []
-        unpacked_ansatz = []
-
-        for (xi, op) in zip(x,ansatz)
-            xp = xi*real(op.coeffs)
-            append!(unpacked_ansatz, op.paulis)
-            append!(unpacked_x, xp)
-            pauli_ansatz!(op.paulis, xp, state, tmp)
-        end
-        
-        res = real(exp_val(hamiltonian, state, tmp))
-
-        if output_state !== nothing
-            output_state .= state
-        end
-
-        if length(grad) > 0
-            state .= initial_state
-
-            repeat_lengths = map(o -> length(o.paulis), ansatz)
-            unpacked_grad = similar(unpacked_x)
-
-            unpacked_grad = convert(Array{Float64,1},unpacked_grad)
-            unpacked_x = convert(Array{Float64,1},unpacked_x)
-            unpacked_ansatz = convert(Array{Pauli{UInt64},1},unpacked_ansatz)
-
-            fast_grad!(hamiltonian, unpacked_ansatz, unpacked_x, unpacked_grad, tmp, state, tmp1, tmp2)
-
-            
-            inds_begin = accumulate(+,repeat_lengths,init=1)-repeat_lengths
-            inds_end = accumulate(+,repeat_lengths)
-
-            grad_list = [unpacked_grad[i1:i2] for (i1,i2) in zip(inds_begin,inds_end)]
-            grad .= map(sum, grad_list)
-        end
-
-	push!(fn_evals, res)
-	append!(grad_evals, grad)
-
-        eval_count += 1
-
-        return res
+    function cost_fn(x, grad)
+        return _cost_fn_commuting_vqe(x, grad, ansatz, hamiltonian, fn_evals, grad_evals, eval_count, state, initial_state, tmp, tmp1, tmp2, output_state)
     end
 
     opt.lower_bounds = -π
