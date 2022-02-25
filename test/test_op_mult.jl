@@ -49,20 +49,50 @@ end
     @test norm(psi_test - psi_final) <= 1e-10
 end
 
+@testset "Handmade example on 2 qubits" begin
+    H = Operator(map(pauli_string_to_pauli, ["II", "IZ", "ZI", "ZZ"]), map(ComplexF64, [1.0, 2.0, 3.0, 4.0]))
+    H_out = matrix_to_operator(operator_to_matrix(H))
+
+    for (c,p) in zip(H_out.coeffs, H_out.paulis)
+        println("C_alpha = $c, P_alpha = $p")
+    end
+
+    psi = [
+        1.0 + 0.0im
+        0.0 + 0.0im
+        1.0 + 0.0im
+        0.0 + 0.0im
+    ]
+    psi_final = [
+        10.0 + 0.0im
+        0.0 + 0.0im
+        -4.0 + 0.0im
+        0.0 + 0.0im
+    ]
+
+    tmp1 = similar(psi)
+    tmp2 = similar(psi)
+
+    ham_state_mult!(H, psi, tmp1, tmp2)
+
+    @test norm(psi - psi_final) <= 1e-10
+end
+
 @testset "Random Ham Op Mult" begin
     for _ = 1:5
-        n = 2
-        mat = rand(ComplexF64, 2^n, 2^n)
-        mat = mat + conj(transpose(mat))
-        ham = matrix_to_operator(mat)
+        for n=1:3
+            mat = rand(ComplexF64, 2^n, 2^n)
+            mat = mat + conj(transpose(mat))
+            ham = matrix_to_operator(mat)
 
-        psi_init = rand(ComplexF64, 2^n)
-        psi_final = mat * psi_init
+            psi_init = rand(ComplexF64, 2^n)
+            psi_final = mat * psi_init
 
-        tmp1 = similar(psi_final)
-        tmp2 = similar(psi_final)
-        ham_state_mult!(ham, psi_init, tmp1, tmp2)
+            tmp1 = similar(psi_final)
+            tmp2 = similar(psi_final)
+            ham_state_mult!(ham, psi_init, tmp1, tmp2)
 
-        @test norm(psi_final - psi_init) <= 1e-10
+            @test norm(psi_final - psi_init) <= 1e-10
+        end
     end
 end

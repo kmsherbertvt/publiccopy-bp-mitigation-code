@@ -163,7 +163,7 @@ function matrix_to_operator(A)
     operator = Operator([], [])
 
     for axes in Iterators.product(ntuple(i->[0, 1, 2, 3], n)...)
-        pauli_mat = pauli_str([i for i in axes])
+        pauli_mat = pauli_str(reverse([i for i in axes]))
         pauli = pauli_string_to_pauli(reverse([i for i in axes]))
         coeff = tr(pauli_mat*A) / N
 
