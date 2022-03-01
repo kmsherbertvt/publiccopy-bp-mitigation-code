@@ -11,6 +11,7 @@ include("callbacks.jl")
 include("qaoa_hamiltonians.jl")
 
 export ADAPTHistory,
+    _cost_fn_commuting_vqe,
     DeltaYStopper,
     FloorStopper,
     MaxGradientStopper,
