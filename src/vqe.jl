@@ -426,7 +426,7 @@ function adapt_qaoa(
             setproperty!(opt,Symbol(akey),opt_dict[akey])
         end
 
-	vqe_path = "$path/vqe_layer_$layer_count.h5"
+	    vqe_path = "$path/vqe_layer_$layer_count.h5"
 
         state .= initial_state
 
