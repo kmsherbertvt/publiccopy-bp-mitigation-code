@@ -186,6 +186,18 @@ function commuting_vqe(
     return (minf, minx, ret, eval_count)
 end
 
+function qaoa_ansatz(
+    hamiltonian::Operator,
+    mixers::Array{Operator,1}
+)
+    # num_pars == 2*length(mixers)+1
+    p = length(mixers)
+    ansatz = zip(mixers, repeat([hamiltonian], p))
+    ansatz = collect(Iterators.flatten(ansatz))
+    prepend!(ansatz, [hamiltonian])
+    return ansatz
+end
+
 function QAOA(
     hamiltonian::Operator,
     mixers::Array{Operator,1},
@@ -196,12 +208,7 @@ function QAOA(
     path = nothing, # Should be a CSV file
     output_state::Union{Nothing,Array{ComplexF64,1}} = nothing
 )
-    # num_pars == 2*length(mixers)+1
-    p = length(mixers)
-    ansatz = zip(mixers, repeat([hamiltonian], p))
-    ansatz = collect(Iterators.flatten(ansatz))
-    prepend!(ansatz, [hamiltonian])
-
+    ansatz = qaoa_ansatz(hamiltonian, mixers)
     return commuting_vqe(
         hamiltonian,
         ansatz,
