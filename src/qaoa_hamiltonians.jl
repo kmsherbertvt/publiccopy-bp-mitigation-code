@@ -24,6 +24,7 @@ function max_cut_hamiltonian(g)
 
     for e in Erdos.edges(g)
         w = rand(Float64)
+        #w = 1.0
         i, j = e
 
         l = zeros(Int64, n)
@@ -38,7 +39,8 @@ function max_cut_hamiltonian(g)
         push!(operator.coeffs, +w/2.0)
     end
 
-    op_simplify!(operator)
+    #@warn "I'm still simplifying operators in the max cut Hamiltonian..."
+    #op_simplify!(operator)
     return operator
 end
 

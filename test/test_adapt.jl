@@ -21,7 +21,8 @@ using AdaptBarren
 
             en_adapt = last(result.energy)
 
-            @test abs(ground_state_energy - en_adapt) <= 1e-2
+            en_err = abs(ground_state_energy - en_adapt)
+            @test en_err <= 1e-8
         end
     end
 end
