@@ -13,11 +13,12 @@ Random.seed!(42)
                      0+0im 0-1im -1+0im 0+0im;
                      0+1im 0+0im 0+0im 1+0im]
     actual_op = Operator([pauli_string_to_pauli("XY"), pauli_string_to_pauli("ZZ")], [1.0, 1.0])
-    test_op = matrix_to_operator(actual_mat)
+    #test_op = matrix_to_operator(actual_mat)
+    #op_chop!(test_op, 1e-10)
     test_mat = operator_to_matrix(actual_op)
-    op_chop!(test_op, 1e-10)
 
     @test norm(actual_mat - test_mat) <= 1e-10
+    display(test_mat)
 end
 
 @testset "Ham Op Convert" begin

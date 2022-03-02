@@ -76,7 +76,7 @@ function pauli_to_axes(P::Pauli{T}, n::Int) where T<:Unsigned
             end
         end
     end
-    return l
+    return reverse(l)
 end
 
 
