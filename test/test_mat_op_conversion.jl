@@ -18,7 +18,6 @@ Random.seed!(42)
     test_mat = operator_to_matrix(actual_op)
 
     @test norm(actual_mat - test_mat) <= 1e-10
-    display(test_mat)
 end
 
 @testset "Ham Op Convert" begin
