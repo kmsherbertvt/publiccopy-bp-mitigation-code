@@ -53,10 +53,6 @@ end
     H = Operator(map(pauli_string_to_pauli, ["II", "IZ", "ZI", "ZZ"]), map(ComplexF64, [1.0, 2.0, 3.0, 4.0]))
     H_out = matrix_to_operator(operator_to_matrix(H))
 
-    for (c,p) in zip(H_out.coeffs, H_out.paulis)
-        println("C_alpha = $c, P_alpha = $p")
-    end
-
     psi = [
         1.0 + 0.0im
         0.0 + 0.0im
