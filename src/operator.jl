@@ -21,7 +21,7 @@ function group_inds_by_eq(A::Array)
     return grps
 end
 
-function op_simplify!(A::Operator, tol::Float64 = 0.0)
+function op_chop!(A::Operator, tol::Float64 = 0.0)
     l = length(A.paulis)
     if l==0
         return
@@ -33,6 +33,10 @@ function op_simplify!(A::Operator, tol::Float64 = 0.0)
             deleteat!(A.paulis, i)
         end
     end
+end
+
+function op_simplify!(A::Operator, tol::Float64 = 0.0)
+    op_chop!(A, tol)
 
     l = length(A.paulis)
     # Bring all phases out of Paulis
