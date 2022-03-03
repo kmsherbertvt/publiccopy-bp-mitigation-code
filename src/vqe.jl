@@ -1,6 +1,27 @@
 using HDF5
 using NLopt
 
+function unpack_vector(x::Vector, n::Vector)
+    if length(x) != length(n) error("Must be same length") end
+    xp = []
+    for (ni, xi) in zip(n,x)
+        append!(xp, repeat([xi], ni))
+    end
+    return xp
+end
+
+function pack_vector(y_input::Vector, n::Vector)
+    yp = copy(y_input)
+    if length(yp) != sum(n) error("Cannot unpack") end
+    y = []
+    for ni in reverse(n)
+        yi = sum([pop!(yp) for i=1:ni])
+        push!(y, yi)
+    end
+    reverse!(y)
+    return y
+end
+
 function _cost_fn_vqe(
     x::Vector{Float64}, 
     grad::Vector{Float64}, 
@@ -46,7 +67,9 @@ function _cost_fn_commuting_vqe(
     tmp2,
     output_state
     )
+    # Initialize statevector
     state .= initial_state
+    repeat_lengths = map(o -> length(o.paulis), ansatz)
     
     unpacked_x = []
     unpacked_ansatz = []
@@ -58,16 +81,16 @@ function _cost_fn_commuting_vqe(
         pauli_ansatz!(op.paulis, xp, state, tmp)
     end
     
+    # Update cost, output_state
     res = real(exp_val(hamiltonian, state, tmp))
-
     if output_state !== nothing
         output_state .= state
     end
 
+    # Compute gradient
+    # THE BUG IS IN HERE, DAMNIT
     if length(grad) > 0
         state .= initial_state
-
-        repeat_lengths = map(o -> length(o.paulis), ansatz)
         unpacked_grad = similar(unpacked_x)
 
         unpacked_grad = convert(Array{Float64,1},unpacked_grad)
@@ -75,20 +98,15 @@ function _cost_fn_commuting_vqe(
         unpacked_ansatz = convert(Array{Pauli{UInt64},1},unpacked_ansatz)
 
         fast_grad!(hamiltonian, unpacked_ansatz, unpacked_x, unpacked_grad, tmp, state, tmp1, tmp2)
+        #finite_difference!(hamiltonian, unpacked_ansatz, unpacked_x, unpacked_grad, state, tmp1, tmp2, 1e-5)
 
-        
-        inds_begin = accumulate(+,repeat_lengths,init=1)-repeat_lengths
-        inds_end = accumulate(+,repeat_lengths)
-
-        grad_list = [unpacked_grad[i1:i2] for (i1,i2) in zip(inds_begin,inds_end)]
-        grad .= map(sum, grad_list)
+        grad .= pack_vector(unpacked_grad, repeat_lengths)
     end
 
+    # Cleaning up
     push!(fn_evals, res)
     append!(grad_evals, grad)
-
     eval_count += 1
-
     return res
 end
 
