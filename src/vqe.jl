@@ -82,19 +82,21 @@ function _cost_fn_commuting_vqe(
     
     unpacked_x = []
     unpacked_ansatz = []
-    unpacked_x = convert(Array{Float64,1},unpacked_x)
-    unpacked_ansatz = convert(Array{Pauli{UInt64},1},unpacked_ansatz)
 
-    for (xi, op) in zip(x,ansatz)
+    if length(x) != length(ansatz) error("Invalid number of pars") end
+    l = length(x)
+    for i in 1:l
+        xi = x[i]
+        op = ansatz[i]
         xp = xi*real(op.coeffs)
         append!(unpacked_ansatz, op.paulis)
         append!(unpacked_x, xp)
         pauli_ansatz!(op.paulis, xp, state, tmp)
     end
 
-    #state_test = copy(initial_state)
-    #pauli_ansatz!(unpacked_ansatz, unpacked_x, state_test, tmp)
-    #@show norm(state_test - state)
+    state_test = copy(initial_state)
+    pauli_ansatz!(unpacked_ansatz, unpacked_x, state_test, tmp)
+    if norm(state_test - state) > 1e-8 error("These should match") end
     
     # Update cost, output_state
     res = real(exp_val(hamiltonian, state, tmp))
@@ -106,14 +108,15 @@ function _cost_fn_commuting_vqe(
     if length(grad) > 0
         state .= initial_state
         unpacked_grad = similar(unpacked_x)
-        unpacked_grad = convert(Array{Float64,1},unpacked_grad)
 
         fast_grad!(hamiltonian, unpacked_ansatz, unpacked_x, unpacked_grad, tmp, state, tmp1, tmp2)
         #finite_difference!(hamiltonian, unpacked_ansatz, unpacked_x, unpacked_grad, state, tmp1, tmp2, 1e-5)
 
         coeffs = []
         for op in ansatz append!(coeffs, op.coeffs) end
-        if 0.0 in coeffs error("Cannot unscale 0 coefficient") end
+        for c in coeffs
+            if abs(c) <= 1e-8 error("Cannot unscale $c") end
+        end
         grad .= pack_vector(unpacked_grad, repeat_lengths; s_input = coeffs)
     end
 

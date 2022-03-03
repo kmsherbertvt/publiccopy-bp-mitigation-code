@@ -91,8 +91,8 @@ end
 
 
 function pauli_ansatz!(
-        axes::Array{Pauli{T},1}, 
-        pars::Array{Float64,1}, 
+        axes, 
+        pars, 
         result::Array{ComplexF64,1}, # pre-alloc # also initial state
         tmp::Array{ComplexF64,1}, # pre-alloc
         ) where T<:Unsigned

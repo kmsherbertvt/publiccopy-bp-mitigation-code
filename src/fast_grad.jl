@@ -1,8 +1,8 @@
 function fast_grad!(
         ham::Operator,
-        ansatz::Vector{Pauli{T}},
-        pars::Vector{Float64},
-        result::Vector{Float64},
+        ansatz,
+        pars,
+        result,
         psi::Vector{ComplexF64},
         sigma::Vector{ComplexF64}, # Initial state goes here!
         tmp1::Vector{ComplexF64},
