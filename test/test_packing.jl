@@ -5,21 +5,6 @@ using AdaptBarren
 
 
 @testset "Test unpacking" begin
-    """ Unpacking a vector refers to taking the original vector (`x`) and
-    repeating each element in a new vector some (potentially variable) number
-    of times.
-
-    If I have an ansatz where parameters are bound together,
-    e.g. `U(t1) V(t2)` where
-    `U(t) = e^(-i t A1) e^(-i t A2)`
-    `V(t) = e^(-i t B1) e^(-i t B2)`
-    then the parameter vector `[t1, t2]` unpacked according to the repetitions
-    `[2, 2]` would be `[t1, t1, t2, t2]`.
-
-    On the other hand, unpacking a vector undoes this process, where the aggregation
-    function is assumed to be addition. Hence, packing the vector `[t1, t2, t3, t4]`
-    according to the reptitions `[2, 2]` would yield the vector `[t1+t2, t3+t4]`.
-    """
     k = 5
     x = rand(Float64, k)
     n = [1,3,2,1,3]
