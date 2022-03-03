@@ -1,21 +1,30 @@
 using HDF5
 using NLopt
 
-function unpack_vector(x::Vector, n::Vector)
-    if length(x) != length(n) error("Must be same length") end
+function unpack_vector(x::Vector, n::Vector; s = nothing)
+    if length(x) != length(n) error("Must be same length, x-n") end
+    if s === nothing s = ones(Float64, length(x)) end
+    if length(x) != length(s) error("Must be same length, x-s") end
     xp = []
-    for (ni, xi) in zip(n,x)
-        append!(xp, repeat([xi], ni))
+    for (ni, xi, si) in zip(n,x,s)
+        append!(xp, repeat([xi*si], ni))
     end
     return xp
 end
 
-function pack_vector(y_input::Vector, n::Vector)
+function pack_vector(y_input::Vector, n::Vector; s_input = nothing)
     yp = copy(y_input)
     if length(yp) != sum(n) error("Cannot unpack") end
+    if s_input === nothing
+        sp = ones(Float64, length(yp))
+    else   
+        sp = copy(s_input)
+    end
+    if length(yp) != length(sp) error("Must be of same length") end
     y = []
+    reverse!(sp)
     for ni in reverse(n)
-        yi = sum([pop!(yp) for i=1:ni])
+        yi = sum([pop!(yp)/pop!(sp) for i=1:ni])
         push!(y, yi)
     end
     reverse!(y)
@@ -73,6 +82,8 @@ function _cost_fn_commuting_vqe(
     
     unpacked_x = []
     unpacked_ansatz = []
+    unpacked_x = convert(Array{Float64,1},unpacked_x)
+    unpacked_ansatz = convert(Array{Pauli{UInt64},1},unpacked_ansatz)
 
     for (xi, op) in zip(x,ansatz)
         xp = xi*real(op.coeffs)
@@ -80,6 +91,10 @@ function _cost_fn_commuting_vqe(
         append!(unpacked_x, xp)
         pauli_ansatz!(op.paulis, xp, state, tmp)
     end
+
+    #state_test = copy(initial_state)
+    #pauli_ansatz!(unpacked_ansatz, unpacked_x, state_test, tmp)
+    #@show norm(state_test - state)
     
     # Update cost, output_state
     res = real(exp_val(hamiltonian, state, tmp))
@@ -88,19 +103,18 @@ function _cost_fn_commuting_vqe(
     end
 
     # Compute gradient
-    # THE BUG IS IN HERE, DAMNIT
     if length(grad) > 0
         state .= initial_state
         unpacked_grad = similar(unpacked_x)
-
         unpacked_grad = convert(Array{Float64,1},unpacked_grad)
-        unpacked_x = convert(Array{Float64,1},unpacked_x)
-        unpacked_ansatz = convert(Array{Pauli{UInt64},1},unpacked_ansatz)
 
         fast_grad!(hamiltonian, unpacked_ansatz, unpacked_x, unpacked_grad, tmp, state, tmp1, tmp2)
         #finite_difference!(hamiltonian, unpacked_ansatz, unpacked_x, unpacked_grad, state, tmp1, tmp2, 1e-5)
 
-        grad .= pack_vector(unpacked_grad, repeat_lengths)
+        coeffs = []
+        for op in ansatz append!(coeffs, op.coeffs) end
+        if 0.0 in coeffs error("Cannot unscale 0 coefficient") end
+        grad .= pack_vector(unpacked_grad, repeat_lengths; s_input = coeffs)
     end
 
     # Cleaning up
