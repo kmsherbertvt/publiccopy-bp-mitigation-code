@@ -18,6 +18,24 @@ according to the reptitions `[2, 2]` would yield the vector `[t1+t2, t3+t4]`.
 """
 
 function unpack_vector(x::Vector, n::Vector; s = nothing)
+    """
+        unpack_vector(x::Vector, n::Vector; s = nothing)
+
+    ### Inputs
+    * x::Vector -- The vector to unpack
+    * n::Vector -- The number of times to repeat each element of `x`
+    * s::Vector -- The vector used for scaling, defaults to all ones.
+
+    ### Output
+    This function acts much like `repeat`, except that each element of
+        `x` is repeated according to the corresponding integer in the vector `n`.
+        For instance, if `x=[x1,x2]` and `n=[1,2]`, then the output will be
+        `[x1,x2,x2]`. If a scale is provided, then the elements of the output
+        vector will be scaled according to the elements in `s`. For instance, if
+        `s = [2, 3]` in the previous example, the output would instead be
+        `[2*x1, 3*x2, 3*x2]`.
+    
+    """
     if length(x) != length(n) error("Must be same length, x-n") end
     if s === nothing s = ones(Float64, length(x)) end
     if length(x) != length(s) error("Must be same length, x-s") end
@@ -28,19 +46,28 @@ function unpack_vector(x::Vector, n::Vector; s = nothing)
     return xp
 end
 
-function pack_vector(y_input::Vector, n::Vector; s_input = nothing)
+function pack_vector(y_input::Vector, n::Vector)
+    """
+        pack_vector(y_input::Vector, n::Vector; s_input = nothing)
+
+    ### Inputs
+    * y_input::Vector -- The vector to unpack
+    * n::Vector -- The number of times to repeat each element of `x`
+
+    ### Output
+    This function is intended to be a sort of reverse to packing. Given
+        some vector, `y_input`, we want to aggregate (by summation)
+        components of the vector according to the elements of `n`. Consider
+        `y_input = [y1, y2, y3, y4, y5]` with `n = [2, 1, 2]`. The resulting
+        vector would be `[y1+y2, y3, y4+y5]`. Note that there are `2` terms
+        in the first element, `1` term in the second element, and `2` terms
+        in the third, corresponding to the elements of `n`.
+    """
     yp = copy(y_input)
     if length(yp) != sum(n) error("Cannot unpack") end
-    if s_input === nothing
-        sp = ones(Float64, length(yp))
-    else   
-        sp = copy(s_input)
-    end
-    if length(yp) != length(sp) error("Must be of same length") end
     y = []
-    reverse!(sp)
     for ni in reverse(n)
-        yi = sum([pop!(yp)/pop!(sp) for i=1:ni])
+        yi = sum([pop!(yp) for i=1:ni])
         push!(y, yi)
     end
     reverse!(y)
@@ -133,7 +160,8 @@ function _cost_fn_commuting_vqe(
         for c in coeffs
             if abs(c) <= 1e-8 error("Cannot unscale $c") end
         end
-        grad .= pack_vector(unpacked_grad, repeat_lengths; s_input = coeffs)
+        unpacked_grad = unpacked_grad ./ coeffs
+        grad .= pack_vector(unpacked_grad, repeat_lengths)
     end
 
     # Cleaning up
