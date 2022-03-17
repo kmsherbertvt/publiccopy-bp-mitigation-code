@@ -33,7 +33,7 @@ using AdaptBarren
     ### Test
     expected_cost = 0.241157 # From Mathematica Notebook
     expected_state = [0.355111-0.0851575im, -0.16343-0.22583im, 0.0360796-0.0627358im, 0.0847592+0.112516im, -0.277738-0.172374im, -0.0193867-0.260217im, -0.0818478-0.224706im, -0.206698-0.138988im, -0.140029+0.269187im, -0.225121+0.0648942im, 0.072486+0.113428im, 0.157399+0.0641457im, 0.261241-0.210772im, -0.255521-0.0995391im, -0.137949-0.123217im, 0.171185-0.15596im]
-    expected_grad = [-0.00400984, 0.70968, 0.259633, 0.316023, 0]
+    expected_grad = [0.259633, -0.00400984, 0.316023, 0.70968, 0]
     x = [gamma[1], beta[1], gamma[2], beta[2], gamma[3]]
     grad = similar(x)
     
@@ -66,7 +66,7 @@ using AdaptBarren
 
     @test abs(ans - expected_cost) <= 1e-3
     @test norm(expected_state - output_state) <= 1e-3
-    @test isapprox(grad, expected_grad)
+    @test norm(grad - expected_grad) <= 1e-3
 end
 
 
