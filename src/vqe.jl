@@ -160,7 +160,7 @@ function _cost_fn_commuting_vqe(
         for c in coeffs
             if abs(c) <= 1e-8 error("Cannot unscale $c") end
         end
-        unpacked_grad = unpacked_grad ./ coeffs
+        unpacked_grad = unpacked_grad .* coeffs
         grad .= pack_vector(unpacked_grad, repeat_lengths)
     end
 
