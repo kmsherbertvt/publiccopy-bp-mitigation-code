@@ -91,6 +91,13 @@ Threads.@threads for i in ProgressBar(1:num_samples, printing_delay=0.1)
         push!(results_adapt, _res_adapt)
         push!(results_qaoa, _res_qaoa)
     end
+
+    #if minimum(_res_adapt) > 1e-5
+    #    v = diag(operator_to_matrix(hamiltonian))
+    #    if norm(imag(v)) > 1e-8 error("Not diagonal") end
+    #    @show _res_adapt
+    #    @show real(v)
+    #end
 end
 println("Done with simulations, plotting...")
 
