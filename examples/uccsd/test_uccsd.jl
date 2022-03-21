@@ -35,4 +35,7 @@ function get_ham()
     return operator
 end
 
-get_ham()
+operator = get_ham()
+@show operator
+
+print_operator(operator)
