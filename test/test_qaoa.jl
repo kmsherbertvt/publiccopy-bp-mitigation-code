@@ -6,18 +6,6 @@ using Random
 
 rng = MersenneTwister(14)
 
-function _id_x_str(n::Int, k::Int)
-    s = repeat(["I"], n)
-    s[k] = "X"
-    return join(s)
-end
-
-function qaoa_mixer(n::Int)
-    paulis = [pauli_string_to_pauli(_id_x_str(n, k)) for k in range(1,n)]
-    coeffs = repeat([1.0], n)
-    return Operator(paulis, coeffs)
-end
-
 @testset "QAOA Test" begin
     n = 4
     d = 3
@@ -40,7 +28,7 @@ end
     end
 end
 
-testset "ADAPT-QAOA Test" begin
+@testset "ADAPT-QAOA Test" begin
    n = 6
    d = 3
    opt = "LD_LBFGS"
@@ -63,7 +51,7 @@ testset "ADAPT-QAOA Test" begin
        en_err = abs(ground_state_energy - adapt_qaoa_energy)
        @test en_err <= 1e-3
    end
-nd
+end
 
 
 @testset "Reproduce Linghua's Result" begin

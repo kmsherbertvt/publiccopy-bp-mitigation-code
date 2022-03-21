@@ -5,6 +5,7 @@ using NLopt
 using Random
 using ProgressBars
 
+Random.seed!(42)
 rng = MersenneTwister(14)
 
 function _id_x_str(n::Int, k::Int)
@@ -19,18 +20,22 @@ function qaoa_mixer(n::Int)
     return Operator(paulis, coeffs)
 end
 
-num_samples = 100
-n = 6
-d = 3
+function safe_floor(x, eps = 1e-5, delta = 1e-10)
+    if x <= -eps error("Too negative: $x < -$eps") end
+    if x <= 0.0 return delta end
+    return x
+end
+
+# Hyperparameters
+num_samples = 20
 opt_alg = "LD_LBFGS"
 #opt_alg = "LN_NELDERMEAD"
-max_p = 20
+max_p = 14
 max_pars = 2*max_p+1
-max_grad = 1e-15
+max_grad = 1e-4
 path="test_data"
 
-function run_qaoa(hamiltonian)
-    #hamiltonian = random_regular_max_cut_hamiltonian(n, d)
+function run_qaoa(n, hamiltonian)
     energy_result = []
     ground_state_energy = minimum(real(diag(operator_to_matrix(hamiltonian))))
     for current_p in range(2,max_p)
@@ -46,8 +51,7 @@ function run_qaoa(hamiltonian)
     return energy_result
 end
 
-function run_adapt_qaoa(hamiltonian)
-    #hamiltonian = random_regular_max_cut_hamiltonian(n, d)
+function run_adapt_qaoa(n, hamiltonian)
     ground_state_energy = minimum(real(diag(operator_to_matrix(hamiltonian))))
 
     pool = two_local_pool(n)
@@ -66,21 +70,19 @@ function run_adapt_qaoa(hamiltonian)
     return result.energy - repeat([ground_state_energy], length(result.energy))
 end
 
+# Main Loop
 results_qaoa = []
 results_adapt = []
 
+n = 6
+d = 5
+
 lk = ReentrantLock()
-
-function safe_floor(x, eps = 1e-5, delta = 1e-10)
-    if x <= -eps error("Too negative: $x < -$eps") end
-    if x <= 0.0 return delta end
-    return x
-end
-
+println("Starting simulations...")
 Threads.@threads for i in ProgressBar(1:num_samples, printing_delay=0.1)
     hamiltonian = random_regular_max_cut_hamiltonian(n, d)
-    _res_qaoa = run_qaoa(hamiltonian);
-    _res_adapt = run_adapt_qaoa(hamiltonian);
+    _res_qaoa = run_qaoa(n, hamiltonian);
+    _res_adapt = run_adapt_qaoa(n, hamiltonian);
 
     _res_qaoa = map(safe_floor, _res_qaoa)
     _res_adapt = map(safe_floor, _res_adapt)
@@ -89,11 +91,18 @@ Threads.@threads for i in ProgressBar(1:num_samples, printing_delay=0.1)
         push!(results_adapt, _res_adapt)
         push!(results_qaoa, _res_qaoa)
     end
+
+    #if minimum(_res_adapt) > 1e-5
+    #    v = diag(operator_to_matrix(hamiltonian))
+    #    if norm(imag(v)) > 1e-8 error("Not diagonal") end
+    #    @show _res_adapt
+    #    @show real(v)
+    #end
 end
+println("Done with simulations, plotting...")
 
 ### Plotting
-using Plots; pgfplotsx()
-
+using Plots; gr()
 plot()
 plot!(results_qaoa, c=:red, yaxis=:log, legend=false)
 plot!(results_adapt, c=:blue, yaxis=:log, legend=false)

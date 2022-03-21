@@ -1,6 +1,176 @@
 using HDF5
 using NLopt
 
+""" Unpacking a vector refers to taking the original vector (`x`) and
+repeating each element in a new vector some (potentially variable) number
+of times.
+
+If I have an ansatz where parameters are bound together,
+e.g. `U(t1) V(t2)` where
+`U(t) = e^(-i t A1) e^(-i t A2)`
+`V(t) = e^(-i t B1) e^(-i t B2)`
+then the parameter vector `[t1, t2]` unpacked according to the repetitions
+`[2, 2]` would be `[t1, t1, t2, t2]`.
+
+On the other hand, unpacking a vector undoes this process, where the aggregation
+function is assumed to be addition. Hence, packing the vector `[t1, t2, t3, t4]`
+according to the reptitions `[2, 2]` would yield the vector `[t1+t2, t3+t4]`.
+"""
+
+function unpack_vector(x::Vector, n::Vector; s = nothing)
+    """
+        unpack_vector(x::Vector, n::Vector; s = nothing)
+
+    ### Inputs
+    * x::Vector -- The vector to unpack
+    * n::Vector -- The number of times to repeat each element of `x`
+    * s::Vector -- The vector used for scaling, defaults to all ones.
+
+    ### Output
+    This function acts much like `repeat`, except that each element of
+        `x` is repeated according to the corresponding integer in the vector `n`.
+        For instance, if `x=[x1,x2]` and `n=[1,2]`, then the output will be
+        `[x1,x2,x2]`. If a scale is provided, then the elements of the output
+        vector will be scaled according to the elements in `s`. For instance, if
+        `s = [2, 3]` in the previous example, the output would instead be
+        `[2*x1, 3*x2, 3*x2]`.
+    
+    """
+    if length(x) != length(n) error("Must be same length, x-n") end
+    if s === nothing s = ones(Float64, length(x)) end
+    if length(x) != length(s) error("Must be same length, x-s") end
+    xp = []
+    for (ni, xi, si) in zip(n,x,s)
+        append!(xp, repeat([xi*si], ni))
+    end
+    return xp
+end
+
+function pack_vector(y_input::Vector, n::Vector)
+    """
+        pack_vector(y_input::Vector, n::Vector; s_input = nothing)
+
+    ### Inputs
+    * y_input::Vector -- The vector to unpack
+    * n::Vector -- The number of times to repeat each element of `x`
+
+    ### Output
+    This function is intended to be a sort of reverse to packing. Given
+        some vector, `y_input`, we want to aggregate (by summation)
+        components of the vector according to the elements of `n`. Consider
+        `y_input = [y1, y2, y3, y4, y5]` with `n = [2, 1, 2]`. The resulting
+        vector would be `[y1+y2, y3, y4+y5]`. Note that there are `2` terms
+        in the first element, `1` term in the second element, and `2` terms
+        in the third, corresponding to the elements of `n`.
+    """
+    yp = copy(y_input)
+    if length(yp) != sum(n) error("Cannot unpack") end
+    y = []
+    for ni in reverse(n)
+        yi = sum([pop!(yp) for i=1:ni])
+        push!(y, yi)
+    end
+    reverse!(y)
+    return y
+end
+
+function _cost_fn_vqe(
+    x::Vector{Float64}, 
+    grad::Vector{Float64}, 
+    ansatz,
+    hamiltonian,
+    fn_evals,
+    grad_evals,
+    eval_count, 
+    state, 
+    initial_state, 
+    tmp, 
+    tmp1, 
+    tmp2,
+    )
+    eval_count += 1
+    state .= initial_state
+    pauli_ansatz!(ansatz, x, state, tmp)
+    res = real(exp_val(hamiltonian, state, tmp))
+    if length(grad) > 0
+        state .= initial_state
+        fast_grad!(hamiltonian, ansatz, x, grad, tmp, state, tmp1, tmp2)
+    end
+
+    push!(fn_evals, res)
+    append!(grad_evals, grad)
+
+    return res
+end
+
+
+function _cost_fn_commuting_vqe(
+    x::Vector{Float64}, 
+    grad::Vector{Float64},
+    ansatz,
+    hamiltonian,
+    fn_evals,
+    grad_evals,
+    eval_count, 
+    state, 
+    initial_state, 
+    tmp, 
+    tmp1, 
+    tmp2,
+    output_state
+    )
+    # Initialize statevector
+    state .= initial_state
+    repeat_lengths = map(o -> length(o.paulis), ansatz)
+    
+    unpacked_x = []
+    unpacked_ansatz = []
+
+    if length(x) != length(ansatz) error("Invalid number of pars") end
+    l = length(x)
+    for i in 1:l
+        xi = x[i]
+        op = ansatz[i]
+        xp = xi*real(op.coeffs)
+        append!(unpacked_ansatz, op.paulis)
+        append!(unpacked_x, xp)
+        pauli_ansatz!(op.paulis, xp, state, tmp)
+    end
+
+    state_test = copy(initial_state)
+    pauli_ansatz!(unpacked_ansatz, unpacked_x, state_test, tmp)
+    if norm(state_test - state) > 1e-8 error("These should match") end
+    
+    # Update cost, output_state
+    res = real(exp_val(hamiltonian, state, tmp))
+    if output_state !== nothing
+        output_state .= state
+    end
+
+    # Compute gradient
+    if length(grad) > 0
+        state .= initial_state
+        unpacked_grad = similar(unpacked_x)
+
+        fast_grad!(hamiltonian, unpacked_ansatz, unpacked_x, unpacked_grad, tmp, state, tmp1, tmp2)
+        #finite_difference!(hamiltonian, unpacked_ansatz, unpacked_x, unpacked_grad, state, tmp1, tmp2, 1e-5)
+
+        coeffs = []
+        for op in ansatz append!(coeffs, op.coeffs) end
+        for c in coeffs
+            if abs(c) <= 1e-8 error("Cannot unscale $c") end
+        end
+        unpacked_grad = unpacked_grad .* coeffs
+        grad .= pack_vector(unpacked_grad, repeat_lengths)
+    end
+
+    # Cleaning up
+    push!(fn_evals, res)
+    append!(grad_evals, grad)
+    eval_count += 1
+    return res
+end
+
 function VQE(
     hamiltonian::Operator,
     ansatz::Array{Pauli{T},1},
@@ -25,20 +195,8 @@ function VQE(
     fn_evals = Vector{Float64}()
     grad_evals = Vector{Float64}()
 
-    function cost_fn(x::Vector{Float64}, grad::Vector{Float64})
-        eval_count += 1
-        state .= initial_state
-        pauli_ansatz!(ansatz, x, state, tmp)
-        res = real(exp_val(hamiltonian, state, tmp))
-        if length(grad) > 0
-            state .= initial_state
-            fast_grad!(hamiltonian, ansatz, x, grad, tmp, state, tmp1, tmp2)
-        end
-
-        push!(fn_evals, res)
-        append!(grad_evals, grad)
-
-        return res
+    function cost_fn(x, grad)
+        return _cost_fn_vqe(x, grad, ansatz, hamiltonian, fn_evals, grad_evals, eval_count, state, initial_state, tmp, tmp1, tmp2)
     end
 
     if opt !== "random_sampling"
@@ -92,51 +250,8 @@ function commuting_vqe(
     fn_evals = Vector{Float64}()
     grad_evals = Vector{Float64}()
 
-    function cost_fn(x::Vector{Float64}, grad::Vector{Float64})
-        state .= initial_state
-        
-        unpacked_x = []
-        unpacked_ansatz = []
-
-        for (xi, op) in zip(x,ansatz)
-            xp = xi*real(op.coeffs)
-            append!(unpacked_ansatz, op.paulis)
-            append!(unpacked_x, xp)
-            pauli_ansatz!(op.paulis, xp, state, tmp)
-        end
-        
-        res = real(exp_val(hamiltonian, state, tmp))
-
-        if output_state !== nothing
-            output_state .= state
-        end
-
-        if length(grad) > 0
-            state .= initial_state
-
-            repeat_lengths = map(o -> length(o.paulis), ansatz)
-            unpacked_grad = similar(unpacked_x)
-
-            unpacked_grad = convert(Array{Float64,1},unpacked_grad)
-            unpacked_x = convert(Array{Float64,1},unpacked_x)
-            unpacked_ansatz = convert(Array{Pauli{UInt64},1},unpacked_ansatz)
-
-            fast_grad!(hamiltonian, unpacked_ansatz, unpacked_x, unpacked_grad, tmp, state, tmp1, tmp2)
-
-            
-            inds_begin = accumulate(+,repeat_lengths,init=1)-repeat_lengths
-            inds_end = accumulate(+,repeat_lengths)
-
-            grad_list = [unpacked_grad[i1:i2] for (i1,i2) in zip(inds_begin,inds_end)]
-            grad .= map(sum, grad_list)
-        end
-
-	push!(fn_evals, res)
-	append!(grad_evals, grad)
-
-        eval_count += 1
-
-        return res
+    function cost_fn(x, grad)
+        return _cost_fn_commuting_vqe(x, grad, ansatz, hamiltonian, fn_evals, grad_evals, eval_count, state, initial_state, tmp, tmp1, tmp2, output_state)
     end
 
     opt.lower_bounds = -π
@@ -150,6 +265,18 @@ function commuting_vqe(
     return (minf, minx, ret, eval_count)
 end
 
+function qaoa_ansatz(
+    hamiltonian::Operator,
+    mixers::Array{Operator,1}
+)
+    # num_pars == 2*length(mixers)+1
+    p = length(mixers)
+    ansatz = zip(mixers, repeat([hamiltonian], p))
+    ansatz = collect(Iterators.flatten(ansatz))
+    prepend!(ansatz, [hamiltonian])
+    return ansatz
+end
+
 function QAOA(
     hamiltonian::Operator,
     mixers::Array{Operator,1},
@@ -160,12 +287,7 @@ function QAOA(
     path = nothing, # Should be a CSV file
     output_state::Union{Nothing,Array{ComplexF64,1}} = nothing
 )
-    # num_pars == 2*length(mixers)+1
-    p = length(mixers)
-    ansatz = zip(mixers, repeat([hamiltonian], p))
-    ansatz = collect(Iterators.flatten(ansatz))
-    prepend!(ansatz, [hamiltonian])
-
+    ansatz = qaoa_ansatz(hamiltonian, mixers)
     return commuting_vqe(
         hamiltonian,
         ansatz,
@@ -370,7 +492,8 @@ function adapt_qaoa(
         end
 
         push!(ansatz, pool[hist.max_grad_ind[end]])
-        point = vcat(hist.opt_pars[end], [initial_parameter, initial_parameter])
+        #point = vcat(hist.opt_pars[end], [0.0, initial_parameter])
+        point = vcat(hist.opt_pars[end], [initial_parameter, 0.0])
         if length(point) == 2
             push!(point, initial_parameter)
         end
@@ -382,7 +505,7 @@ function adapt_qaoa(
             setproperty!(opt,Symbol(akey),opt_dict[akey])
         end
 
-	vqe_path = "$path/vqe_layer_$layer_count.h5"
+	    vqe_path = "$path/vqe_layer_$layer_count.h5"
 
         state .= initial_state
 

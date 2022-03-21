@@ -76,7 +76,7 @@ function pauli_to_axes(P::Pauli{T}, n::Int) where T<:Unsigned
             end
         end
     end
-    return l
+    return reverse(l)
 end
 
 
@@ -144,7 +144,7 @@ function Base.show(io::IO, P::Pauli)
     else
         error("invalid phase...")
     end
-    print("Pauli(x=$xs, y=$ys, z=$zs, ph=$ph)")
+    print(io, "Pauli(x=$xs, y=$ys, z=$zs, ph=$ph)")
 end
 
 

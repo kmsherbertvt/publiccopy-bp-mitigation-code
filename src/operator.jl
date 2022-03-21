@@ -21,7 +21,7 @@ function group_inds_by_eq(A::Array)
     return grps
 end
 
-function op_simplify!(A::Operator, tol::Float64 = 0.0)
+function op_chop!(A::Operator, tol::Float64 = 0.0)
     l = length(A.paulis)
     if l==0
         return
@@ -33,6 +33,10 @@ function op_simplify!(A::Operator, tol::Float64 = 0.0)
             deleteat!(A.paulis, i)
         end
     end
+end
+
+function op_simplify!(A::Operator, tol::Float64 = 0.0)
+    op_chop!(A, tol)
 
     l = length(A.paulis)
     # Bring all phases out of Paulis
@@ -163,7 +167,7 @@ function matrix_to_operator(A)
     operator = Operator([], [])
 
     for axes in Iterators.product(ntuple(i->[0, 1, 2, 3], n)...)
-        pauli_mat = pauli_str([i for i in axes])
+        pauli_mat = pauli_str(reverse([i for i in axes]))
         pauli = pauli_string_to_pauli(reverse([i for i in axes]))
         coeff = tr(pauli_mat*A) / N
 

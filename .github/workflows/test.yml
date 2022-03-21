@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         julia-version: ['1.7']
-        julia-arch: [x64, x86]
+        julia-arch: [x64]
         os: [ubuntu-latest]
     
     steps:
@@ -17,5 +17,23 @@ jobs:
         with:
           version: ${{ matrix.julia-version }}
           arch: ${{ matrix.julia-arch }}
-      - uses: julia-actions/julia-buildpkg@v1
-      - uses: julia-actions/julia-runtest@v1
+            #- uses: julia-actions/cache@v1
+            #  with:
+            #    cache-registries: "true"
+      - uses: actions/cache@v1
+        env:
+          cache-name: cache-artifacts
+          JULIA_NUM_THREADS: 2
+        with:
+          path: ~/.julia/artifacts
+          key: ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-test-${{ env.cache-name }}-
+            ${{ runner.os }}-test-
+            ${{ runner.os }}-
+      - name: Run Julia Tests
+        run: |
+          cd test
+          julia --color=yes --project=.. -e 'using Pkg; Pkg.instantiate();'
+          julia --color=yes --project=.. runtests.jl
+        #      - uses: julia-actions/julia-runtest@v1
