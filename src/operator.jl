@@ -5,6 +5,13 @@ mutable struct Operator
     coeffs::Array{ComplexF64,1}
 end
 
+function print_operator(o::Operator)
+    n = num_qubits(o)
+    for (p,c) in zip(o.paulis, o.coeffs)
+        println("(" * string(c) * ") " * pauli_to_pauli_string(p, n))
+    end
+end
+
 function group_inds_by_eq(A::Array)
     l = length(A)
     grps = Dict{typeof(A[1]), Array{Int64,1}}()
