@@ -8,6 +8,7 @@ include("fast_grad.jl")
 include("spin_chains.jl")
 include("vqe.jl")
 include("callbacks.jl")
+include("uccsd.jl")
 include("qaoa_hamiltonians.jl")
 
 export ADAPTHistory,
@@ -23,6 +24,8 @@ export ADAPTHistory,
     QAOA,
     adapt_vqe,
     adapt_qaoa,
+    cluster_doub_op,
+    cluster_sing_op,
     commutator,
     dagger,
     dagger!,
