@@ -5,6 +5,14 @@ mutable struct Operator
     coeffs::Array{ComplexF64,1}
 end
 
+function dagger(op::Operator)
+    return Operator(op.paulis, conj(op.coeffs))
+end
+
+function dagger!(op::Operator)
+    conj!(op.coeffs)
+end
+
 function print_operator(o::Operator)
     n = num_qubits(o)
     for (p,c) in zip(o.paulis, o.coeffs)
@@ -138,6 +146,16 @@ function exp_val(A::Operator, state::Array{ComplexF64,1}, tmp::Array{ComplexF64}
         result += phase_shift(c, p.phase)*dot(tmp, state)
     end
     return result
+end
+
+
+function subcommutes(op::Operator)
+    for (p,q)=product(op.paulis, op.paulis)
+        if !pauli_commute(p,q)
+            return false
+        end
+    end
+    return true
 end
 
 
