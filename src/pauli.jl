@@ -118,7 +118,7 @@ function pauli_to_pauli_string(P::Pauli{T}, n::Int) where T<:Unsigned
     for el in reverse(pax)
         push!(pstr,plist[el])
     end
-    return join(pstr)
+    return reverse(join(pstr))
 end
 
 function _pauli_masks(res::Array{Int64,1}, pauli_str::Array{Int64,1})
