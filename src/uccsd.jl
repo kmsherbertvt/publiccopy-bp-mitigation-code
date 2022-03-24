@@ -88,6 +88,6 @@ function cluster_doub_op(a::Int, b::Int, i::Int, j::Int, n::Int)
     op = _z_string_doub_term(a, b, i, j, n) * _doub_sum_term(a, b, i, j, n)
     op.coeffs ./= (8.0 + 0.0im)
     op.coeffs .*= (0.0 + 1.0im)
-    op.coeffs .*= (-1.0 + 0.0im)
+    op.coeffs .*= (1.0 + 0.0im)
     return op
 end
