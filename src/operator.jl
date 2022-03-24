@@ -215,13 +215,16 @@ function num_qubits(O::Operator)
 end
 
 
-function operator_to_matrix(O::Operator)
-    n = num_qubits(O)
+function operator_to_matrix(O::Operator, n::Int)
     result = zeros(ComplexF64, 2^n, 2^n)
     for (c,p) in zip(O.coeffs, O.paulis)
         result += phase_shift(c, p.phase)*pauli_str(pauli_to_axes(p, n))
     end
     return result
+end
+
+function operator_to_matrix(O::Operator)
+    return operator_to_matrix(O, num_qubits(O))
 end
 
 
