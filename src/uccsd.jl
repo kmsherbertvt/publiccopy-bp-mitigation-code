@@ -99,37 +99,46 @@ function cluster_doub_op(a::Int, b::Int, i::Int, j::Int, n::Int)
     return op
 end
 
-function pool_singles(n::Int)
+function pool_singles(n::Int, Ne::Int)
     """ Produces a set of Hermitian operators for the singles pool
     """
     res = []
-    for (p,q)=product(1:n,1:n)
-        if !(p>q) continue end
-        op = cluster_sing_op(p, q, n)
-        op.coeffs .*= 1im
-        push!(res, op)
+    for i=1:(Ne)
+        for a=(Ne+1):(n)
+            if (i%2) != (a%2) continue end
+            op = cluster_sing_op(a, i, n)
+            op.coeffs .*= 1im
+            push!(res, op)
+        end
     end
     return res
 end
 
-function pool_doubles(n::Int)
+function pool_doubles(n::Int, Ne::Int)
     """ Produces a set of Hermitian operators for the doubles pool
     """
     res = []
-    for (a,b,i,j)=product(1:n,1:n,1:n,1:n)
-        if !(b>a>j>i) continue end
-        op = cluster_doub_op(a, b, i, j, n)
-        op.coeffs .*= 1im
-        push!(res, op)
+    for i=1:(Ne)
+        for j=(i+1):(Ne)
+            for a=(Ne+1):(n)
+                for b=(a+1):(n)
+                    if (a%2+b%2) != (i%2+j%2) continue end
+                    @show (a,b,i,j)
+                    op = cluster_doub_op(a, b, i, j, n)
+                    op.coeffs .*= 1im
+                    push!(res, op)
+                end
+            end
+        end
     end
     return res
 end
 
-function uccsd_pool(n::Int)
+function uccsd_pool(n::Int, Ne::Int)
     """ Produces a set of Hermitian operators for the UCCSD pool
     """
     res = []
-    append!(res, pool_singles(n))
-    append!(res, pool_doubles(n))
+    append!(res, pool_singles(n, Ne))
+    append!(res, pool_doubles(n, Ne))
     return res
 end
