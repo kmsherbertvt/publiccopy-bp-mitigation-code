@@ -30,39 +30,43 @@ function _op_mat_comp(a, b, n; eps=1e-5)
     return norm(m1 - m2) < eps
 end
 
-@testset "OpenFermion Consistency Check" begin
+@testset "OpenFermion Consistency Check, singles" begin
     p = 5
     q = 2
     n = 5
-    op_expected = Operator([pauli_string_to_pauli("YZZXI"), pauli_string_to_pauli("XZZYI")], [0.0 - 0.5im, 0.0 + 0.5im])
+    op_expected = Operator(["YZZXI", "XZZYI"], [0.0 - 0.5im, 0.0 + 0.5im])
     op_actual = cluster_sing_op(p, q, n)
     @test _op_mat_comp(op_expected, op_actual, n)
 
     p = 4
     q = 2
     n = 5
-    op_expected = Operator([pauli_string_to_pauli("IYZXI"), pauli_string_to_pauli("IXZYI")], [0.0 - 0.5im, 0.0 + 0.5im])
+    op_expected = Operator(["IYZXI", "IXZYI"], [0.0 - 0.5im, 0.0 + 0.5im])
     op_actual = cluster_sing_op(p, q, n)
     @test _op_mat_comp(op_expected, op_actual, n)
 
     p = 5
     q = 3
     n = 5
-    op_expected = Operator([pauli_string_to_pauli("YZXII"), pauli_string_to_pauli("XZYII")], [0.0 - 0.5im, 0.0 + 0.5im])
+    op_expected = Operator(["YZXII", "XZYII"], [0.0 - 0.5im, 0.0 + 0.5im])
     op_actual = cluster_sing_op(p, q, n)
     @test _op_mat_comp(op_expected, op_actual, n)
 
     p = 2
     q = 1
     n = 2
-    op_expected = Operator([pauli_string_to_pauli("YX"), pauli_string_to_pauli("XY")], [0.0 - 0.5im, 0.0 + 0.5im])
+    op_expected = Operator(["YX", "XY"], [0.0 - 0.5im, 0.0 + 0.5im])
     op_actual = cluster_sing_op(p, q, n)
     @test _op_mat_comp(op_expected, op_actual, n)
 
     p = 3
     q = 1
     n = 3
-    op_expected = Operator([pauli_string_to_pauli("YZX"), pauli_string_to_pauli("XZY")], [0.0 - 0.5im, 0.0 + 0.5im])
+    op_expected = Operator(["YZX", "XZY"], [0.0 - 0.5im, 0.0 + 0.5im])
     op_actual = cluster_sing_op(p, q, n)
     @test _op_mat_comp(op_expected, op_actual, n)
+end
+
+@testset "OpenFermion Consistency Check, doubles" begin
+
 end
