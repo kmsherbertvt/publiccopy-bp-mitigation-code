@@ -5,6 +5,10 @@ mutable struct Operator
     coeffs::Array{ComplexF64,1}
 end
 
+function Operator(paulis::Vector{String}, coeffs::Vector)
+    return Operator(map(s->pauli_string_to_pauli(s), paulis), complex(coeffs))
+end
+
 function dagger(op::Operator)
     return Operator(op.paulis, conj(op.coeffs))
 end
