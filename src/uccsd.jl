@@ -1,3 +1,6 @@
+using IterTools
+
+
 function _swap_term(i::Int, a::Int, n::Int)
     s_1 = repeat(["I"], n)
     s_2 = repeat(["I"], n)
@@ -32,6 +35,8 @@ end
 function cluster_sing_op(p::Int, q::Int, n::Int)
     """ Implements Eq A1
     https://arxiv.org/pdf/1701.02691.pdf
+
+    The operator that this produces is anti-Hermitian!
     """
     if p<=q error("Must have p>q") end
     op = _z_string_term(q, p, n) * _swap_term(q, p, n)
@@ -83,6 +88,8 @@ end
 function cluster_doub_op(a::Int, b::Int, i::Int, j::Int, n::Int)
     """ Implements Eq A2
     https://arxiv.org/pdf/1701.02691.pdf
+
+    The operator that this produces is anti-Hermitian!
     """
     if !(b>a>j>i) error("Must have b>a>j>i") end
     op = _z_string_doub_term(a, b, i, j, n) * _doub_sum_term(a, b, i, j, n)
@@ -90,4 +97,39 @@ function cluster_doub_op(a::Int, b::Int, i::Int, j::Int, n::Int)
     op.coeffs .*= (0.0 + 1.0im)
     op.coeffs .*= (1.0 + 0.0im)
     return op
+end
+
+function pool_singles(n::Int)
+    """ Produces a set of Hermitian operators for the singles pool
+    """
+    res = []
+    for (p,q)=product(1:n,1:n)
+        if !(p>q) continue end
+        op = cluster_sing_op(p, q, n)
+        op.coeffs .*= 1im
+        push!(res, op)
+    end
+    return res
+end
+
+function pool_doubles(n::Int)
+    """ Produces a set of Hermitian operators for the doubles pool
+    """
+    res = []
+    for (a,b,i,j)=product(1:n,1:n,1:n,1:n)
+        if !(b>a>j>i) continue end
+        op = cluster_doub_op(a, b, i, j, n)
+        op.coeffs .*= 1im
+        push!(res, op)
+    end
+    return res
+end
+
+function uccsd_pool(n::Int)
+    """ Produces a set of Hermitian operators for the UCCSD pool
+    """
+    res = []
+    append!(res, pool_singles(n))
+    append!(res, pool_doubles(n))
+    return res
 end
