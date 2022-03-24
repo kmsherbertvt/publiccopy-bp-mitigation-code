@@ -81,6 +81,12 @@ end
 
 
 function pauli_string_to_pauli(ps::String, type_out = UInt64)
+    """ This function reads in a Pauli string lexicographically.
+    This means that an input "XYZ" correponds to `Z1 Y2 X3`.
+    Another way of saying this is that the input string is
+    interpreted as little-endian, i.e. the rightmost bit has
+    the smallest index.
+    """
     l = zeros(Int64, length(ps))
     for (i, c)=enumerate(ps)
         if c == 'I'
