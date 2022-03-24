@@ -8,6 +8,8 @@ function _swap_term(i::Int, a::Int, n::Int)
     s_2[i] = "X"
     s_2[a] = "Y"
 
+    reverse!(s_1)
+    reverse!(s_2)
 
     return Operator([
         pauli_string_to_pauli(join(s_1)),
@@ -22,6 +24,8 @@ function _z_string_term(i::Int, a::Int, n::Int)
     for k=(i+1):(a-1)
         s[k] = "Z"
     end
+    reverse!(s)
+    # Debug to this step!
     return Operator([pauli_string_to_pauli(join(s))], [1.0 + 0.0im])
 end
 
@@ -32,6 +36,7 @@ function cluster_sing_op(p::Int, q::Int, n::Int)
     if p<=q error("Must have p>q") end
     op = _z_string_term(q, p, n) * _swap_term(q, p, n)
     op.coeffs .*= (0.0 + 0.5im)
+    op.coeffs .*= (-1.0 + 0.0im)
     return op
 end
 
@@ -43,6 +48,7 @@ function _z_string_doub_term(a::Int, b::Int, i::Int, j::Int, n::Int)
     for l=(a+1):(b-1)
         s[l] = "Z"
     end
+    reverse!(s)
     return Operator([pauli_string_to_pauli(join(s))], [1.0 + 0.0im])
 end
 
@@ -51,6 +57,7 @@ function pauli_inds_to_pauli(pairs, n::Int, coeff)
     for (a,i)=pairs
         s[i] = a
     end
+    reverse!(s)
     return Operator([pauli_string_to_pauli(join(s))], [coeff])
 end
 
@@ -81,5 +88,6 @@ function cluster_doub_op(a::Int, b::Int, i::Int, j::Int, n::Int)
     op = _z_string_doub_term(a, b, i, j, n) * _doub_sum_term(a, b, i, j, n)
     op.coeffs ./= (8.0 + 0.0im)
     op.coeffs .*= (0.0 + 1.0im)
+    op.coeffs .*= (-1.0 + 0.0im)
     return op
 end
