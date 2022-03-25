@@ -65,6 +65,8 @@ export ADAPTHistory,
     xxz_matrix,
     xxz_model,
     xyz_matrix,
-    xyz_model
-
+    xyz_model,
+    MaxGradientPrinter,
+    OperatorIndexPrinter,
+    ParameterPrinter
 end

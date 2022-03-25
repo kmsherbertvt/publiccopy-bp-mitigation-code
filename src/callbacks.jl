@@ -16,6 +16,30 @@ function MaxGradientStopper(eps::Float64 = 1e-8)
     return stopper
 end
 
+function MaxGradientPrinter()
+    function stopper(hist::ADAPTHistory)
+        println("Maximum gradient is: " * string(hist.max_grad))
+        return false
+    end
+    return stopper
+end
+
+function OperatorIndexPrinter()
+    function stopper(hist::ADAPTHistory)
+        println("Maximum gradient has index: " * string(hist.max_grad_ind))
+        return false
+    end
+    return stopper
+end
+
+function ParameterPrinter()
+    function stopper(hist::ADAPTHistory)
+        println("Optimal parameters are: " * string(hist.opt_pars))
+        return false
+    end
+    return stopper
+end
+
 
 function EnergyErrorPrinter(gse::Float64)
     function stopper(hist::ADAPTHistory)
@@ -60,7 +84,7 @@ end
 
 function FloorStopper(floor::Float64, delta::Float64 = 1e-8)
     function stopper(hist::ADAPTHistory)
-        if abs(hist.energy[-1] - floor) <= delta
+        if abs(hist.energy[end] - floor) <= delta
             return true
         else
             return false
