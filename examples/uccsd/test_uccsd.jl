@@ -1,5 +1,5 @@
 using AdaptBarren
-using Test
+using BenchmarkTools
 
 function terms_to_pauli(terms, n)
     output_string = repeat(['I'], n)
@@ -59,7 +59,7 @@ callbacks = Function[
     OperatorIndexPrinter(pool_labels)
 ]
 
-result = adapt_vqe_commuting(
+result = @btime adapt_vqe_commuting(
     hamiltonian,
     pool,
     num_qubits,
