@@ -123,7 +123,6 @@ function pool_doubles(n::Int, Ne::Int)
             for a=(Ne+1):(n)
                 for b=(a+1):(n)
                     if (a%2+b%2) != (i%2+j%2) continue end
-                    @show (a,b,i,j)
                     op = cluster_doub_op(a, b, i, j, n)
                     op.coeffs .*= 1im
                     push!(res, op)
@@ -137,7 +136,7 @@ end
 function uccsd_pool(n::Int, Ne::Int)
     """ Produces a set of Hermitian operators for the UCCSD pool
     """
-    res = []
+    res = Array{Operator,1}()
     append!(res, pool_singles(n, Ne))
     append!(res, pool_doubles(n, Ne))
     return res
