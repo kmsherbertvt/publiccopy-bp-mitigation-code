@@ -18,15 +18,24 @@ end
 
 function MaxGradientPrinter()
     function stopper(hist::ADAPTHistory)
-        println("Maximum gradient is: " * string(hist.max_grad))
+        num_pars = length(hist.opt_pars[end])
+        max_grad = string(hist.max_grad[end])
+        println("Pars: $num_pars, MaxGrad: $max_grad")
         return false
     end
     return stopper
 end
 
-function OperatorIndexPrinter()
+function OperatorIndexPrinter(formatted_ops = nothing)
     function stopper(hist::ADAPTHistory)
-        println("Maximum gradient has index: " * string(hist.max_grad_ind))
+        num_pars = length(hist.opt_pars[end])
+        max_grad_ind = hist.max_grad_ind[end]
+        if formatted_ops === nothing
+            printed_op = max_grad_ind
+        else
+            printed_op = formatted_ops[max_grad_ind]
+        end
+        println("Pars: $num_pars, MaxGradOp: $printed_op")
         return false
     end
     return stopper
@@ -34,7 +43,9 @@ end
 
 function ParameterPrinter()
     function stopper(hist::ADAPTHistory)
-        println("Optimal parameters are: " * string(hist.opt_pars))
+        num_pars = length(hist.opt_pars[end])
+        opt_pars = string(hist.opt_pars[end])
+        println("Pars: $num_pars, OptPars: $opt_pars")
         return false
     end
     return stopper
