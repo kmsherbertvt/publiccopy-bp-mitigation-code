@@ -38,7 +38,7 @@ end
 
 hamiltonian = get_ham()
 opt = "LD_LBFGS"
-pool = uccsd_pool(12, 6)
+(pool_labels, pool) = uccsd_pool(12, 6)
 num_qubits = 12
 
 hf_ind = Int(0b111111000000) + 1
@@ -52,10 +52,11 @@ println("Number of operators in the pool is: " * string(length(pool)))
 callbacks = Function[
     MaxGradientStopper(1e-8),
     FloorStopper(en_fci, 1e-10),
+    ParameterStopper(205),
     EnergyErrorPrinter(en_fci),
     MaxGradientPrinter(),
     ParameterPrinter(),
-    OperatorIndexPrinter()
+    OperatorIndexPrinter(pool_labels)
 ]
 
 result = adapt_vqe_commuting(

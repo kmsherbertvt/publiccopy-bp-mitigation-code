@@ -102,13 +102,13 @@ end
 function pool_singles(n::Int, Ne::Int)
     """ Produces a set of Hermitian operators for the singles pool
     """
-    res = []
+    res = Dict{Any,Operator}()
     for i=1:(Ne)
         for a=(Ne+1):(n)
             if (i%2) != (a%2) continue end
             op = cluster_sing_op(a, i, n)
             op.coeffs .*= 1im
-            push!(res, op)
+            res[(a,i)] = op
         end
     end
     return res
@@ -117,7 +117,7 @@ end
 function pool_doubles(n::Int, Ne::Int)
     """ Produces a set of Hermitian operators for the doubles pool
     """
-    res = []
+    res = Dict{Any,Operator}()
     for i=1:(Ne)
         for j=(i+1):(Ne)
             for a=(Ne+1):(n)
@@ -125,7 +125,7 @@ function pool_doubles(n::Int, Ne::Int)
                     if (a%2+b%2) != (i%2+j%2) continue end
                     op = cluster_doub_op(a, b, i, j, n)
                     op.coeffs .*= 1im
-                    push!(res, op)
+                    res[(a,b,i,j)] = op
                 end
             end
         end
@@ -136,8 +136,12 @@ end
 function uccsd_pool(n::Int, Ne::Int)
     """ Produces a set of Hermitian operators for the UCCSD pool
     """
-    res = Array{Operator,1}()
-    append!(res, pool_singles(n, Ne))
-    append!(res, pool_doubles(n, Ne))
-    return res
+    d = merge(pool_singles(n, Ne), pool_doubles(n, Ne))
+    labels = []
+    ops = Array{Operator,1}()
+    for (l,o) in d
+        push!(labels, l)
+        push!(ops, o)
+    end
+    return (labels, ops)
 end
