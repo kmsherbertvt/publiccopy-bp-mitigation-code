@@ -35,3 +35,34 @@ function get_ham()
     end
     return operator
 end
+
+hamiltonian = get_ham()
+opt = "LD_LBFGS"
+pool = uccsd_pool(12, 6)
+num_qubits = 12
+
+hf_ind = Int(0b111111000000) + 1
+initial_state = zeros(ComplexF64, 2^12)
+initial_state[hf_ind] = 1.0 + 0.0im
+
+en_fci = -3.236066279892345
+
+println("Number of operators in the pool is: " * string(length(pool)))
+
+callbacks = Function[
+    MaxGradientStopper(1e-8),
+    FloorStopper(en_fci, 1e-10),
+    EnergyErrorPrinter(en_fci),
+    MaxGradientPrinter(),
+    ParameterPrinter(),
+    OperatorIndexPrinter()
+]
+
+result = adapt_vqe_commuting(
+    hamiltonian,
+    pool,
+    num_qubits,
+    opt,
+    callbacks;
+    initial_state = initial_state
+)
