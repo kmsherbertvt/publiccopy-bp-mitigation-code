@@ -352,6 +352,88 @@ function adapt_step!(
 end
 
 
+function adapt_vqe_commuting(
+    hamiltonian::Operator,
+    pool::Array{Operator,1},
+    num_qubits::Int64,
+    optimizer::Union{String,Dict},
+    callbacks::Array{Function};
+    initial_parameter::Float64 = 0.0,
+    initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
+    path = nothing,
+    tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
+) where T<:Unsigned
+    hist = ADAPTHistory([], [], [], [], [], [], [])
+
+    #if path !== nothing
+    #    """ in $path the following files will be written
+    #        $path/layer_*.csv - indexed by integer
+    #        $path/adapt_history.csv
+    #    """
+    #end
+
+    if optimizer isa String
+        opt_dict = Dict("name" => optimizer)
+    elseif optimizer isa Dict
+        opt_dict = optimizer
+    else
+        throw(ArgumentError("optimizer should be String or Dict"))
+    end
+
+    if tmp === nothing
+        tmp = zeros(ComplexF64, 2^num_qubits)
+        tmp[1] = 1.0 + 0.0im
+    end
+    if initial_state === nothing
+        initial_state = zeros(ComplexF64, 2^num_qubits)
+        initial_state[1] = 1.0 + 0.0im
+    end
+
+    comms = Array{Operator, 1}()
+    for _op in pool
+        push!(comms, commutator(hamiltonian, _op, false))
+    end
+
+    state = copy(initial_state)
+    adapt_step!(hist, comms, tmp, state, hamiltonian, [], nothing, nothing)
+    ansatz = Array{Operator, 1}()
+
+    layer_count = 0
+
+    while true
+        for c in callbacks
+            if c(hist)
+                #if path !== nothing
+                #    adapt_history_dump!(hist, "$path/adapt_history.csv", num_qubits)
+                #end
+                return hist
+            end
+        end
+
+        push!(ansatz, pool[hist.max_grad_ind[end]])
+        point = vcat(hist.opt_pars[end], [initial_parameter])
+
+        opt = Opt(Symbol(opt_dict["name"]), length(point))
+
+        opt_keys = collect(keys(opt_dict))
+        deleteat!(opt_keys,findall(x->x=="name",opt_keys))
+        for akey in opt_keys
+            setproperty!(opt,Symbol(akey),opt_dict[akey])
+        end
+
+	vqe_path = "$path/vqe_layer_$layer_count.h5"
+
+        state .= initial_state
+        output_state = similar(state)
+        energy, point, ret, opt_evals = commuting_vqe(hamiltonian, ansatz, opt, point, num_qubits, state, nothing, output_state)
+        state .= output_state
+        adapt_step!(hist, comms, tmp, state, hamiltonian, point,pool[hist.max_grad_ind[end]],opt_evals) # pool operator of the step that just finished
+
+        layer_count += 1
+    end
+end
+
+
 function adapt_vqe(
     hamiltonian::Operator,
     pool::Array{Pauli{T},1},
