@@ -52,7 +52,7 @@ println("Number of operators in the pool is: " * string(length(pool)))
 callbacks = Function[
     MaxGradientStopper(1e-8),
     FloorStopper(en_fci, 1e-10),
-    ParameterStopper(205),
+    ParameterStopper(20),
     EnergyErrorPrinter(en_fci),
     MaxGradientPrinter(),
     ParameterPrinter(),
