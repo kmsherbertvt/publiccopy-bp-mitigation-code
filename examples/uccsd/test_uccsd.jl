@@ -18,10 +18,10 @@ function terms_to_pauli(terms, n)
     return pauli_string_to_pauli(join(output_string))
 end
 
-function get_ham()
+function get_ham(filename)
     operator = Operator([], [])
     n = 12
-    open("h6_1A.ham") do f
+    open(filename) do f
         for line in readlines(f)
             line = replace(line, "["=>"")
             line = replace(line, "]"=>"")
@@ -36,23 +36,22 @@ function get_ham()
     return operator
 end
 
-hamiltonian = get_ham()
 opt = "LD_LBFGS"
-(pool_labels, pool) = uccsd_pool(12, 6)
+
+hamiltonian = get_ham("h6_1A.ham")
 num_qubits = 12
-
+(pool_labels, pool) = uccsd_pool(num_qubits, 6)
 hf_ind = Int(0b111111000000) + 1
-initial_state = zeros(ComplexF64, 2^12)
-initial_state[hf_ind] = 1.0 + 0.0im
-
 en_fci = -3.236066279892345
 
+initial_state = zeros(ComplexF64, 2^12)
+initial_state[hf_ind] = 1.0 + 0.0im
 println("Number of operators in the pool is: " * string(length(pool)))
 
 callbacks = Function[
     MaxGradientStopper(1e-8),
     FloorStopper(en_fci, 1e-10),
-    ParameterStopper(20),
+    ParameterStopper(200),
     EnergyErrorPrinter(en_fci),
     MaxGradientPrinter(),
     ParameterPrinter(),
