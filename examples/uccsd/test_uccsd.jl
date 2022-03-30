@@ -51,6 +51,13 @@ hamiltonian = get_ham("n2.ham", num_qubits)
 hf_ind = Int(0b11111111110000000000) + 1
 en_fci = -107.657038063455
 
+# mol
+num_qubits = 8
+hamiltonian = get_ham("h4.ham", num_qubits)
+(pool_labels, pool) = uccsd_pool(num_qubits, 4)
+hf_ind = Int(0b11110000) + 1
+en_fci = -2.1663874486347625
+
 initial_state = zeros(ComplexF64, 2^num_qubits)
 initial_state[hf_ind] = 1.0 + 0.0im
 println("Number of operators in the pool is: " * string(length(pool)))
@@ -65,7 +72,7 @@ callbacks = Function[
     OperatorIndexPrinter(pool_labels)
 ]
 
-result = @btime adapt_vqe_commuting(
+result = adapt_vqe_commuting(
     hamiltonian,
     pool,
     num_qubits,
