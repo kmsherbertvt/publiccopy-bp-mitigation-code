@@ -43,7 +43,7 @@ end
 function DeltaYStopper(delta::Float64 = 1e-8, n_best::Int64 = 5)
     function stopper(hist::ADAPTHistory)
         en_sort = sort(hist.energy)
-        if len(en_sort) <= n_best
+        if length(en_sort) <= n_best
             return false
         end
         best = en_sort[1]
