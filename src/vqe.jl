@@ -409,6 +409,7 @@ function adapt_vqe_commuting(
                 return hist
             end
         end
+        flush(stdout)
 
         push!(ansatz, pool[hist.max_grad_ind[end]])
         point = vcat(hist.opt_pars[end], [initial_parameter])
@@ -492,6 +493,7 @@ function adapt_vqe(
                 return hist
             end
         end
+        flush(stdout)
 
         push!(ansatz, pool[hist.max_grad_ind[end]])
         point = vcat(hist.opt_pars[end], [initial_parameter])
@@ -572,6 +574,7 @@ function adapt_qaoa(
                 return hist
             end
         end
+        flush(stdout)
 
         push!(ansatz, pool[hist.max_grad_ind[end]])
         #point = vcat(hist.opt_pars[end], [0.0, initial_parameter])
