@@ -262,6 +262,10 @@ function commuting_vqe(
 
     (minf,minx,ret) = optimize(opt, initial_point)
 
+    if output_state !== nothing
+        cost_fn(minx, similar(minx))
+    end
+
     return (minf, minx, ret, eval_count)
 end
 
@@ -342,7 +346,7 @@ function adapt_step!(
         pauli_chosen,
         numevals
         )
-    push!(hist.grads, [imag(exp_val(com, state, tmp)) for com in comms]) # phase?
+    push!(hist.grads, [abs(exp_val(com, state, tmp)) for com in comms]) # phase?
     push!(hist.max_grad_ind, argmax(map(x -> abs(x), hist.grads[end])))
     push!(hist.max_grad, abs(hist.grads[end][hist.max_grad_ind[end]]))
     push!(hist.energy, real(exp_val(hamiltonian, state, tmp)))
@@ -446,14 +450,8 @@ function adapt_qaoa(
     path = nothing,
     tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
 )
+    #### Initialization
     hist = ADAPTHistory([], [], [], [], [], [], [])
-
-    #if path !== nothing
-    #    """ in $path the following files will be written
-    #        $path/layer_*.csv - indexed by integer
-    #        $path/adapt_history.csv
-    #    """
-    #end
 
     if optimizer isa String
         opt_dict = Dict("name" => optimizer)
@@ -476,15 +474,17 @@ function adapt_qaoa(
     for _op in pool
         push!(comms, commutator(hamiltonian, _op, false))
     end
-
-    state = copy(initial_state)
-    adapt_step!(hist, comms, tmp, state, hamiltonian, [], nothing, nothing)
-
     ansatz = Array{Operator, 1}()
-
     layer_count = 0
 
+    #### First ADAPT Step
+
+    state = initial_state
+    adapt_step!(hist, comms, tmp, state, hamiltonian, [], nothing, nothing)
+
+    #### Main ADAPT Loop
     while true
+        #### Check Convergence
         for c in callbacks
             if c(hist)
                 return hist
@@ -510,7 +510,7 @@ function adapt_qaoa(
         state .= initial_state
 
         energy, point, ret, opt_evals = QAOA(hamiltonian, ansatz, opt, point, num_qubits, state, vqe_path, tmp)
-        state = copy(tmp)
+        state .= tmp
         adapt_step!(hist, comms, tmp, state, hamiltonian, point,pool[hist.max_grad_ind[end]],opt_evals) # pool operator of the step that just finished
 
         layer_count += 1
