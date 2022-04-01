@@ -277,7 +277,7 @@ function qaoa_ansatz(
     p = length(mixers)
     ansatz = zip(mixers, repeat([hamiltonian], p))
     ansatz = collect(Iterators.flatten(ansatz))
-    prepend!(ansatz, [hamiltonian])
+    #prepend!(ansatz, [hamiltonian])
     return ansatz
 end
 
@@ -485,16 +485,18 @@ function adapt_qaoa(
     for _op in pool
         push!(comms, commutator(hamiltonian, _op, false))
     end
-    ansatz = Array{Operator, 1}()
+    mixers = Array{Operator, 1}()
     layer_count = 0
 
-    #### First ADAPT Step
-
     state = initial_state
-    adapt_step!(hist, comms, tmp, state, hamiltonian, [], nothing, nothing)
+    point = Vector{Float64}()
+    opt_evals = nothing
+    op_chosen = nothing
 
-    #### Main ADAPT Loop
     while true
+        #### Some book-keeping of variables
+        adapt_step!(hist, comms, tmp, state, hamiltonian, point, op_chosen, opt_evals)
+
         #### Check Convergence
         for c in callbacks
             if c(hist)
@@ -502,21 +504,19 @@ function adapt_qaoa(
             end
         end
 
-        push!(ansatz, pool[hist.max_grad_ind[end]])
-        #point = vcat(hist.opt_pars[end], [0.0, initial_parameter])
-        point = vcat(hist.opt_pars[end], [initial_parameter, 0.0])
-        if length(point) == 2
-            push!(point, initial_parameter)
-        end
+        #### Get new operator
+        push!(mixers, pool[hist.max_grad_ind[end]])
 
-	    vqe_path = "$path/vqe_layer_$layer_count.h5"
+        #### Update point
+        _init_beta = 0.0
+        _init_gamma = initial_parameter
+        push!(point, _init_beta)
+        push!(point, _init_gamma)
+        if length(point) != 2*length(mixers) error("Invalid point size") end
 
-        state .= initial_state
-
-        energy, point, ret, opt_evals = QAOA(hamiltonian, ansatz, make_opt(optimizer, point), point, num_qubits, state, vqe_path, tmp)
-        state .= tmp
-        adapt_step!(hist, comms, tmp, state, hamiltonian, point,pool[hist.max_grad_ind[end]],opt_evals) # pool operator of the step that just finished
-
-        layer_count += 1
+        output_state = similar(initial_state)
+        min_energy, optimal_point, _, opt_evals = QAOA(hamiltonian, mixers, make_opt(optimizer, point), point, num_qubits, copy(initial_state), nothing, output_state)
+        state .= output_state
+        point .= optimal_point
     end
 end
