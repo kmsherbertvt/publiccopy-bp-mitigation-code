@@ -62,6 +62,16 @@ function EnergyErrorPrinter(gse::Float64)
     return stopper
 end
 
+function EnergyPrinter()
+    function stopper(hist::ADAPTHistory)
+        num_pars = length(hist.opt_pars[end])
+        en = hist.energy[end]
+        println("Pars: $num_pars, En: $en")
+        return false
+    end
+    return stopper
+end
+
 
 function ParameterStopper(max_pars::Int64)
     function stopper(hist::ADAPTHistory)
