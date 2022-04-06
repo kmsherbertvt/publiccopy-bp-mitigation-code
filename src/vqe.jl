@@ -344,9 +344,14 @@ function adapt_step!(
         hamiltonian,
         opt_pars,
         pauli_chosen,
-        numevals
+        numevals,
+        grad_state = nothing
         )
-    push!(hist.grads, [abs(exp_val(com, state, tmp)) for com in comms]) # phase?
+    
+    if grad_state === nothing
+        grad_state = state
+    end
+    push!(hist.grads, [abs(exp_val(com, grad_state, tmp)) for com in comms]) # phase?
     push!(hist.max_grad_ind, argmax(map(x -> abs(x), hist.grads[end])))
     push!(hist.max_grad, abs(hist.grads[end][hist.max_grad_ind[end]]))
     push!(hist.energy, real(exp_val(hamiltonian, state, tmp)))
@@ -495,7 +500,9 @@ function adapt_qaoa(
 
     while true
         #### Some book-keeping of variables
-        adapt_step!(hist, comms, tmp, state, hamiltonian, point, op_chosen, opt_evals)
+        grad_state = state
+        pauli_ansatz!(hamiltonian.paulis, real(hamiltonian.coeffs)*initial_parameter, grad_state, tmp)
+        adapt_step!(hist, comms, tmp, state, hamiltonian, point, op_chosen, opt_evals, grad_state)
 
         #### Check Convergence
         for c in callbacks

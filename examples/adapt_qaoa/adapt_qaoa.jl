@@ -84,8 +84,8 @@ Threads.@threads for i in ProgressBar(1:num_samples, printing_delay=0.1)
     _res_qaoa = run_qaoa(n, hamiltonian);
     _res_adapt = run_adapt_qaoa(n, hamiltonian);
 
-    _res_qaoa = map(safe_floor, _res_qaoa)
-    _res_adapt = map(safe_floor, _res_adapt)
+    #_res_qaoa = map(safe_floor, _res_qaoa)
+    #_res_adapt = map(safe_floor, _res_adapt)
 
     lock(lk) do
         push!(results_adapt, _res_adapt)
