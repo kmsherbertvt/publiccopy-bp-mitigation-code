@@ -8,32 +8,9 @@ using ProgressBars
 Random.seed!(42)
 rng = MersenneTwister(14)
 
-function _id_x_str(n::Int, k::Int)
-    s = repeat(["I"], n)
-    s[k] = "X"
-    return join(s)
-end
-
-function qaoa_mixer(n::Int)
-    paulis = [pauli_string_to_pauli(_id_x_str(n, k)) for k in range(1,n)]
-    coeffs = repeat([1.0], n)
-    return Operator(paulis, coeffs)
-end
-
-function safe_floor(x, eps = 1e-5, delta = 1e-10)
-    if x <= -eps error("Too negative: $x < -$eps") end
-    if x <= 0.0 return delta end
-    return x
-end
-
-#test_ham_vec = [0.0, -1.779640524849019, -0.9260288163486794, -1.9681563115877658, -1.5418617675114605, -2.6440667824502255, -2.1043764787001074, -2.469068464028941, -1.4482061210959358, -2.7084856199552063, -2.3316058016329757, -2.8543722708823145, -2.6037327216173747, -3.186576710566392, -3.123618296994383, -2.9689492563334676, -1.6430595132822896, -2.9277699712739658, -2.435395389482706, -2.98259281786445, -2.502309525394874, -3.1095844734762967, -2.931131296435258, -2.8008932149067483, -2.1243100795902614, -2.8896595115921895, -2.8740168199790386, -2.9018532223710345, -2.597224924712824, -2.685138846804498, -2.983417559941569, -2.3338184524233103, -2.3338184524233103, -2.983417559941569, -2.685138846804498, -2.597224924712824, -2.9018532223710345, -2.8740168199790386, -2.8896595115921895, -2.1243100795902614, -2.8008932149067483, -2.931131296435258, -3.1095844734762967, -2.502309525394874, -2.98259281786445, -2.435395389482706, -2.9277699712739658, -1.6430595132822896, -2.9689492563334676, -3.123618296994383, -3.186576710566392, -2.6037327216173747, -2.8543722708823145, -2.3316058016329757, -2.7084856199552063, -1.4482061210959358, -2.469068464028941, -2.1043764787001074, -2.6440667824502255, -1.5418617675114605, -1.9681563115877658, -0.9260288163486794, -1.779640524849019, 0.0]
-#test_ham = matrix_to_operator(diagm(test_ham_vec))
-#op_chop!(test_ham, 1e-10)
-
 # Hyperparameters
 num_samples = 20
 opt_alg = "LD_LBFGS"
-#opt_alg = "LN_NELDERMEAD"
 max_p = 14
 max_pars = 2*max_p+1
 max_grad = 1e-4
@@ -57,7 +34,6 @@ end
 
 function run_adapt_qaoa(n, hamiltonian)
     ground_state_energy = minimum(real(diag(operator_to_matrix(hamiltonian))))
-    #@show ground_state_energy
 
     pool = two_local_pool(n)
     pool = map(p -> Operator([p], [1.0]), pool)
@@ -65,12 +41,7 @@ function run_adapt_qaoa(n, hamiltonian)
 
     initial_state = ones(ComplexF64, 2^n) / sqrt(2^n)
     initial_state /= norm(initial_state)
-    callbacks = Function[
-        ParameterStopper(max_pars), 
-        MaxGradientStopper(max_grad),
-        #EnergyPrinter(),
-        #MaxGradientPrinter()
-        ]
+    callbacks = Function[ ParameterStopper(max_pars), MaxGradientStopper(max_grad) ]
 
     result = adapt_qaoa(hamiltonian, pool, n, opt_alg, callbacks; initial_parameter=1e-2, initial_state=initial_state, path=path)
 
@@ -91,24 +62,14 @@ lk = ReentrantLock()
 println("Starting simulations...")
 Threads.@threads for i in ProgressBar(1:num_samples, printing_delay=0.1)
     hamiltonian = random_regular_max_cut_hamiltonian(n, d)
-    #hamiltonian = test_ham
     _res_qaoa = run_qaoa(n, hamiltonian);
     _res_adapt = run_adapt_qaoa(n, hamiltonian);
-
-    #_res_qaoa = map(safe_floor, _res_qaoa)
-    #_res_adapt = map(safe_floor, _res_adapt)
 
     lock(lk) do
         push!(results_adapt, _res_adapt)
         push!(results_qaoa, _res_qaoa)
     end
 
-    #if minimum(_res_adapt) > 1e-5
-    #    v = diag(operator_to_matrix(hamiltonian))
-    #    if norm(imag(v)) > 1e-8 error("Not diagonal") end
-    #    @show _res_adapt
-    #    @show real(v)
-    #end
 end
 println("Done with simulations, plotting...")
 
