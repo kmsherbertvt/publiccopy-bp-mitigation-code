@@ -54,11 +54,6 @@ using AdaptBarren
         output_state
     )
 
-    @show ans
-    @show output_state
-    @show expected_grad
-    @show grad
-
     @test abs(ans - expected_cost) <= 1e-3
     @test norm(expected_state - output_state) <= 1e-3
     @test norm(grad - expected_grad) <= 1e-3
