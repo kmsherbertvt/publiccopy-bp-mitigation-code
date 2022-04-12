@@ -90,6 +90,15 @@ Threads.@threads for i in ProgressBar(1:num_samples, printing_delay=0.1)
 end
 println("Done with simulations, plotting...")
 
+function safe_floor(x::Float64, eps=1e-15, delta=1e-8)
+    if x <= -delta error("Too negative...") end
+    if x <= 0.0
+        return eps
+    else
+        return x
+    end
+end
+
 ### Plotting
 using Plots; gr()
 plot()
@@ -100,5 +109,5 @@ savefig("test_qaoa_comp.pdf")
 plot()
 gdf = groupby(df, [:layer, :alg])
 function mean(x) return sum(x)/length(x) end
-@df combine(gdf, :err => (x -> 10^mean(log10.(x))) => :err_mean) plot(:layer, :err_mean, group=:alg, yaxis=:log, xlim=(2,max_pars), left_margin=10Plots.mm, legend=false)
+@df combine(gdf, :err => (x -> 10^mean(log10.(safe_floor.(x)))) => :err_mean) plot(:layer, :err_mean, group=:alg, yaxis=:log, xlim=(2,max_pars), left_margin=10Plots.mm, legend=false)
 savefig("test_qaoa_comp_mean.pdf")
