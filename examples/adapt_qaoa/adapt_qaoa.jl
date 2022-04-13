@@ -14,7 +14,7 @@ rng = MersenneTwister(14)
 num_samples = 20
 opt_alg = "LD_LBFGS"
 opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
-max_p = 15
+max_p = 40
 max_pars = 2*max_p
 max_grad = 1e-4
 path="test_data"
@@ -60,8 +60,8 @@ results_qaoa = []
 results_adapt = []
 df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[])
 
-n = 6
-d = 5
+n_max = 14
+d = n-1
 
 lk = ReentrantLock()
 println("Starting simulations...")
