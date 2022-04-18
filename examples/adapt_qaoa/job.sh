@@ -1,18 +1,37 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
+# Job Admin Stuff
 #SBATCH --mail-user=mute-arcjobs@saem.xyz
 #SBATCH --mail-type=ALL
-#SBATCH -p normal_q
 #SBATCH -A qc_group
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=20
-#SBATCH --mem-per-cpu=10gb
-#SBATCH -t 01:00:00
+#SBATCH -p normal_q
 
+# Resources
+#SBATCH -N 1
+#SBATCH --cpus-per-task=20
+#SBATCH --mem-per-cpu=10G
+#SBATCH -t 24:00:00
+
+# Allow time to load modules
+# This takes time sometimes for some reason
+sleep 10
+hostname
+#module reset
 module load Julia/1.7.2-linux-x86_64
 
-julia --project=@. -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
-julia --threads=auto --project=@. adapt_qaoa.jl
+export NTHREAD=20
+export JULIAENV=/home/gbarron/bp-mitigation-code/
+# set these to 1 if you are using julia threads heavily to avoid oversubscription
+export MKL_NUM_THREADS=1
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
 
-wait
-exit 0
+echo "Usage: sbatch job.sh script.jl"
+export INFILE=$1
+export OUTFILE="${INFILE}.out"
+echo $INFILE
+echo $OUTFILE
+
+julia --project=$JULIAENV -t $NTHREAD $INFILE >& $OUTFILE
+
+exit

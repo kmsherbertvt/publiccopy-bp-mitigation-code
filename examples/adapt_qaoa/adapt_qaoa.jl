@@ -77,7 +77,7 @@ n_max = 8
 lk = ReentrantLock()
 println("Starting simulations...")
 Threads.@threads for i in ProgressBar(1:num_samples, printing_delay=0.1)
-    for n=n_min:2:n_max
+    for n=reverse(n_min:2:n_max)
         d = n-1
         hamiltonian = random_regular_max_cut_hamiltonian(n, d)
         gse = minimum(real(diag(operator_to_matrix(hamiltonian))))
