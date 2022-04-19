@@ -98,9 +98,11 @@ Threads.@threads for i in ProgressBar(1:num_samples, printing_delay=0.1)
             # Also collect here
             push!(results_adapt, _res_adapt)
             push!(results_qaoa, _res_qaoa)
+            CSV.write("data.csv", df)
         end
     end
 end
+
 println("Done with simulations, dumping data...")
 CSV.write("data.csv", df)
 println("Plotting...")
