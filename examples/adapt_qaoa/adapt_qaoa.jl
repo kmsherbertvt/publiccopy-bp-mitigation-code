@@ -29,6 +29,9 @@ max_p = 40
 max_pars = 2*max_p
 max_grad = 1e-4
 path="test_data"
+n_min = 4
+n_max = 12
+
 
 function run_qaoa(n, hamiltonian)
     energy_result = []
@@ -70,9 +73,6 @@ end
 results_qaoa = []
 results_adapt = []
 df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[])
-
-n_min = 4
-n_max = 8
 
 lk = ReentrantLock()
 println("Starting simulations...")
