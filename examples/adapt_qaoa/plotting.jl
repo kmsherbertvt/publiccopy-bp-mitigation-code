@@ -27,14 +27,20 @@ end;
 # ╔═╡ 41e6d994-6a26-4fcf-9838-560ac7e43173
 df = DataFrame(CSV.File("data.csv"));
 
+# ╔═╡ 60dea449-822d-4e1d-b936-cb0ff2508915
+_layers = 50;
+
 # ╔═╡ 2e0ab9ff-0628-4e21-9ea2-22ec8d0ec375
 gdf = groupby(df, [:n, :layer, :alg]);
 
 # ╔═╡ fccfc02d-a722-488b-9428-2b74649d9e74
 cdf = combine(gdf, :err => (x -> 10^mean(log10.(safe_floor.(x)))) => :err_mean);
 
+# ╔═╡ 670b7fca-1162-4153-999e-c1d16003d010
+cdf
+
 # ╔═╡ 5266bba7-88d8-4a5f-81fb-9746de47dcbb
-_df = filter(:layer => layer -> layer==20, cdf);
+_df = filter(:layer => layer -> layer==_layers, cdf);
 
 # ╔═╡ a491a521-e744-4f97-9dcf-5c990869f21e
 @df _df plot(:n, :err_mean,
@@ -42,7 +48,7 @@ _df = filter(:layer => layer -> layer==20, cdf);
 	yaxis=:log,
 	xlabel="Num Qubits",
 	ylabel="Mean Energy Error",
-	title="Energy Error at 20 Layers",
+	title="Energy Error at $_layers Layers",
 	legend=:bottomright
 )
 
@@ -1219,8 +1225,10 @@ version = "0.9.1+5"
 # ╠═1a83966e-bfee-11ec-1463-e53cbd15526f
 # ╠═9c463ec4-b627-4154-9652-f83579dd5a61
 # ╠═41e6d994-6a26-4fcf-9838-560ac7e43173
+# ╠═60dea449-822d-4e1d-b936-cb0ff2508915
 # ╠═2e0ab9ff-0628-4e21-9ea2-22ec8d0ec375
 # ╠═fccfc02d-a722-488b-9428-2b74649d9e74
+# ╠═670b7fca-1162-4153-999e-c1d16003d010
 # ╠═5266bba7-88d8-4a5f-81fb-9746de47dcbb
 # ╠═a491a521-e744-4f97-9dcf-5c990869f21e
 # ╟─00000000-0000-0000-0000-000000000001
