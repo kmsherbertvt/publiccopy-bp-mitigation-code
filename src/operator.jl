@@ -99,6 +99,10 @@ function Base.:*(x::Operator, y::Operator)
     return op_product(x, y)
 end
 
+function Base.:*(x::Number, y::Operator)
+    return Operator(y.paulis, x * y.coeffs)
+end
+
 function ham_state_mult!(O::Operator,
                          state::Array{ComplexF64,1},
                          tmp1::Array{ComplexF64},
