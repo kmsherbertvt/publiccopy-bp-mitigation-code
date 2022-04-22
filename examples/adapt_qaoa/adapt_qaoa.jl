@@ -33,29 +33,18 @@ n_min = 4
 n_max = 12
 
 
-function run_qaoa(n, hamiltonian)
-    energy_result = []
-    ground_state_energy = minimum(real(diag(operator_to_matrix(hamiltonian))))
-    for current_p in range(2,max_p)
-        mixers = repeat([qaoa_mixer(n)], current_p)
-        initial_point = rand(rng, Float64, 2*current_p)
-        opt = Opt(Symbol(opt_alg), length(initial_point))
-        opt.maxeval = opt_dict["maxeval"]
-        initial_state = ones(ComplexF64, 2^n) / sqrt(2^n)
-        result = QAOA(hamiltonian, mixers, opt, initial_point, n, initial_state)
-        qaoa_energy = result[1]
-        en_err = qaoa_energy - ground_state_energy
-        push!(energy_result, qaoa_energy)
-    end
-    return energy_result
-end
-
-function run_adapt_qaoa(n, hamiltonian)
+function run_adapt_qaoa(n, hamiltonian, pool_name)
     ground_state_energy = minimum(real(diag(operator_to_matrix(hamiltonian))))
 
-    pool = two_local_pool(n)
-    pool = map(p -> Operator([p], [1.0]), pool)
+    pool = Vector{Operator}()
     push!(pool, qaoa_mixer(n))
+    if pool_name == "2l"
+        append!(pool, map(p -> Operator([p], [1.0]), two_local_pool(n)))
+    elseif pool_name == "qaoa"
+        1
+    else
+        error("Invalid pool: $pool")
+    end
 
     initial_state = ones(ComplexF64, 2^n) / sqrt(2^n)
     initial_state /= norm(initial_state)
@@ -75,14 +64,25 @@ results_adapt = []
 df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[])
 
 lk = ReentrantLock()
-println("Starting simulations...")
+println("Starting simulations..."); flush(stdout)
 Threads.@threads for i in ProgressBar(1:num_samples, printing_delay=0.1)
     for n=reverse(n_min:2:n_max)
         d = n-1
         hamiltonian = random_regular_max_cut_hamiltonian(n, d)
         gse = minimum(real(diag(operator_to_matrix(hamiltonian))))
-        _res_qaoa = run_qaoa(n, hamiltonian);
-        hist_adapt, _res_adapt = run_adapt_qaoa(n, hamiltonian);
+        println("Starting ADAPT-QAOA, sample=$i, n=$n"); flush(stdout)
+        t_0 = time()
+        hist_adapt, _res_adapt = run_adapt_qaoa(n, hamiltonian, "2l");
+        t_f = time()
+        dt = t_f - t_0
+        println("ADAPT-QAOA took $dt seconds on sample=$i, n=$n"); flush(stdout)
+
+        println("Starting QAOA, sample=$i, n=$n"); flush(stdout)
+        t_0 = time()
+        hist_qaoa, _res_qaoa = run_adapt_qaoa(n, hamiltonian, "qaoa");
+        t_f = time()
+        dt = t_f - t_0
+        println("QAOA took $dt seconds on sample=$i, n=$n"); flush(stdout)
 
         lock(lk) do
             #loop over results in adapt and append to df
@@ -90,9 +90,9 @@ Threads.@threads for i in ProgressBar(1:num_samples, printing_delay=0.1)
                 push!(df, Dict(:seed=>i, :alg=>"ADAPT", :layer=>k+1, :err=>safe_floor(en-gse), :n=>n))
             end
             #loop over results in qaoa and append to df
-            for (k,en)=enumerate(_res_qaoa)
+            for (k,en)=enumerate(hist_qaoa.energy)
                 # double the number of parameters since k here measures p
-                push!(df, Dict(:seed=>i, :alg=>"QAOA", :layer=>2*k, :err=>safe_floor(en-gse), :n=>n))
+                push!(df, Dict(:seed=>i, :alg=>"QAOA", :layer=>k+1, :err=>safe_floor(en-gse), :n=>n))
             end
 
             # Also collect here
@@ -103,9 +103,9 @@ Threads.@threads for i in ProgressBar(1:num_samples, printing_delay=0.1)
     end
 end
 
-println("Done with simulations, dumping data...")
+println("Done with simulations, dumping data..."); flush(stdout)
 CSV.write("data.csv", df)
-println("Plotting...")
+println("Plotting..."); flush(stdout)
 
 ### Plotting
 using Plots; gr()
