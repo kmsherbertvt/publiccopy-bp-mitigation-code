@@ -8,6 +8,7 @@ include("fast_grad.jl")
 include("spin_chains.jl")
 include("vqe.jl")
 include("callbacks.jl")
+include("max_sat.jl")
 include("qaoa_hamiltonians.jl")
 
 export ADAPTHistory,
@@ -67,6 +68,9 @@ export ADAPTHistory,
     xxz_model,
     xyz_matrix,
     xyz_model,
+    SATProblem,
+    max_1_2_sat_ham,
+    max_1_3_sat_ham,
     MaxGradientPrinter,
     OperatorIndexPrinter,
     ParameterPrinter

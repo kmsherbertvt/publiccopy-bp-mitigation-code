@@ -1,9 +1,9 @@
 using IterTools
 
-struct SATProblem
-    A::Array{Integer, 2}
-    n::Integer
-    m::Integer
+struct SATProblem 
+    A::Array{T, 2} where T <: Integer
+    n
+    m
 end
 
 function _get_z_term(i::Integer)
@@ -11,11 +11,11 @@ function _get_z_term(i::Integer)
 end
 
 function _get_z_term(i::Integer, j::Integer)
-    if i == j error("Can't be equal")
+    if i == j error("Can't be equal") end
     return Operator([Pauli(0, 0, 2^(i-1) + 2^(j-1), 0)], [1.0])
 end
 
-function SATProblem(A::Array{Integer, 2})
+function SATProblem(A::Array{T, 2}) where T <: Integer
     n, m = size(A)
     return SATProblem(A, n, m)
 end
