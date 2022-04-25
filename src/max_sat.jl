@@ -76,3 +76,15 @@ function random_k_sat_instance(n::Integer, m::Integer, k::Integer)
 
     return A
 end
+
+function random_k_sat_hamiltonian(n::Integer, m::Integer, k::Integer)
+    A = random_k_sat_instance(n, m, k)
+    P = SATProblem(A)
+    if k == 2
+        return max_1_2_sat_ham(P)
+    elseif k == 3
+        return max_1_3_sat_ham(P)
+    else
+        error("Invalid k=$k")
+    end
+end

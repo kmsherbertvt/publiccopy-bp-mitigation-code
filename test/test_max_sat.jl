@@ -53,3 +53,14 @@ end
         end
     end
 end
+
+@testset "Try generation of random Hamiltonians" begin
+    for k=[2, 3]
+        for n=4:6
+            for _=1:5
+                m = 3
+                h = random_k_sat_hamiltonian(n, m, k)
+            end
+        end
+    end
+end

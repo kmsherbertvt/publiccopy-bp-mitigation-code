@@ -73,6 +73,7 @@ export ADAPTHistory,
     max_1_2_sat_ham,
     max_1_3_sat_ham,
     random_k_sat_instance,
+    random_k_sat_hamiltonian,
     MaxGradientPrinter,
     OperatorIndexPrinter,
     ParameterPrinter
