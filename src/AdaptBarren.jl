@@ -72,6 +72,7 @@ export ADAPTHistory,
     distinct_columns,
     max_1_2_sat_ham,
     max_1_3_sat_ham,
+    random_k_sat_instance,
     MaxGradientPrinter,
     OperatorIndexPrinter,
     ParameterPrinter

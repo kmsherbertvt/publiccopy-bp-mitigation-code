@@ -1,4 +1,6 @@
 using IterTools
+using Combinatorics
+using StatsBase
 
 struct SATProblem 
     A::Array{T, 2} where T <: Integer
@@ -58,4 +60,19 @@ function max_1_3_sat_ham(F::SATProblem)
     end
 
     return H
+end
+
+function random_k_sat_instance(n::Integer, m::Integer, k::Integer)
+    a = zeros(Int, n)
+    for i=1:k a[i] = 1 end
+    
+    sample_space = unique(collect(permutations(a)))
+    vecs = sample(sample_space, m; replace=false)
+
+    A = zeros(Int, n, m)
+    for (i,v)=enumerate(vecs)
+        A[:,i] .= v
+    end
+
+    return A
 end

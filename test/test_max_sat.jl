@@ -41,3 +41,15 @@ end
     A = [1 1 ; 1 1]
     @test distinct_columns(A) == false
 end
+
+@testset "Test Validity of Random Instances" begin
+    for k=[2, 3]
+        for n=4:10
+            m = 3
+            for _=1:10
+                A = random_k_sat_instance(n, m, k)
+                @test distinct_columns(A) == true
+            end
+        end
+    end
+end
