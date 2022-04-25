@@ -15,8 +15,21 @@ function _get_z_term(i::Integer, j::Integer)
     return Operator([Pauli(0, 0, 2^(i-1) + 2^(j-1), 0)], [1.0])
 end
 
+function distinct_columns(A::Array{T, 2}) where T <: Integer
+    _, m = size(A)
+    for (m1, m2)=product(1:m, 1:m)
+        if m1 < m2
+            if A[:,m1] == A[:,m2] return false end
+        end
+    end
+    return true
+end
+
 function SATProblem(A::Array{T, 2}) where T <: Integer
     n, m = size(A)
+    if !distinct_columns(A)
+        error("Invalid problem, clauses must be distinct")
+    end
     return SATProblem(A, n, m)
 end
 

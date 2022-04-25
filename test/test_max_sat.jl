@@ -21,3 +21,23 @@ end
     actual_vec = Int.(real(diag(operator_to_matrix(max_1_3_sat_ham(P)))))
     @test norm( actual_vec .- expected_vec) <= 1e-4
 end
+
+@testset "Distinct Columns" begin
+    A = [1 0 ; 0 1 ; 1 1 ; 0 0]
+    @test distinct_columns(A) == true
+
+    A = [1 1 ; 0 1 ; 1 1 ; 0 0]
+    @test distinct_columns(A) == true
+
+    A = [1 1 ; 1 1 ; 1 1 ; 0 0]
+    @test distinct_columns(A) == false
+
+    A = [0 1 ; 0 1]
+    @test distinct_columns(A) == true
+
+    A = [1 1 ; 0 1]
+    @test distinct_columns(A) == true
+
+    A = [1 1 ; 1 1]
+    @test distinct_columns(A) == false
+end
