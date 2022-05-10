@@ -26,12 +26,12 @@ end
 num_samples = 20
 opt_alg = "LD_LBFGS"
 opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
-max_p = 40
+max_p = 10
 max_pars = 2*max_p
 max_grad = 1e-4
 path="test_data"
 n_min = 4
-n_max = 12
+n_max = 18
 
 
 function run_qaoa(n, hamiltonian)
@@ -101,7 +101,7 @@ for n in ProgressBar(n_min:2:n_max, printing_delay=0.1)
             # Also collect here
             push!(results_adapt, _res_adapt)
             push!(results_qaoa, _res_qaoa)
-            CSV.write("data.csv", df)
+            CSV.write("data_shallow_2.csv", df)
         t_f = time()
         dt = t_f - t_0
         println("Finished n=$n seed=$i in $dt seconds"); flush(stdout)
@@ -110,7 +110,7 @@ for n in ProgressBar(n_min:2:n_max, printing_delay=0.1)
 end
 
 println("Done with simulations, dumping data..."); flush(stdout)
-CSV.write("data.csv", df)
+CSV.write("data_shallow_2.csv", df)
 println("Plotting..."); flush(stdout)
 
 ### Plotting
@@ -122,10 +122,10 @@ for n_=n_min:2:n_max
     plot()
     @df filter(:alg => ==("QAOA"), df_n) plot!(:layer, :err, group=:seed, color=:blue, yaxis=:log, xlim=(2,max_pars), left_margin=10Plots.mm, legend=false)
     @df filter(:alg => ==("ADAPT"), df_n) plot!(:layer, :err, group=:seed, color=:red, yaxis=:log, xlim=(2,max_pars), left_margin=10Plots.mm, legend=false)
-    savefig("test_qaoa_comp_$n.pdf")
+    savefig("test_qaoa_comp_p20_$n.pdf")
 
     plot()
     gdf_n = groupby(df_n, [:layer, :alg])
     @df combine(gdf_n, :err => (x -> 10^mean(log10.(safe_floor.(x)))) => :err_mean) plot(:layer, :err_mean, group=:alg, yaxis=:log, xlim=(2,max_pars), left_margin=10Plots.mm, legend=true)
-    savefig("test_qaoa_comp_mean_$n.pdf")
+    savefig("test_qaoa_comp_mean_p20_$n.pdf")
 end

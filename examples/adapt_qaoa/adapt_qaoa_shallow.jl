@@ -26,12 +26,12 @@ end
 num_samples = 20
 opt_alg = "LD_LBFGS"
 opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
-max_p = 40
+max_p = 20
 max_pars = 2*max_p
 max_grad = 1e-4
 path="test_data"
 n_min = 4
-n_max = 12
+n_max = 18
 
 
 function run_qaoa(n, hamiltonian)
@@ -101,7 +101,7 @@ for n in ProgressBar(n_min:2:n_max, printing_delay=0.1)
             # Also collect here
             push!(results_adapt, _res_adapt)
             push!(results_qaoa, _res_qaoa)
-            CSV.write("data.csv", df)
+            CSV.write("data_shallow.csv", df)
         t_f = time()
         dt = t_f - t_0
         println("Finished n=$n seed=$i in $dt seconds"); flush(stdout)
@@ -110,7 +110,7 @@ for n in ProgressBar(n_min:2:n_max, printing_delay=0.1)
 end
 
 println("Done with simulations, dumping data..."); flush(stdout)
-CSV.write("data.csv", df)
+CSV.write("data_shallow.csv", df)
 println("Plotting..."); flush(stdout)
 
 ### Plotting
