@@ -311,6 +311,7 @@ mutable struct ADAPTHistory
     opt_pars::Array{Array{Float64, 1}, 1}
     paulis::Array{Any,1}
     opt_numevals::Array{Any,1}
+    opt_state::Array{Any, 1}
 end
 
 
@@ -358,6 +359,7 @@ function adapt_step!(
     push!(hist.opt_pars, opt_pars)
     push!(hist.paulis, pauli_chosen)
     push!(hist.opt_numevals, numevals)
+    push!(hist.opt_state, state)
 end
 
 
@@ -372,7 +374,7 @@ function adapt_vqe(
     path = nothing,
     tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
 ) where T<:Unsigned
-    hist = ADAPTHistory([], [], [], [], [], [], [])
+    hist = ADAPTHistory([], [], [], [], [], [], [], [])
 
     #if path !== nothing
     #    """ in $path the following files will be written
@@ -475,7 +477,7 @@ function adapt_qaoa(
     tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
 )
     #### Initialization
-    hist = ADAPTHistory([], [], [], [], [], [], [])
+    hist = ADAPTHistory([], [], [], [], [], [], [], [])
 
     if tmp === nothing
         tmp = zeros(ComplexF64, 2^num_qubits)
