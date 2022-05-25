@@ -36,7 +36,7 @@ n_max = 18
 
 function run_qaoa(n, hamiltonian)
     energy_result = []
-    ground_state_energy = minimum(real(diag(operator_to_matrix(hamiltonian))))
+    ground_state_energy, gs_vec = get_ground_state(hamiltonian)
     for current_p in range(2,max_p)
         mixers = repeat([qaoa_mixer(n)], current_p)
         initial_point = rand(rng, Float64, 2*current_p)
@@ -52,7 +52,7 @@ function run_qaoa(n, hamiltonian)
 end
 
 function run_adapt_qaoa(n, hamiltonian)
-    ground_state_energy = minimum(real(diag(operator_to_matrix(hamiltonian))))
+    ground_state_energy, gs_vec = get_ground_state(hamiltonian)
 
     pool = two_local_pool(n)
     pool = map(p -> Operator([p], [1.0]), pool)
@@ -83,7 +83,7 @@ for n in ProgressBar(n_min:2:n_max, printing_delay=0.1)
         println("Starting n=$n seed=$i"); flush(stdout)
         t_0 = time()
         hamiltonian = random_regular_max_cut_hamiltonian(n, d)
-        gse = minimum(real(diag(operator_to_matrix(hamiltonian))))
+        gse, gs_vec = get_ground_state(hamiltonian)
         _res_qaoa = run_qaoa(n, hamiltonian);
         hist_adapt, _res_adapt = run_adapt_qaoa(n, hamiltonian);
 
