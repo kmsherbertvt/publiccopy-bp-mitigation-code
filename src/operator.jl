@@ -211,3 +211,24 @@ function diagonal_operator_to_vector(O::Operator)
     end
     return result
 end
+
+
+function get_ground_state(h::Operator, degen_tol = 1e-10)
+    try
+        h_vec = real(diagonal_operator_to_vector(h))
+        ground_state_energy = minimum(h_vec)
+
+        gs_ind = argmin(h_vec)
+        gs_vec = zeros(ComplexF64, length(h_vec))
+        gs_vec[gs_ind] = 1.0 + 0.0im
+
+        sort!(h_vec)
+        if abs(h_vec[2] - ground_state_energy) <= degen_tol
+            @warn "Degenerate ground state detected"
+        end
+
+        return ground_state_energy, gs_vec
+    catch err
+        error("off diagonal not implemented yet")
+    end
+end
