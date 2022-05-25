@@ -516,7 +516,7 @@ function adapt_qaoa(
 
         #### Update point
         _init_beta = 0.0
-        _init_gamma = initial_parameter
+        _init_gamma = 0.0
         push!(point, _init_beta)
         push!(point, _init_gamma)
         if length(point) != 2*length(mixers) error("Invalid point size") end
