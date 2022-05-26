@@ -75,8 +75,8 @@ for n in ProgressBar(n_min:2:n_max, printing_delay=0.1)
         lock(lk) do
             for (alg,hist)=zip(["ADAPT","QAOA"],[hist_adapt,hist_qaoa])
                 for (k,d)=enumerate(hist)
-                    en_err = safe_floor(hist[:energy]-gse)
-                    gse_overlap = abs(dot(gse_vec, hist[:opt_state]))^2
+                    en_err = safe_floor(d[:energy]-gse)
+                    gse_overlap = ground_state_overlap(ham_vec, d[:opt_state])
                     push!(df, Dict(:seed=>i, :alg=>alg, :layer=>k+1, :err=>en_err, :n=>n, :overlap=>gse_overlap))
                 end
             end
