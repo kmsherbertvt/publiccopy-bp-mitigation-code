@@ -73,14 +73,12 @@ for n in ProgressBar(n_min:2:n_max, printing_delay=0.1)
         println("QAOA took $dt seconds on sample=$i, n=$n"); flush(stdout)
 
         lock(lk) do
-            #loop over results in adapt and append to df
-            for (k,en)=enumerate(hist_adapt.energy)
-                push!(df, Dict(:seed=>i, :alg=>"ADAPT", :layer=>k+1, :err=>safe_floor(en-gse), :n=>n))
-            end
-            #loop over results in qaoa and append to df
-            for (k,en)=enumerate(hist_qaoa.energy)
-                # double the number of parameters since k here measures p
-                push!(df, Dict(:seed=>i, :alg=>"QAOA", :layer=>k+1, :err=>safe_floor(en-gse), :n=>n))
+            for (alg,hist)=zip(["ADAPT","QAOA"],[hist_adapt,hist_qaoa])
+                for (k,d)=enumerate(hist)
+                    en_err = safe_floor(hist[:energy]-gse)
+                    gse_overlap = abs(dot(gse_vec, hist[:opt_state]))^2
+                    push!(df, Dict(:seed=>i, :alg=>alg, :layer=>k+1, :err=>en_err, :n=>n, :overlap=>gse_overlap))
+                end
             end
 
             CSV.write("data.csv", df)
