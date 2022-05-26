@@ -4,6 +4,7 @@ using Test
 using DataFrames
 using AdaptBarren
 using StatsPlots
+using StatsBase
 using NLopt
 using Random
 using CSV
@@ -12,7 +13,6 @@ using ProgressBars
 Random.seed!(42)
 rng = MersenneTwister(14)
 
-function mean(x) return sum(x)/length(x) end
 function safe_floor(x::Float64, eps=1e-15, delta=1e-8)
     if x <= -delta error("Too negative...") end
     if x <= 0.0
@@ -26,16 +26,16 @@ end
 num_samples = 20
 opt_alg = "LD_LBFGS"
 opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
-max_p = 40
+max_p = 10
 max_pars = 2*max_p
 max_grad = 1e-4
 path="test_data"
 n_min = 4
-n_max = 12
+n_max = 18
 
 
 function run_adapt_qaoa(n, hamiltonian, pool_name)
-    ground_state_energy = minimum(real(diag(operator_to_matrix(hamiltonian))))
+    ground_state_energy, gs_vec = get_ground_state(hamiltonian)
 
     pool = Vector{Operator}()
     push!(pool, qaoa_mixer(n))
@@ -72,7 +72,7 @@ for n in ProgressBar(n_min:2:n_max, printing_delay=0.1)
         println("Starting n=$n seed=$i"); flush(stdout)
         t_0 = time()
         hamiltonian = random_regular_max_cut_hamiltonian(n, d)
-        gse = minimum(real(diag(operator_to_matrix(hamiltonian))))
+        gse, gse_vec = get_ground_state(hamiltonian)
         println("Starting ADAPT-QAOA, sample=$i, n=$n"); flush(stdout)
         t_0 = time()
         hist_adapt, _res_adapt = run_adapt_qaoa(n, hamiltonian, "2l");
