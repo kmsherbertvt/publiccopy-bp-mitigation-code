@@ -48,7 +48,6 @@ end
 # Main Loop
 df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[], overlap=[])
 
-lk = ReentrantLock()
 println("Starting simulations..."); flush(stdout)
 for n in ProgressBar(n_min:2:n_max, printing_delay=0.1)
     for i in ProgressBar(1:num_samples, printing_delay=0.1)
@@ -73,7 +72,6 @@ for n in ProgressBar(n_min:2:n_max, printing_delay=0.1)
         dt = t_f - t_0
         println("QAOA took $dt seconds on sample=$i, n=$n"); flush(stdout)
 
-        lock(lk) do
             for (alg,hist)=zip(["ADAPT","QAOA"],[hist_adapt,hist_qaoa])
                 for (k,d)=enumerate(hist)
                     en_err = safe_floor(d[:energy]-gse)
@@ -81,12 +79,11 @@ for n in ProgressBar(n_min:2:n_max, printing_delay=0.1)
                     push!(df, Dict(:seed=>i, :alg=>alg, :layer=>k+1, :err=>en_err, :n=>n, :overlap=>gse_overlap))
                 end
             end
-
             CSV.write("data.csv", df)
+
         t_f = time()
         dt = t_f - t_0
         println("Finished n=$n seed=$i in $dt seconds"); flush(stdout)
-        end
     end
 end
 
