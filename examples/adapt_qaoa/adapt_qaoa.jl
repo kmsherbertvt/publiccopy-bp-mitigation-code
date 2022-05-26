@@ -72,14 +72,17 @@ for n in ProgressBar(n_min:2:n_max, printing_delay=0.1)
         dt = t_f - t_0
         println("QAOA took $dt seconds on sample=$i, n=$n"); flush(stdout)
 
-            for (alg,hist)=zip(["ADAPT","QAOA"],[hist_adapt,hist_qaoa])
-                for (k,d)=enumerate(hist)
-                    en_err = safe_floor(d[:energy]-gse)
-                    gse_overlap = ground_state_overlap(ham_vec, d[:opt_state])
-                    push!(df, Dict(:seed=>i, :alg=>alg, :layer=>k+1, :err=>en_err, :n=>n, :overlap=>gse_overlap))
-                end
+        for (alg,hist)=zip(["ADAPT","QAOA"],[hist_adapt,hist_qaoa])
+            num_layers = length(hist)
+            for k = 1:num_layers
+                d = hist[k]
+                println(d)
+                en_err = safe_floor(d[:energy]-gse)
+                gse_overlap = ground_state_overlap(ham_vec, d[:opt_state])
+                push!(df, Dict(:seed=>i, :alg=>alg, :layer=>k, :err=>en_err, :n=>n, :overlap=>gse_overlap))
             end
-            CSV.write("data.csv", df)
+        end
+        CSV.write("data.csv", df)
 
         t_f = time()
         dt = t_f - t_0
