@@ -14,6 +14,7 @@ include("qaoa_hamiltonians.jl")
 export ADAPTHistory,
     _cost_fn_commuting_vqe,
     DeltaYStopper,
+    ground_state_overlap,
     FloorStopper,
     safe_floor,
     EnergyPrinter,

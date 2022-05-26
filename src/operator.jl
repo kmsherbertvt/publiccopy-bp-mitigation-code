@@ -232,3 +232,10 @@ function get_ground_state(h::Operator, degen_tol = 1e-10)
         error("off diagonal not implemented yet")
     end
 end
+
+
+function ground_state_overlap(hamiltonian::Vector{Float64}, state::Vector{ComplexF64}, degen_tol = 1e-10)
+    gse = minimum(hamiltonian)
+    inds = findall(e -> abs(e - gse) <= degen_tol, hamiltonian)
+    return sum(abs(state[i])^2 for i in inds)
+end
