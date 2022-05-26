@@ -35,8 +35,6 @@ n_max = 18
 
 
 function run_adapt_qaoa(n, hamiltonian, pool_name)
-    ground_state_energy, gs_vec = get_ground_state(hamiltonian)
-
     pool = Vector{Operator}()
     push!(pool, qaoa_mixer(n))
     if pool_name == "2l"
@@ -53,15 +51,10 @@ function run_adapt_qaoa(n, hamiltonian, pool_name)
 
     result = adapt_qaoa(hamiltonian, pool, n, opt_dict, callbacks; initial_parameter=1e-2, initial_state=initial_state, path=path)
 
-    adapt_qaoa_energy = last(result.energy)
-    en_err = adapt_qaoa_energy - ground_state_energy
-
-    return result, (result.energy - repeat([ground_state_energy], length(result.energy)))
+    return result
 end
 
 # Main Loop
-results_qaoa = []
-results_adapt = []
 df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[])
 
 lk = ReentrantLock()
@@ -73,16 +66,17 @@ for n in ProgressBar(n_min:2:n_max, printing_delay=0.1)
         t_0 = time()
         hamiltonian = random_regular_max_cut_hamiltonian(n, d)
         gse, gse_vec = get_ground_state(hamiltonian)
+
         println("Starting ADAPT-QAOA, sample=$i, n=$n"); flush(stdout)
         t_0 = time()
-        hist_adapt, _res_adapt = run_adapt_qaoa(n, hamiltonian, "2l");
+        hist_adapt = run_adapt_qaoa(n, hamiltonian, "2l");
         t_f = time()
         dt = t_f - t_0
         println("ADAPT-QAOA took $dt seconds on sample=$i, n=$n"); flush(stdout)
 
         println("Starting QAOA, sample=$i, n=$n"); flush(stdout)
         t_0 = time()
-        hist_qaoa, _res_qaoa = run_adapt_qaoa(n, hamiltonian, "qaoa");
+        hist_qaoa = run_adapt_qaoa(n, hamiltonian, "qaoa");
         t_f = time()
         dt = t_f - t_0
         println("QAOA took $dt seconds on sample=$i, n=$n"); flush(stdout)
@@ -98,9 +92,6 @@ for n in ProgressBar(n_min:2:n_max, printing_delay=0.1)
                 push!(df, Dict(:seed=>i, :alg=>"QAOA", :layer=>k+1, :err=>safe_floor(en-gse), :n=>n))
             end
 
-            # Also collect here
-            push!(results_adapt, _res_adapt)
-            push!(results_qaoa, _res_qaoa)
             CSV.write("data.csv", df)
         t_f = time()
         dt = t_f - t_0
