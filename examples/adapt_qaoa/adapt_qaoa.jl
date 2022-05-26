@@ -46,7 +46,7 @@ function run_adapt_qaoa(n, hamiltonian, pool_name)
 end
 
 # Main Loop
-df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[])
+df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[], overlap=[])
 
 lk = ReentrantLock()
 println("Starting simulations..."); flush(stdout)
