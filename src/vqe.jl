@@ -315,6 +315,38 @@ mutable struct ADAPTHistory
 end
 
 
+function Base.firstindex(hist::ADAPTHistory)
+    return 1
+end
+
+
+function Base.lastindex(hist::ADAPTHistory)
+    return length(hist.energy)
+end
+
+
+function Base.length(hist::ADAPTHistory)
+    return Base.lastindex(hist)
+end
+
+
+function Base.getindex(hist::ADAPTHistory, i::Int)
+    1<=i<=lastindex(hist) || throw(BoundsError(hist, i))
+    return Dict(f => getfield(hist, f)[i] for f in fieldnames(ADAPTHistory))
+end
+
+
+function Base.iterate(hist::ADAPTHistory, state = 1)
+    if state > lastindex(hist) return nothing end
+    return hist[state], state+1
+end
+
+
+function Base.collect(hist::ADAPTHistory)
+    return [x for x in hist]
+end
+
+
 function adapt_history_dump!(hist::ADAPTHistory, path::String, num_qubits::Int64)
     l = length(hist.energy)
     open(path, "w") do io
