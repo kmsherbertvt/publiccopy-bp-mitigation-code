@@ -76,7 +76,6 @@ for n in ProgressBar(n_min:2:n_max, printing_delay=0.1)
             num_layers = length(hist)
             for k = 1:num_layers
                 d = hist[k]
-                println(d)
                 en_err = safe_floor(d[:energy]-gse)
                 gse_overlap = ground_state_overlap(ham_vec, d[:opt_state])
                 push!(df, Dict(:seed=>i, :alg=>alg, :layer=>k, :err=>en_err, :n=>n, :overlap=>gse_overlap))
