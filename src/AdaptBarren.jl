@@ -7,6 +7,7 @@ include("operator.jl")
 include("fast_grad.jl")
 include("spin_chains.jl")
 include("vqe.jl")
+include("utils.jl")
 include("callbacks.jl")
 include("qaoa_hamiltonians.jl")
 
@@ -14,6 +15,7 @@ export ADAPTHistory,
     _cost_fn_commuting_vqe,
     DeltaYStopper,
     FloorStopper,
+    safe_floor,
     EnergyPrinter,
     MaxGradientStopper,
     EnergyErrorPrinter,
