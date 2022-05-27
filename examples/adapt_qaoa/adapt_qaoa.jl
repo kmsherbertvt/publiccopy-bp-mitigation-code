@@ -9,13 +9,11 @@ println("staring script..."); flush(stdout)
 @everywhere using LinearAlgebra
 @everywhere using Test
 @everywhere using DataFrames
-@everywhere using StatsPlots
 @everywhere using StatsBase
 @everywhere using IterTools
 @everywhere using NLopt
 @everywhere using Random
 @everywhere using CSV
-@everywhere using ProgressBars
 
 @everywhere Random.seed!(42)
 @everywhere rng = MersenneTwister(14)
