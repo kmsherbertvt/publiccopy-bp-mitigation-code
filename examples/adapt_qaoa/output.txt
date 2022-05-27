@@ -1,371 +1,284 @@
 /usr/bin
-Using 1/32 threads
+Using 4/32 threads
 staring script...
 Starting simulations...
 Starting n=4 seed=1
-Finished n=4 seed=1 in 17.38062286376953 seconds
+Starting ADAPT-QAOA, sample=1, n=4
+ADAPT-QAOA took 3.099595069885254 seconds on sample=1, n=4
+Starting QAOA, sample=1, n=4
+QAOA took 1.314539909362793 seconds on sample=1, n=4
+Finished n=4 seed=1 in 3.0117390155792236 seconds
 Starting n=4 seed=2
-Finished n=4 seed=2 in 8.011768102645874 seconds
+Starting ADAPT-QAOA, sample=2, n=4
+ADAPT-QAOA took 0.03988194465637207 seconds on sample=2, n=4
+Starting QAOA, sample=2, n=4
+QAOA took 0.2689690589904785 seconds on sample=2, n=4
+Finished n=4 seed=2 in 0.2698831558227539 seconds
 Starting n=4 seed=3
-Finished n=4 seed=3 in 2.38956618309021 seconds
+Starting ADAPT-QAOA, sample=3, n=4
+ADAPT-QAOA took 0.03748798370361328 seconds on sample=3, n=4
+Starting QAOA, sample=3, n=4
+QAOA took 0.9517600536346436 seconds on sample=3, n=4
+Finished n=4 seed=3 in 0.9527149200439453 seconds
 Starting n=4 seed=4
-Finished n=4 seed=4 in 2.0321929454803467 seconds
+Starting ADAPT-QAOA, sample=4, n=4
+ADAPT-QAOA took 0.03856205940246582 seconds on sample=4, n=4
+Starting QAOA, sample=4, n=4
+QAOA took 0.29086995124816895 seconds on sample=4, n=4
+Finished n=4 seed=4 in 0.29184794425964355 seconds
 Starting n=4 seed=5
-Finished n=4 seed=5 in 2.4219470024108887 seconds
+Starting ADAPT-QAOA, sample=5, n=4
+ADAPT-QAOA took 0.0365748405456543 seconds on sample=5, n=4
+Starting QAOA, sample=5, n=4
+QAOA took 0.25492215156555176 seconds on sample=5, n=4
+Finished n=4 seed=5 in 0.25591611862182617 seconds
 Starting n=4 seed=6
-Finished n=4 seed=6 in 3.6294350624084473 seconds
+Starting ADAPT-QAOA, sample=6, n=4
+ADAPT-QAOA took 0.033529043197631836 seconds on sample=6, n=4
+Starting QAOA, sample=6, n=4
+QAOA took 0.5712721347808838 seconds on sample=6, n=4
+Finished n=4 seed=6 in 0.5723240375518799 seconds
 Starting n=4 seed=7
-Finished n=4 seed=7 in 2.499437093734741 seconds
+Starting ADAPT-QAOA, sample=7, n=4
+ADAPT-QAOA took 0.039350032806396484 seconds on sample=7, n=4
+Starting QAOA, sample=7, n=4
+QAOA took 0.22632408142089844 seconds on sample=7, n=4
+Finished n=4 seed=7 in 0.22734808921813965 seconds
 Starting n=4 seed=8
-Finished n=4 seed=8 in 6.606307029724121 seconds
+Starting ADAPT-QAOA, sample=8, n=4
+ADAPT-QAOA took 0.048670053482055664 seconds on sample=8, n=4
+Starting QAOA, sample=8, n=4
+QAOA took 0.6707420349121094 seconds on sample=8, n=4
+Finished n=4 seed=8 in 0.6717920303344727 seconds
 Starting n=4 seed=9
-Finished n=4 seed=9 in 14.374881029129028 seconds
+Starting ADAPT-QAOA, sample=9, n=4
+ADAPT-QAOA took 0.055336952209472656 seconds on sample=9, n=4
+Starting QAOA, sample=9, n=4
+QAOA took 1.2110610008239746 seconds on sample=9, n=4
+Finished n=4 seed=9 in 1.2123169898986816 seconds
 Starting n=4 seed=10
-Finished n=4 seed=10 in 10.303722858428955 seconds
+Starting ADAPT-QAOA, sample=10, n=4
+ADAPT-QAOA took 0.059660911560058594 seconds on sample=10, n=4
+Starting QAOA, sample=10, n=4
+QAOA took 0.9240119457244873 seconds on sample=10, n=4
+Finished n=4 seed=10 in 0.9251420497894287 seconds
 Starting n=4 seed=11
-Finished n=4 seed=11 in 6.285703897476196 seconds
+Starting ADAPT-QAOA, sample=11, n=4
+ADAPT-QAOA took 0.07680702209472656 seconds on sample=11, n=4
+Starting QAOA, sample=11, n=4
+QAOA took 1.5981180667877197 seconds on sample=11, n=4
+Finished n=4 seed=11 in 1.5992469787597656 seconds
 Starting n=4 seed=12
-Finished n=4 seed=12 in 5.123790979385376 seconds
+Starting ADAPT-QAOA, sample=12, n=4
+ADAPT-QAOA took 0.02980184555053711 seconds on sample=12, n=4
+Starting QAOA, sample=12, n=4
+QAOA took 0.7115020751953125 seconds on sample=12, n=4
+Finished n=4 seed=12 in 0.7126941680908203 seconds
 Starting n=4 seed=13
-Finished n=4 seed=13 in 1.9318909645080566 seconds
+Starting ADAPT-QAOA, sample=13, n=4
+ADAPT-QAOA took 0.05366086959838867 seconds on sample=13, n=4
+Starting QAOA, sample=13, n=4
+QAOA took 0.18211817741394043 seconds on sample=13, n=4
+Finished n=4 seed=13 in 0.1833209991455078 seconds
 Starting n=4 seed=14
-Finished n=4 seed=14 in 4.5904340744018555 seconds
+Starting ADAPT-QAOA, sample=14, n=4
+ADAPT-QAOA took 0.03331804275512695 seconds on sample=14, n=4
+Starting QAOA, sample=14, n=4
+QAOA took 0.7997510433197021 seconds on sample=14, n=4
+Finished n=4 seed=14 in 0.8009798526763916 seconds
 Starting n=4 seed=15
-Finished n=4 seed=15 in 17.185218811035156 seconds
+Starting ADAPT-QAOA, sample=15, n=4
+ADAPT-QAOA took 0.06946015357971191 seconds on sample=15, n=4
+Starting QAOA, sample=15, n=4
+QAOA took 0.5147981643676758 seconds on sample=15, n=4
+Finished n=4 seed=15 in 0.5160760879516602 seconds
 Starting n=4 seed=16
-Finished n=4 seed=16 in 12.027499914169312 seconds
+Starting ADAPT-QAOA, sample=16, n=4
+ADAPT-QAOA took 0.04980182647705078 seconds on sample=16, n=4
+Starting QAOA, sample=16, n=4
+QAOA took 0.5514838695526123 seconds on sample=16, n=4
+Finished n=4 seed=16 in 0.5527849197387695 seconds
 Starting n=4 seed=17
-Finished n=4 seed=17 in 6.645534038543701 seconds
+Starting ADAPT-QAOA, sample=17, n=4
+ADAPT-QAOA took 0.035620927810668945 seconds on sample=17, n=4
+Starting QAOA, sample=17, n=4
+QAOA took 0.5076758861541748 seconds on sample=17, n=4
+Finished n=4 seed=17 in 0.5089750289916992 seconds
 Starting n=4 seed=18
-Finished n=4 seed=18 in 4.632957935333252 seconds
+Starting ADAPT-QAOA, sample=18, n=4
+ADAPT-QAOA took 0.03971695899963379 seconds on sample=18, n=4
+Starting QAOA, sample=18, n=4
+QAOA took 0.3606438636779785 seconds on sample=18, n=4
+Finished n=4 seed=18 in 0.37363600730895996 seconds
 Starting n=4 seed=19
-Finished n=4 seed=19 in 3.802716016769409 seconds
+Starting ADAPT-QAOA, sample=19, n=4
+ADAPT-QAOA took 0.03873705863952637 seconds on sample=19, n=4
+Starting QAOA, sample=19, n=4
+QAOA took 0.4017329216003418 seconds on sample=19, n=4
+Finished n=4 seed=19 in 0.4030599594116211 seconds
 Starting n=4 seed=20
-Finished n=4 seed=20 in 4.6858971118927 seconds
+Starting ADAPT-QAOA, sample=20, n=4
+ADAPT-QAOA took 0.035684823989868164 seconds on sample=20, n=4
+Starting QAOA, sample=20, n=4
+QAOA took 0.6349139213562012 seconds on sample=20, n=4
+Finished n=4 seed=20 in 0.6362669467926025 seconds
 Starting n=6 seed=1
-Finished n=6 seed=1 in 77.53553104400635 seconds
+Starting ADAPT-QAOA, sample=1, n=6
+ADAPT-QAOA took 0.43648600578308105 seconds on sample=1, n=6
+Starting QAOA, sample=1, n=6
+QAOA took 9.239711999893188 seconds on sample=1, n=6
+Finished n=6 seed=1 in 9.241138935089111 seconds
 Starting n=6 seed=2
-Finished n=6 seed=2 in 80.42092895507812 seconds
+Starting ADAPT-QAOA, sample=2, n=6
+ADAPT-QAOA took 3.9381580352783203 seconds on sample=2, n=6
+Starting QAOA, sample=2, n=6
+QAOA took 8.509753942489624 seconds on sample=2, n=6
+Finished n=6 seed=2 in 8.51123595237732 seconds
 Starting n=6 seed=3
-Finished n=6 seed=3 in 71.83123707771301 seconds
+Starting ADAPT-QAOA, sample=3, n=6
+ADAPT-QAOA took 1.8041770458221436 seconds on sample=3, n=6
+Starting QAOA, sample=3, n=6
+QAOA took 8.94585108757019 seconds on sample=3, n=6
+Finished n=6 seed=3 in 8.947417974472046 seconds
 Starting n=6 seed=4
-Finished n=6 seed=4 in 75.50280404090881 seconds
+Starting ADAPT-QAOA, sample=4, n=6
+ADAPT-QAOA took 0.22049379348754883 seconds on sample=4, n=6
+Starting QAOA, sample=4, n=6
+QAOA took 13.235728979110718 seconds on sample=4, n=6
+Finished n=6 seed=4 in 13.23730182647705 seconds
 Starting n=6 seed=5
-Finished n=6 seed=5 in 83.38503193855286 seconds
+Starting ADAPT-QAOA, sample=5, n=6
+ADAPT-QAOA took 2.870513916015625 seconds on sample=5, n=6
+Starting QAOA, sample=5, n=6
+QAOA took 11.57254695892334 seconds on sample=5, n=6
+Finished n=6 seed=5 in 11.574125051498413 seconds
 Starting n=6 seed=6
-Finished n=6 seed=6 in 75.77444887161255 seconds
+Starting ADAPT-QAOA, sample=6, n=6
+ADAPT-QAOA took 0.43608808517456055 seconds on sample=6, n=6
+Starting QAOA, sample=6, n=6
+QAOA took 12.88855791091919 seconds on sample=6, n=6
+Finished n=6 seed=6 in 12.890240907669067 seconds
 Starting n=6 seed=7
-Finished n=6 seed=7 in 78.55588698387146 seconds
+Starting ADAPT-QAOA, sample=7, n=6
+ADAPT-QAOA took 3.5974929332733154 seconds on sample=7, n=6
+Starting QAOA, sample=7, n=6
+QAOA took 12.551466941833496 seconds on sample=7, n=6
+Finished n=6 seed=7 in 12.553107976913452 seconds
 Starting n=6 seed=8
-Finished n=6 seed=8 in 70.03589797019958 seconds
+Starting ADAPT-QAOA, sample=8, n=6
+ADAPT-QAOA took 0.991703987121582 seconds on sample=8, n=6
+Starting QAOA, sample=8, n=6
+QAOA took 10.695661067962646 seconds on sample=8, n=6
+Finished n=6 seed=8 in 10.707133054733276 seconds
 Starting n=6 seed=9
-Finished n=6 seed=9 in 74.13956499099731 seconds
+Starting ADAPT-QAOA, sample=9, n=6
+ADAPT-QAOA took 6.0058770179748535 seconds on sample=9, n=6
+Starting QAOA, sample=9, n=6
+QAOA took 10.955924034118652 seconds on sample=9, n=6
+Finished n=6 seed=9 in 10.957704067230225 seconds
 Starting n=6 seed=10
-Finished n=6 seed=10 in 61.77900815010071 seconds
+Starting ADAPT-QAOA, sample=10, n=6
+ADAPT-QAOA took 1.9120361804962158 seconds on sample=10, n=6
+Starting QAOA, sample=10, n=6
+QAOA took 11.145526885986328 seconds on sample=10, n=6
+Finished n=6 seed=10 in 11.147445917129517 seconds
 Starting n=6 seed=11
-Finished n=6 seed=11 in 73.81065583229065 seconds
+Starting ADAPT-QAOA, sample=11, n=6
+ADAPT-QAOA took 1.0769898891448975 seconds on sample=11, n=6
+Starting QAOA, sample=11, n=6
+QAOA took 11.216413974761963 seconds on sample=11, n=6
+Finished n=6 seed=11 in 11.218183040618896 seconds
 Starting n=6 seed=12
-Finished n=6 seed=12 in 64.6759979724884 seconds
+Starting ADAPT-QAOA, sample=12, n=6
+ADAPT-QAOA took 0.4216001033782959 seconds on sample=12, n=6
+Starting QAOA, sample=12, n=6
+QAOA took 9.50538420677185 seconds on sample=12, n=6
+Finished n=6 seed=12 in 9.507261037826538 seconds
 Starting n=6 seed=13
-Finished n=6 seed=13 in 65.8783528804779 seconds
+Starting ADAPT-QAOA, sample=13, n=6
+ADAPT-QAOA took 1.484989881515503 seconds on sample=13, n=6
+Starting QAOA, sample=13, n=6
+QAOA took 10.65280795097351 seconds on sample=13, n=6
+Finished n=6 seed=13 in 10.654603004455566 seconds
 Starting n=6 seed=14
-Finished n=6 seed=14 in 63.527141094207764 seconds
+Starting ADAPT-QAOA, sample=14, n=6
+ADAPT-QAOA took 0.37703394889831543 seconds on sample=14, n=6
+Starting QAOA, sample=14, n=6
+QAOA took 12.562119007110596 seconds on sample=14, n=6
+Finished n=6 seed=14 in 12.563971042633057 seconds
 Starting n=6 seed=15
-Finished n=6 seed=15 in 60.57055115699768 seconds
+Starting ADAPT-QAOA, sample=15, n=6
+ADAPT-QAOA took 0.5746469497680664 seconds on sample=15, n=6
+Starting QAOA, sample=15, n=6
+QAOA took 10.486658096313477 seconds on sample=15, n=6
+Finished n=6 seed=15 in 10.488543033599854 seconds
 Starting n=6 seed=16
-Finished n=6 seed=16 in 65.01745510101318 seconds
+Starting ADAPT-QAOA, sample=16, n=6
+ADAPT-QAOA took 3.2372958660125732 seconds on sample=16, n=6
+Starting QAOA, sample=16, n=6
+QAOA took 11.262565851211548 seconds on sample=16, n=6
+Finished n=6 seed=16 in 11.26450490951538 seconds
 Starting n=6 seed=17
-Finished n=6 seed=17 in 60.9128201007843 seconds
+Starting ADAPT-QAOA, sample=17, n=6
+ADAPT-QAOA took 0.5896079540252686 seconds on sample=17, n=6
+Starting QAOA, sample=17, n=6
+QAOA took 10.359820127487183 seconds on sample=17, n=6
+Finished n=6 seed=17 in 10.361807107925415 seconds
 Starting n=6 seed=18
-Finished n=6 seed=18 in 57.026960134506226 seconds
+Starting ADAPT-QAOA, sample=18, n=6
+ADAPT-QAOA took 0.4245748519897461 seconds on sample=18, n=6
+Starting QAOA, sample=18, n=6
+QAOA took 12.29775094985962 seconds on sample=18, n=6
+Finished n=6 seed=18 in 12.309813022613525 seconds
 Starting n=6 seed=19
-Finished n=6 seed=19 in 70.27936697006226 seconds
+Starting ADAPT-QAOA, sample=19, n=6
+ADAPT-QAOA took 0.30669593811035156 seconds on sample=19, n=6
+Starting QAOA, sample=19, n=6
+QAOA took 11.763127088546753 seconds on sample=19, n=6
+Finished n=6 seed=19 in 11.765206098556519 seconds
 Starting n=6 seed=20
-Finished n=6 seed=20 in 77.99138712882996 seconds
+Starting ADAPT-QAOA, sample=20, n=6
+ADAPT-QAOA took 0.48284912109375 seconds on sample=20, n=6
+Starting QAOA, sample=20, n=6
+QAOA took 7.9888410568237305 seconds on sample=20, n=6
+Finished n=6 seed=20 in 7.990799903869629 seconds
 Starting n=8 seed=1
-Finished n=8 seed=1 in 700.5002660751343 seconds
+Starting ADAPT-QAOA, sample=1, n=8
+ADAPT-QAOA took 4.386559963226318 seconds on sample=1, n=8
+Starting QAOA, sample=1, n=8
+QAOA took 42.52265286445618 seconds on sample=1, n=8
+Finished n=8 seed=1 in 42.5248339176178 seconds
 Starting n=8 seed=2
-Finished n=8 seed=2 in 369.6656451225281 seconds
+Starting ADAPT-QAOA, sample=2, n=8
+ADAPT-QAOA took 19.469298124313354 seconds on sample=2, n=8
+Starting QAOA, sample=2, n=8
+QAOA took 37.276663064956665 seconds on sample=2, n=8
+Finished n=8 seed=2 in 37.27877402305603 seconds
 Starting n=8 seed=3
-Finished n=8 seed=3 in 525.4123110771179 seconds
+Starting ADAPT-QAOA, sample=3, n=8
+ADAPT-QAOA took 5.138370037078857 seconds on sample=3, n=8
+Starting QAOA, sample=3, n=8
+QAOA took 35.11903095245361 seconds on sample=3, n=8
+Finished n=8 seed=3 in 35.12119483947754 seconds
 Starting n=8 seed=4
-Finished n=8 seed=4 in 690.6018061637878 seconds
+Starting ADAPT-QAOA, sample=4, n=8
+ADAPT-QAOA took 8.677447080612183 seconds on sample=4, n=8
+Starting QAOA, sample=4, n=8
+QAOA took 29.78090000152588 seconds on sample=4, n=8
+Finished n=8 seed=4 in 29.783167123794556 seconds
 Starting n=8 seed=5
-Finished n=8 seed=5 in 470.7775378227234 seconds
+Starting ADAPT-QAOA, sample=5, n=8
+ADAPT-QAOA took 1.8656578063964844 seconds on sample=5, n=8
+Starting QAOA, sample=5, n=8
+QAOA took 35.949991941452026 seconds on sample=5, n=8
+Finished n=8 seed=5 in 35.95221495628357 seconds
 Starting n=8 seed=6
-Finished n=8 seed=6 in 375.1205699443817 seconds
+Starting ADAPT-QAOA, sample=6, n=8
+ADAPT-QAOA took 14.802881002426147 seconds on sample=6, n=8
+Starting QAOA, sample=6, n=8
+QAOA took 39.92805099487305 seconds on sample=6, n=8
+Finished n=8 seed=6 in 39.930264949798584 seconds
 Starting n=8 seed=7
-Finished n=8 seed=7 in 1499.8496129512787 seconds
-Starting n=8 seed=8
-Finished n=8 seed=8 in 541.7652249336243 seconds
-Starting n=8 seed=9
-Finished n=8 seed=9 in 415.1150608062744 seconds
-Starting n=8 seed=10
-Finished n=8 seed=10 in 455.7987039089203 seconds
-Starting n=8 seed=11
-Finished n=8 seed=11 in 380.7288899421692 seconds
-Starting n=8 seed=12
-Finished n=8 seed=12 in 774.382364988327 seconds
-Starting n=8 seed=13
-Finished n=8 seed=13 in 387.1313760280609 seconds
-Starting n=8 seed=14
-Finished n=8 seed=14 in 633.5378608703613 seconds
-Starting n=8 seed=15
-Finished n=8 seed=15 in 355.54798197746277 seconds
-Starting n=8 seed=16
-Finished n=8 seed=16 in 380.4693741798401 seconds
-Starting n=8 seed=17
-Finished n=8 seed=17 in 736.7148089408875 seconds
-Starting n=8 seed=18
-Finished n=8 seed=18 in 366.1270639896393 seconds
-Starting n=8 seed=19
-Finished n=8 seed=19 in 1273.170380115509 seconds
-Starting n=8 seed=20
-Finished n=8 seed=20 in 295.0068869590759 seconds
-Starting n=10 seed=1
-Finished n=10 seed=1 in 3822.072541952133 seconds
-Starting n=10 seed=2
-Finished n=10 seed=2 in 5663.30668091774 seconds
-Starting n=10 seed=3
-Finished n=10 seed=3 in 9695.082974910736 seconds
-Starting n=10 seed=4
-Finished n=10 seed=4 in 2684.484039068222 seconds
-Starting n=10 seed=5
-Finished n=10 seed=5 in 7499.022791147232 seconds
-Starting n=10 seed=6
-Finished n=10 seed=6 in 4697.179201126099 seconds
-Starting n=10 seed=7
-Finished n=10 seed=7 in 4370.292710065842 seconds
-Starting n=10 seed=8
-Finished n=10 seed=8 in 4023.2386751174927 seconds
-Starting n=10 seed=9
-Finished n=10 seed=9 in 6171.219419002533 seconds
-Starting n=10 seed=10
-Finished n=10 seed=10 in 6378.581020116806 seconds
-Starting n=10 seed=11
-Finished n=10 seed=11 in 4360.317508935928 seconds
-Starting n=10 seed=12
-Finished n=10 seed=12 in 1205.523572921753 seconds
-Starting n=10 seed=13
-Finished n=10 seed=13 in 2612.332645177841 seconds
-Starting n=10 seed=14
-Finished n=10 seed=14 in 3896.7732331752777 seconds
-Starting n=10 seed=15
-Finished n=10 seed=15 in 4218.4738829135895 seconds
-Starting n=10 seed=16
-Finished n=10 seed=16 in 2184.50714802742 seconds
-Starting n=10 seed=17
-Finished n=10 seed=17 in 8386.856800079346 seconds
-Starting n=10 seed=18
-Finished n=10 seed=18 in 5431.550220012665 seconds
-Starting n=10 seed=19
-Finished n=10 seed=19 in 4600.431609869003 seconds
-Starting n=10 seed=20
-Finished n=10 seed=20 in 3379.4056828022003 seconds
-Starting n=12 seed=1
-Finished n=12 seed=1 in 41537.89933490753 seconds
-Starting n=12 seed=2
-Finished n=12 seed=2 in 31453.438863039017 seconds
-Starting n=12 seed=3
-Finished n=12 seed=3 in 37206.61411499977 seconds
-Starting n=12 seed=4
-Finished n=12 seed=4 in 36097.59560418129 seconds
-Starting n=12 seed=5
-Finished n=12 seed=5 in 18746.119255065918 seconds
-Starting n=12 seed=6
-Finished n=12 seed=6 in 39824.219048023224 seconds
-Starting n=12 seed=7
-Finished n=12 seed=7 in 43349.81807208061 seconds
-Starting n=12 seed=8
-Finished n=12 seed=8 in 39791.776586055756 seconds
-Starting n=12 seed=9
-Finished n=12 seed=9 in 10460.110460042953 seconds
-Starting n=12 seed=10
-Finished n=12 seed=10 in 48487.90187907219 seconds
-Starting n=12 seed=11
-Finished n=12 seed=11 in 25453.02941799164 seconds
-Starting n=12 seed=12
-Finished n=12 seed=12 in 40877.009487867355 seconds
-Starting n=12 seed=13
-Finished n=12 seed=13 in 41355.93517780304 seconds
-Starting n=12 seed=14
-Finished n=12 seed=14 in 36121.00092792511 seconds
-Starting n=12 seed=15
-
-signal (2): Interrupt
-in expression starting at /home/sam/projects/bp-mitigation-code/examples/adapt_qaoa/adapt_qaoa.jl:80
-* at ./float.jl:405 [inlined]
-* at ./complex.jl:334 [inlined]
-pauli_rotation! at /home/sam/projects/bp-mitigation-code/src/simulator.jl:87
-unknown function (ip: 0x7f2a0e14bd30)
-_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2247 [inlined]
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2429
-fast_grad! at /home/sam/projects/bp-mitigation-code/src/fast_grad.jl:40
-_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2247 [inlined]
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2429
-_cost_fn_commuting_vqe at /home/sam/projects/bp-mitigation-code/src/vqe.jl:155
-unknown function (ip: 0x7f2a0e15b53d)
-_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2247 [inlined]
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2429
-cost_fn at /home/sam/projects/bp-mitigation-code/src/vqe.jl:254
-unknown function (ip: 0x7f2a0e159af7)
-_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2247 [inlined]
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2429
-nlopt_callback_wrapper at /home/sam/.julia/packages/NLopt/OIUOZ/src/NLopt.jl:387
-unknown function (ip: 0x7f2a0e152a64)
-luksan_plis at /home/sam/.julia/artifacts/332af19a7ea5911ea41bb72ba5e3badcf5dd4ba1/lib/libnlopt.so (unknown line)
-nlopt_optimize at /home/sam/.julia/artifacts/332af19a7ea5911ea41bb72ba5e3badcf5dd4ba1/lib/libnlopt.so (unknown line)
-optimize! at /home/sam/.julia/packages/NLopt/OIUOZ/src/NLopt.jl:617
-optimize at /home/sam/.julia/packages/NLopt/OIUOZ/src/NLopt.jl:624 [inlined]
-commuting_vqe at /home/sam/projects/bp-mitigation-code/src/vqe.jl:263
-QAOA at /home/sam/projects/bp-mitigation-code/src/vqe.jl:295 [inlined]
-#adapt_qaoa#32 at /home/sam/projects/bp-mitigation-code/src/vqe.jl:525
-adapt_qaoa##kw at /home/sam/projects/bp-mitigation-code/src/vqe.jl:478
-unknown function (ip: 0x7f2a0e158de8)
-_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2247 [inlined]
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2429
-run_adapt_qaoa at /home/sam/projects/bp-mitigation-code/examples/adapt_qaoa/adapt_qaoa.jl:65
-unknown function (ip: 0x7f2a0e151ba6)
-_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2247 [inlined]
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2429
-jl_apply at /buildworker/worker/package_linux64/build/src/julia.h:1788 [inlined]
-do_call at /buildworker/worker/package_linux64/build/src/interpreter.c:126
-eval_value at /buildworker/worker/package_linux64/build/src/interpreter.c:215
-eval_stmt_value at /buildworker/worker/package_linux64/build/src/interpreter.c:166 [inlined]
-eval_body at /buildworker/worker/package_linux64/build/src/interpreter.c:587
-jl_interpret_toplevel_thunk at /buildworker/worker/package_linux64/build/src/interpreter.c:731
-jl_toplevel_eval_flex at /buildworker/worker/package_linux64/build/src/toplevel.c:885
-jl_toplevel_eval_flex at /buildworker/worker/package_linux64/build/src/toplevel.c:830
-jl_toplevel_eval_in at /buildworker/worker/package_linux64/build/src/toplevel.c:944
-eval at ./boot.jl:373 [inlined]
-include_string at ./loading.jl:1196
-_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2247 [inlined]
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2429
-_include at ./loading.jl:1253
-include at ./Base.jl:418
-_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2247 [inlined]
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2429
-exec_options at ./client.jl:292
-_start at ./client.jl:495
-jfptr__start_40531.clone_1 at /usr/lib/julia/sys.so (unknown line)
-_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2247 [inlined]
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2429
-jl_apply at /buildworker/worker/package_linux64/build/src/julia.h:1788 [inlined]
-true_main at /buildworker/worker/package_linux64/build/src/jlapi.c:559
-jl_repl_entrypoint at /buildworker/worker/package_linux64/build/src/jlapi.c:701
-main at julia (unknown line)
-__libc_start_call_main at /usr/bin/../lib/libc.so.6 (unknown line)
-__libc_start_main at /usr/bin/../lib/libc.so.6 (unknown line)
-unknown function (ip: 0x400808)
-unknown function (ip: (nil))
-Allocations: 121478417942 (Pool: 121389757745; Big: 88660197); GC: 25205
-┌ Warning: Threads set to 1 by default, julia --threads auto ...
-└ @ Main ~/.julia/config/startup.jl:14
-0.0%┣                                                ┫ 0/5 [00:00<00:-1, -0s/it]
-0.0%┣                                               ┫ 0/20 [00:00<00:-2, -0s/it]
-[1A5.0%┣██▏                                        ┫ 1/20 [00:18<Inf:Inf, InfGs/it]
-[1A10.0%┣████▋                                         ┫ 2/20 [00:26<07:40, 26s/it]
-[1A15.0%┣███████                                       ┫ 3/20 [00:28<03:57, 14s/it]
-[1A20.0%┣█████████▏                                    ┫ 4/20 [00:30<02:40, 10s/it]
-[1A25.0%┣███████████▊                                   ┫ 5/20 [00:32<02:01, 8s/it]
-[1A30.0%┣██████████████                                 ┫ 6/20 [00:36<01:41, 7s/it]
-[1A35.0%┣████████████████▌                              ┫ 7/20 [00:39<01:23, 6s/it]
-[1A40.0%┣██████████████████▉                            ┫ 8/20 [00:45<01:17, 6s/it]
-[1A45.0%┣█████████████████████▏                         ┫ 9/20 [00:59<01:22, 7s/it]
-[1A50.0%┣███████████████████████                       ┫ 10/20 [01:10<01:18, 8s/it]
-[1A55.0%┣█████████████████████████▎                    ┫ 11/20 [01:16<01:08, 8s/it]
-[1A60.0%┣███████████████████████████▋                  ┫ 12/20 [01:21<00:59, 7s/it]
-[1A65.0%┣██████████████████████████████                ┫ 13/20 [01:23<00:48, 7s/it]
-[1A70.0%┣████████████████████████████████▏             ┫ 14/20 [01:28<00:40, 7s/it]
-[1A75.0%┣██████████████████████████████████▌           ┫ 15/20 [01:45<00:37, 7s/it]
-[1A80.0%┣████████████████████████████████████▉         ┫ 16/20 [01:57<00:31, 8s/it]
-[1A85.0%┣███████████████████████████████████████       ┫ 17/20 [02:04<00:23, 8s/it]
-[1A90.0%┣█████████████████████████████████████████▍    ┫ 18/20 [02:08<00:15, 8s/it]
-[1A95.0%┣███████████████████████████████████████████▊  ┫ 19/20 [02:12<00:07, 7s/it]
-[1A100.0%┣█████████████████████████████████████████████┫ 20/20 [02:17<00:00, 7s/it]
-[1A100.0%┣█████████████████████████████████████████████┫ 20/20 [02:17<00:00, 7s/it]
-[1A20.0%┣████████▋                                  ┫ 1/5 [02:17<Inf:Inf, InfGs/it]
-0.0%┣                                               ┫ 0/20 [00:00<00:-2, -0s/it]
-[1A5.0%┣██▏                                        ┫ 1/20 [01:18<Inf:Inf, InfGs/it]
-[1A10.0%┣████▌                                        ┫ 2/20 [02:38<47:25, 158s/it]
-[1A15.0%┣██████▊                                      ┫ 3/20 [03:50<32:34, 115s/it]
-[1A20.0%┣█████████                                    ┫ 4/20 [05:05<27:09, 102s/it]
-[1A25.0%┣███████████▌                                  ┫ 5/20 [06:29<24:18, 97s/it]
-[1A30.0%┣█████████████▉                                ┫ 6/20 [07:45<21:41, 93s/it]
-[1A35.0%┣████████████████                              ┫ 7/20 [09:03<19:37, 91s/it]
-[1A40.0%┣██████████████████▍                           ┫ 8/20 [10:13<17:31, 88s/it]
-[1A45.0%┣████████████████████▊                         ┫ 9/20 [11:27<15:45, 86s/it]
-[1A50.0%┣██████████████████████▌                      ┫ 10/20 [12:29<13:52, 83s/it]
-[1A55.0%┣████████████████████████▊                    ┫ 11/20 [13:43<12:21, 82s/it]
-[1A60.0%┣███████████████████████████                  ┫ 12/20 [14:48<10:45, 81s/it]
-[1A65.0%┣█████████████████████████████▎               ┫ 13/20 [15:53<09:16, 79s/it]
-[1A70.0%┣███████████████████████████████▌             ┫ 14/20 [16:57<07:49, 78s/it]
-[1A75.0%┣█████████████████████████████████▊           ┫ 15/20 [17:58<06:25, 77s/it]
-[1A80.0%┣████████████████████████████████████         ┫ 16/20 [19:03<05:05, 76s/it]
-[1A85.0%┣██████████████████████████████████████▎      ┫ 17/20 [20:03<03:46, 75s/it]
-[1A90.0%┣████████████████████████████████████████▌    ┫ 18/20 [21:00<02:28, 74s/it]
-[1A95.0%┣██████████████████████████████████████████▊  ┫ 19/20 [22:11<01:14, 74s/it]
-[1A100.0%┣████████████████████████████████████████████┫ 20/20 [23:29<00:00, 74s/it]
-[1A100.0%┣████████████████████████████████████████████┫ 20/20 [23:29<00:00, 74s/it]
-[1A40.0%┣████████████████▉                         ┫ 2/5 [25:45<01:17:16, 1.5ks/it]
-0.0%┣                                               ┫ 0/20 [00:00<00:-2, -0s/it]
-[1A5.0%┣██▏                                        ┫ 1/20 [11:41<Inf:Inf, InfGs/it]
-[1A10.0%┣████                                     ┫ 2/20 [17:50<05:21:05, 1.1ks/it]
-[1A15.0%┣██████▎                                   ┫ 3/20 [26:36<03:46:03, 798s/it]
-[1A20.0%┣████████▍                                 ┫ 4/20 [38:06<03:23:13, 762s/it]
-[1A25.0%┣██████████▌                               ┫ 5/20 [45:57<02:52:19, 689s/it]
-[1A30.0%┣████████████▋                             ┫ 6/20 [52:12<02:26:10, 626s/it]
-[1A35.0%┣█████████████▋                         ┫ 7/20 [01:17:12<02:47:16, 772s/it]
-[1A40.0%┣███████████████▋                       ┫ 8/20 [01:26:14<02:27:49, 739s/it]
-[1A45.0%┣█████████████████▌                     ┫ 9/20 [01:33:09<02:08:05, 699s/it]
-[1A50.0%┣███████████████████                   ┫ 10/20 [01:40:45<01:51:56, 672s/it]
-[1A55.0%┣█████████████████████                 ┫ 11/20 [01:47:05<01:36:23, 643s/it]
-[1A60.0%┣██████████████████████▉               ┫ 12/20 [02:00:00<01:27:16, 655s/it]
-[1A65.0%┣████████████████████████▊             ┫ 13/20 [02:06:27<01:13:46, 632s/it]
-[1A70.0%┣██████████████████████████▋           ┫ 14/20 [02:17:00<01:03:14, 632s/it]
-[1A75.0%┣██████████████████████████████▊          ┫ 15/20 [02:22:56<51:03, 613s/it]
-[1A80.0%┣████████████████████████████████▉        ┫ 16/20 [02:29:17<39:48, 597s/it]
-[1A85.0%┣██████████████████████████████████▉      ┫ 17/20 [02:41:33<30:17, 606s/it]
-[1A90.0%┣█████████████████████████████████████    ┫ 18/20 [02:47:39<19:43, 592s/it]
-[1A95.0%┣███████████████████████████████████████  ┫ 19/20 [03:08:53<10:30, 630s/it]
-[1A100.0%┣████████████████████████████████████████┫ 20/20 [03:13:48<00:00, 612s/it]
-[1A100.0%┣████████████████████████████████████████┫ 20/20 [03:13:48<00:00, 612s/it]
-[1A60.0%┣███████████████████████▍               ┫ 3/5 [03:39:33<03:39:33, 6.6ks/it]
-0.0%┣                                               ┫ 0/20 [00:00<00:-2, -0s/it]
-[1A5.0%┣██                                      ┫ 1/20 [01:03:42<Inf:Inf, InfGs/it]
-[1A10.0%┣███▉                                  ┫ 2/20 [02:38:05<47:25:39, 9.5ks/it]
-[1A15.0%┣█████▊                                ┫ 3/20 [05:19:41<45:17:15, 9.6ks/it]
-[1A20.0%┣███████▋                              ┫ 4/20 [06:04:25<32:23:34, 7.3ks/it]
-[1A25.0%┣█████████▌                            ┫ 5/20 [08:09:24<30:35:15, 7.3ks/it]
-[1A30.0%┣███████████▍                          ┫ 6/20 [09:27:41<26:29:32, 6.8ks/it]
-[1A35.0%┣█████████████▎                        ┫ 7/20 [10:40:32<23:07:48, 6.4ks/it]
-[1A40.0%┣███████████████▏                      ┫ 8/20 [11:47:35<20:13:00, 6.1ks/it]
-[1A45.0%┣█████████████████                     ┫ 9/20 [13:30:26<18:34:21, 6.1ks/it]
-[1A50.0%┣██████████████████▌                  ┫ 10/20 [15:16:45<16:58:36, 6.1ks/it]
-[1A55.0%┣████████████████████▍                ┫ 11/20 [16:29:25<14:50:28, 5.9ks/it]
-[1A60.0%┣██████████████████████▏              ┫ 12/20 [16:49:30<12:14:11, 5.5ks/it]
-[1A65.0%┣████████████████████████             ┫ 13/20 [17:33:03<10:14:17, 5.3ks/it]
-[1A70.0%┣██████████████████████████           ┫ 14/20 [18:38:00<08:36:00, 5.2ks/it]
-[1A75.0%┣███████████████████████████▊         ┫ 15/20 [19:48:18<07:04:24, 5.1ks/it]
-[1A80.0%┣█████████████████████████████▋       ┫ 16/20 [20:24:43<05:26:35, 4.9ks/it]
-[1A85.0%┣███████████████████████████████▌     ┫ 17/20 [22:44:29<04:15:51, 5.1ks/it]
-[1A90.0%┣█████████████████████████████████▎   ┫ 18/20 [24:15:01<02:51:11, 5.1ks/it]
-[1A95.0%┣███████████████████████████████████▏ ┫ 19/20 [25:31:41<01:25:06, 5.1ks/it]
-[1A100.0%┣███████████████████████████████████████┫ 20/20 [26:28:01<00:00, 5.0ks/it]
-[1A100.0%┣███████████████████████████████████████┫ 20/20 [26:28:01<00:00, 5.0ks/it]
-[1A80.0%┣██████████████████████████████▍       ┫ 4/5 [30:07:34<10:02:31, 36.2ks/it]
-0.0%┣                                               ┫ 0/20 [00:00<00:-2, -0s/it]
-[1A5.0%┣██                                      ┫ 1/20 [11:32:18<Inf:Inf, InfGs/it]
-[1A10.0%┣███▋                                ┫ 2/20 [20:16:31<364:57:26, 73.0ks/it]
-[1A15.0%┣█████▍                              ┫ 3/20 [30:36:38<260:11:24, 55.1ks/it]
-[1A20.0%┣███████▏                            ┫ 4/20 [40:38:16<216:44:04, 48.8ks/it]
-[1A25.0%┣█████████                           ┫ 5/20 [45:50:42<171:55:07, 41.3ks/it]
-[1A30.0%┣██████████▉                         ┫ 6/20 [56:54:26<159:20:25, 41.0ks/it]
-[1A35.0%┣████████████▋                       ┫ 7/20 [68:56:56<149:23:21, 41.4ks/it]
-[1A40.0%┣██████████████▍                     ┫ 8/20 [80:00:08<137:08:47, 41.1ks/it]
-[1A45.0%┣████████████████▏                   ┫ 9/20 [82:54:28<113:59:53, 37.3ks/it]
-[1A50.0%┣█████████████████▌                 ┫ 10/20 [96:22:36<107:05:06, 38.6ks/it]
-[1A55.0%┣███████████████████▎               ┫ 11/20 [103:26:49<93:06:08, 37.2ks/it]
-[1A60.0%┣█████████████████████              ┫ 12/20 [114:48:06<83:29:31, 37.6ks/it]
-[1A65.0%┣██████████████████████▊            ┫ 13/20 [126:17:22<73:40:08, 37.9ks/it]
-[1A70.0%┣████████████████████████▌          ┫ 14/20 [136:19:23<62:55:06, 37.8ks/it]
+Starting ADAPT-QAOA, sample=7, n=8
+ADAPT-QAOA took 7.331402063369751 seconds on sample=7, n=8
+Starting QAOA, sample=7, n=8
