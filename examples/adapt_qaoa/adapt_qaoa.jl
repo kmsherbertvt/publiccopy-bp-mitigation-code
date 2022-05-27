@@ -91,22 +91,3 @@ for n=4:2:n_max
     println("dumping data..."); flush(stdout)
     CSV.write("data.csv", df)
 end
-
-#println("Plotting..."); flush(stdout)
-### Plotting
-#using Plots; gr()
-#
-#for n_=n_min:2:n_max
-#    df_n = filter(:n => n -> n==n_, df)
-#    n = n_
-#    plot()
-#    @df filter(:alg => ==("QAOA"), df_n) plot!(:layer, :err, group=:seed, color=:blue, yaxis=:log, xlim=(2,max_pars), left_margin=10Plots.mm, legend=false)
-#    @df filter(:alg => ==("ADAPT"), df_n) plot!(:layer, :err, group=:seed, color=:red, yaxis=:log, xlim=(2,max_pars), left_margin=10Plots.mm, legend=false)
-#    savefig("test_qaoa_comp_$n.pdf")
-#
-#    plot()
-#    gdf_n = groupby(df_n, [:layer, :alg])
-#    @df combine(gdf_n, :err => (x -> 10^mean(log10.(safe_floor.(x)))) => :err_mean) plot(:layer, :err_mean, group=:alg, yaxis=:log, xlim=(2,max_pars), left_margin=10Plots.mm, legend=true)
-#    savefig("test_qaoa_comp_mean_$n.pdf")
-#end
-#
