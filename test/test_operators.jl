@@ -4,6 +4,34 @@ using Test
 using BenchmarkTools
 using AdaptBarren
 
+
+@testset "Test GSE Overlap" begin
+    ham_vec = Float64.([1, 2, 3, 4])
+    state = ComplexF64.([0, 0, 0, 1])
+    @test isapprox(ground_state_overlap(ham_vec, state), 0.0)
+
+    ham_vec = Float64.([1, 2, 3, 4])
+    state = ComplexF64.([1, 0, 0, 0])
+    @test isapprox(ground_state_overlap(ham_vec, state), 1.0)
+
+    ham_vec = Float64.([1, 2, 3, 4])
+    state = ComplexF64.([1/sqrt(2), 0, 0, 1/sqrt(2)])
+    @test isapprox(ground_state_overlap(ham_vec, state), 0.5)
+
+    ham_vec = Float64.([1, 1, 3, 4])
+    state = ComplexF64.([1/sqrt(2), 0, 0, 1/sqrt(2)])
+    @test isapprox(ground_state_overlap(ham_vec, state), 0.5)
+
+    ham_vec = Float64.([1, 1, 3, 4])
+    state = ComplexF64.([1/sqrt(2), 1/sqrt(2), 0, 0])
+    @test isapprox(ground_state_overlap(ham_vec, state), 1.0)
+
+    ham_vec = Float64.([1, 1, 3, 4])
+    state = ComplexF64.([0, 0, 1/sqrt(2), 1/sqrt(2)])
+    @test isapprox(ground_state_overlap(ham_vec, state), 0.0)
+end
+
+
 @testset "Basic id tests" begin
     P = pauli_string_to_pauli("IIIX")
     ID = pauli_string_to_pauli("IIII")
