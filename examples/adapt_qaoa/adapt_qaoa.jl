@@ -54,7 +54,7 @@ println("staring script..."); flush(stdout)
     initial_state /= norm(initial_state)
     callbacks = Function[ ParameterStopper(max_pars)]
 
-    result = adapt_qaoa(hamiltonian, pool_name, n, opt_dict, callbacks; initial_parameter=1e-2, initial_state=initial_state, path=path)
+    result = adapt_qaoa(hamiltonian, pool, n, opt_dict, callbacks; initial_parameter=1e-2, initial_state=initial_state, path=path)
     t_f = time()
     dt = t_f - t_0
     println("Finished n=$n, seed=$seed with alg=$pool_name in $dt seconds"); flush(stdout)
@@ -65,7 +65,7 @@ println("staring script..."); flush(stdout)
         d = result[k]
         en_err = safe_floor(d[:energy]-gse)
         gse_overlap = ground_state_overlap(ham_vec, d[:opt_state])
-        push!(df, Dict(:seed=>seed, :alg=>pool, :layer=>k, :err=>en_err, :n=>n, :overlap=>gse_overlap, :time=>dt))
+        push!(df, Dict(:seed=>seed, :alg=>pool_name, :layer=>k, :err=>en_err, :n=>n, :overlap=>gse_overlap, :time=>dt))
     end
     return df
 end
