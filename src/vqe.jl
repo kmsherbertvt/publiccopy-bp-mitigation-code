@@ -379,7 +379,7 @@ function adapt_step!(
     push!(hist.opt_pars, opt_pars)
     push!(hist.paulis, pauli_chosen)
     push!(hist.opt_numevals, numevals)
-    push!(hist.opt_state, state)
+    push!(hist.opt_state, copy(state))
 end
 
 
