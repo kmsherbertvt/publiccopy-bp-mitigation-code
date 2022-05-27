@@ -1,32 +1,38 @@
-println("staring script..."); flush(stdout)
-using LinearAlgebra
-using Test
-using DataFrames
-using AdaptBarren
-using StatsPlots
-using StatsBase
-using IterTools
-using NLopt
-using Random
-using CSV
-using ProgressBars
+using Distributed
 
-Random.seed!(42)
-rng = MersenneTwister(14)
+println("staring script..."); flush(stdout)
+@everywhere using Pkg
+@everywhere Pkg.activate("../../")
+@everywhere Pkg.instantiate()
+@everywhere using AdaptBarren
+
+@everywhere using LinearAlgebra
+@everywhere using Test
+@everywhere using DataFrames
+@everywhere using StatsPlots
+@everywhere using StatsBase
+@everywhere using IterTools
+@everywhere using NLopt
+@everywhere using Random
+@everywhere using CSV
+@everywhere using ProgressBars
+
+@everywhere Random.seed!(42)
+@everywhere rng = MersenneTwister(14)
 
 # Hyperparameters
-num_samples = 20
-opt_alg = "LD_LBFGS"
-opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
-max_p = 10
-max_pars = 2*max_p
-max_grad = 1e-4
-path="test_data"
-n_min = 4
-n_max = 10
+@everywhere num_samples = 20
+@everywhere opt_alg = "LD_LBFGS"
+@everywhere opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
+@everywhere max_p = 10
+@everywhere max_pars = 2*max_p
+@everywhere max_grad = 1e-4
+@everywhere path="test_data"
+@everywhere n_min = 4
+@everywhere n_max = 10
 
 
-function run_adapt_qaoa(seed, pool_name, n)
+@everywhere function run_adapt_qaoa(seed, pool_name, n)
     t_0 = time()
     d = n-1
     hamiltonian = random_regular_max_cut_hamiltonian(n, d; seed=seed)
@@ -63,10 +69,15 @@ function run_adapt_qaoa(seed, pool_name, n)
     end
 end
 
+# Parallel Debug
+println("Num procs: $(nprocs())")
+println("Num workers: $(nworkers())")
+
 # Main Loop
 fn_inputs = collect(product(1:num_samples, ["2l", "qaoa"], 4:2:n_max))
 println("starting simulations..."); flush(stdout)
-results = map(i -> run_adapt_qaoa(i...), fn_inputs)
+#results = map(i -> run_adapt_qaoa(i...), fn_inputs)
+results = pmap(i -> run_adapt_qaoa(i...), fn_inputs)
 
 println("concatenating results..."); flush(stdout)
 df = vcat(results...)
