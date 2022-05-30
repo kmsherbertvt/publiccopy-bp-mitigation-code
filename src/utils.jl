@@ -6,3 +6,7 @@ function safe_floor(x::Float64, eps=1e-15, delta=1e-8)
         return x
     end
 end
+
+function log_mean(x)
+	return 10^mean(log10.(safe_floor.(x)))
+end
