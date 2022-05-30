@@ -6,21 +6,21 @@ using CSV
 using Statistics
 gr();
 
-df = DataFrame(CSV.File("data.csv"));
-gdf = groupby(df, [:n, :layer, :alg]);
-cdf = combine(gdf, :err => (x -> 10^mean(log10.(safe_floor.(x)))) => :err_mean);
+FIGS_DIR = "./figs"
+DATA_FILE = "./data.csv"
 
-_layers = 20;
-_df = filter(:layer => layer -> layer==_layers, cdf);
-@df _df plot(:n, :err_mean,
-	group=:alg,
-	yaxis=:log,
-	xlabel="Num Qubits",
-	ylabel="Mean Energy Error",
-	title="Energy Error at $_layers Layers",
-	legend=:bottomright
-)
-savefig(".pdf")
+df = DataFrame(CSV.File(DATA_FILE));
+gdf = groupby(df, [:n, :layer, :alg]);
+cdf = combine(gdf, [:err => mean => :err_mean, :overlap => mean => :overlap_mean]);
+
+# yaxis=:log, 
+plot_overlap_adapt = @df filter(:alg => ==("2l"), cdf) plot(:layer, :overlap_mean, group=:n, title="ADAPT-QAOA", legend=:topleft, ylabel="Overlap (summed)");
+plot_overlap_qaoa = @df filter(:alg => ==("qaoa"), cdf) plot(:layer, :overlap_mean, group=:n, title="QAOA", legend=:topleft);
+
+plot_energy_adapt = @df filter(:alg => ==("2l"), cdf) plot(:layer, :err_mean, group=:n, legend=:bottomleft, yaxis=:log, ylims=(1e-10, 10), xlabel="p", ylabel="Energy Error");
+plot_energy_qaoa = @df filter(:alg => ==("qaoa"), cdf) plot(:layer, :err_mean, group=:n, legend=:bottomleft, yaxis=:log, ylims=(1e-10, 10), xlabel="p");
+plot(plot_overlap_adapt, plot_overlap_qaoa, plot_energy_adapt, plot_energy_qaoa, layout=(2,2), left_margin=15Plots.mm, bottom_margin=6Plots.mm)
+savefig("$FIGS_DIR/fig.pdf")
 
 #println("Plotting..."); flush(stdout)
 ### Plotting
