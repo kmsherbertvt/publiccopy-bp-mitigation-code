@@ -33,5 +33,6 @@ echo $INFILE
 echo $OUTFILE
 
 julia --project=$JULIAENV -t $NTHREAD $INFILE >& $OUTFILE
+#julia --project=$JULIAENV --procs=auto $INFILE >& $OUTFILE
 
 exit
