@@ -231,6 +231,17 @@ function get_ground_state(h::Operator)
 end
 
 
+function get_energy_gap(h::Operator)
+    try
+        h_vec = real(diagonal_operator_to_vector(h))
+        gap = maximum(h_vec) - minimum(h_vec)
+        return gap
+    catch err
+        error("off diagonal not implemented yet")
+    end
+end
+
+
 function ground_state_overlap(hamiltonian::Vector{Float64}, state::Vector{ComplexF64}, degen_tol = 1e-10)
     gse = minimum(hamiltonian)
     inds = findall(e -> abs(e - gse) <= degen_tol, hamiltonian)

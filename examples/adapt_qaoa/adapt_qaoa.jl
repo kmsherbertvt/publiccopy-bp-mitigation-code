@@ -47,6 +47,7 @@ println("staring script..."); flush(stdout)
 
     ham_vec = real(diagonal_operator_to_vector(hamiltonian))
     gse = get_ground_state(hamiltonian)
+    gap = get_energy_gap(hamiltonian)
 
     initial_state = ones(ComplexF64, 2^n) / sqrt(2^n)
     initial_state /= norm(initial_state)
@@ -62,8 +63,18 @@ println("staring script..."); flush(stdout)
     for k = 1:num_layers
         d = result[k]
         en_err = safe_floor(d[:energy]-gse)
+        rel_en_err = en_err / gap
         gse_overlap = ground_state_overlap(ham_vec, d[:opt_state])
-        push!(df, Dict(:seed=>seed, :alg=>pool_name, :layer=>k, :err=>en_err, :n=>n, :overlap=>gse_overlap, :time=>dt))
+        push!(df, Dict(
+            :seed=>seed, 
+            :alg=>pool_name, 
+            :layer=>k, 
+            :err=>en_err,
+            :rel_err=>rel_en_err,
+            :n=>n, 
+            :overlap=>gse_overlap, 
+            :time=>dt
+            ))
     end
     return df
 end
