@@ -59,7 +59,7 @@ println("staring script..."); flush(stdout)
     println("Finished n=$n, seed=$seed with alg=$pool_name in $dt seconds"); flush(stdout)
 
     num_layers = length(result)
-    df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[], overlap=[], time=[])
+    df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[], overlap=[], time=[], rel_err=[])
     for k = 1:num_layers
         d = result[k]
         en_err = safe_floor(d[:energy]-gse)
@@ -84,7 +84,7 @@ println("Num procs: $(nprocs())")
 println("Num workers: $(nworkers())")
 
 # Main Loop
-global df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[], overlap=[], time=[])
+global df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[], overlap=[], time=[], rel_err=[])
 for n=4:2:n_max
     fn_inputs = collect(product(1:num_samples, ["2l", "qaoa"], [n]))
     println("starting simulations..."); flush(stdout)
