@@ -10,3 +10,7 @@ end
 function log_mean(x)
 	return 10^mean(log10.(safe_floor.(x)))
 end
+
+function get_git_id()
+    return chop(read(`git rev-parse --short HEAD`, String), tail=2)
+end
