@@ -46,6 +46,7 @@ using ProgressBars
         [],
         [],
         [],
+        [],
         []
     )
 
@@ -62,5 +63,5 @@ using ProgressBars
         ho_lun_result.energy
     )
 
-    @test all(errors .<= 1e-2)
+    @test all(errors .<= 0.05)
 end
