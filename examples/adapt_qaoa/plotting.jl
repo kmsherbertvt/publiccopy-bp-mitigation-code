@@ -13,7 +13,7 @@ gid = "CID:$(get_git_id())"
 
 df = DataFrame(CSV.File(DATA_FILE));
 gdf = groupby(df, [:n, :layer, :alg]);
-cdf = combine(gdf, [:err => log_mean => :err_mean, :overlap => mean => :overlap_mean, :rel_err => log_mean => :rel_err_mean, :apprx => mean => :apprx_mean]);
+cdf = combine(gdf, [:err => mean => :err_mean, :overlap => mean => :overlap_mean, :rel_err => mean => :rel_err_mean, :apprx => mean => :apprx_mean]);
 
 plot_adapt = @df filter(:alg => ==("2l"), cdf)   plot(:layer, :overlap_mean, group=:n, xlabel="Parameters", legend=:bottomright, ylim=(0,1), title="ADAPT-QAOA, $gid", ylabel="Overlap (summed)");
 plot_qaoa  = @df filter(:alg => ==("qaoa"), cdf) plot(:layer, :overlap_mean, group=:n, xlabel="Parameters", legend=:bottomright, ylim=(0,1), title="QAOA, $gid");
