@@ -15,12 +15,14 @@ function _run_qaoa_comparison_test(test_ham, energy_errors, max_pars, n)
     pool = map(p -> Operator([p], [1.0]), pool)
     push!(pool, qaoa_mixer(n))
 
+    formatted_ops = collect(map(String, pool))
+
     # Initial State
     initial_state = ones(ComplexF64, 2^n) / sqrt(2^n)
     initial_state /= norm(initial_state)
 
     # Define Callbacks
-    callbacks = Function[ParameterStopper(max_pars)]
+    callbacks = Function[ParameterStopper(max_pars), OperatorIndexPrinter(formatted_ops)]
 
     # Run ADAPT-QAOA
     result = adapt_qaoa(test_ham, pool, n, opt_alg, callbacks; initial_parameter=1e-2, initial_state=initial_state, path=path)
