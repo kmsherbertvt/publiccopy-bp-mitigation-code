@@ -15,6 +15,25 @@ function qaoa_mixer(n::Int)
 end
 
 
+function max_cut_hamiltonian(n::Int, edges::Vector{Tuple{Int, Int, T}}) where T<:Real
+    operator = Operator([], [])
+
+    for (i,j,w)=edges
+        l = zeros(Int64, n)
+
+        push!(operator.paulis, pauli_string_to_pauli(l))
+        push!(operator.coeffs, -w/2.0)
+
+        l[i] = 3
+        l[j] = 3
+
+        push!(operator.paulis, pauli_string_to_pauli(l))
+        push!(operator.coeffs, +w/2.0)
+    end
+    return operator
+end
+
+
 function max_cut_hamiltonian(g)
     #if has_edge_property(g, "weight")
     #    error("Graph must be unweighted")
