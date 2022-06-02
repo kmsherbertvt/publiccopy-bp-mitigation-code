@@ -124,4 +124,18 @@ end
         println("\n\n\n\n\n")
     end
 
+    @testset "Run Linghua Comparison #3" begin
+        println("Begin Linghua's 6q comparison")
+        n = 6
+        energy_errors = [0.678445230570, 0.360424028940, 0.215547719372, 0.115621718644, 0.033152356519, 0.000000317497, 0.000000000023, 0.000000000000, 0.000000000000]
+        test_edge_weights = [(0, 1, 0.57), (1, 2, 0.91), (2, 3, 0.27), (3, 4, 0.08), (4, 5, 0.13), (0, 5, 0.41), (0, 2, 0.52), (0, 3, 0.59), (0, 4, 0.88), (1, 3, 0.27), (1, 4, 0.79), (1, 5, 0.57), (2, 4, 0.47), (2, 5, 0.39), (3, 4, 0.9)]
+        # Shift index for 1-indexing
+        for k=1:length(test_edge_weights)
+            test_edge_weights[k] = (1, 1, 0.0) .+ test_edge_weights[k]
+        end
+        test_ham = max_cut_hamiltonian(n, test_edge_weights)
+        _run_qaoa_comparison_test(test_ham, energy_errors, length(energy_errors), n)
+        println("\n\n\n\n\n")
+    end
+
 end
