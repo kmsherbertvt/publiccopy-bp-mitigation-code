@@ -7,7 +7,7 @@ using ProgressBars
 
 function _run_qaoa_comparison_test(test_ham, energy_errors, max_pars, n)
     # Hyperparameters
-    opt_alg = "LD_LBFGS"
+    opt_dict = Dict("name" => "LD_LBFGS", "maxeval" => 10000)
     path="test_data"
 
     # Define pool
@@ -25,7 +25,7 @@ function _run_qaoa_comparison_test(test_ham, energy_errors, max_pars, n)
     callbacks = Function[ParameterStopper(max_pars), OperatorIndexPrinter(formatted_ops)]
 
     # Run ADAPT-QAOA
-    result = adapt_qaoa(test_ham, pool, n, opt_alg, callbacks; initial_parameter=1e-2, initial_state=initial_state, path=path)
+    result = adapt_qaoa(test_ham, pool, n, opt_dict, callbacks; initial_parameter=1e-2, initial_state=initial_state, path=path)
 
     # Define Comparison Data
     ground_state_energy = minimum(real(diag(operator_to_matrix(test_ham))))
@@ -54,13 +54,19 @@ function _run_qaoa_comparison_test(test_ham, energy_errors, max_pars, n)
     )
 
     println("Comparisons")
-    println("The expected energies are: $(ho_lun_result.energy)")
-    println("The actual energies are:   $(result.energy[2:end])")
-    println("\n")
+    println("The expected energies are:")
+    display(ho_lun_result.energy)
+    println("The actual energies are:")
+    display(result.energy[2:end])
 
+
+    println("\n")
     println("Comparisons")
-    println("The expected errors are: $(ho_lun_result.energy .- ground_state_energy)")
-    println("The actual errors are:   $(result.energy[2:end] .- ground_state_energy)")
+    println("The expected errors are:")
+    display(ho_lun_result.energy .- ground_state_energy)
+    println("\n")
+    println("The actual errors are:")
+    display(result.energy[2:end] .- ground_state_energy)
     println("\n")
 
     println("The Hamiltonian diagonal is:")
