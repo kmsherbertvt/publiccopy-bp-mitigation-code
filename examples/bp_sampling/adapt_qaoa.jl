@@ -30,6 +30,11 @@ println("staring script..."); flush(stdout)
 @everywhere n_max = 14
 
 
+@everywhere function run_instance(seed, pool_name, adaptive, n)
+
+end
+
+
 @everywhere function run_adapt_qaoa(seed, pool_name, n)
     t_0 = time()
     d = n-1
