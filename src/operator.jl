@@ -247,3 +247,21 @@ function ground_state_overlap(hamiltonian::Vector{Float64}, state::Vector{Comple
     inds = findall(e -> abs(e - gse) <= degen_tol, hamiltonian)
     return sum(abs(state[i])^2 for i in inds)
 end
+
+
+function clump_degenerate_values(v::Vector{T}, degen_tol = 1e-10) where T<:Real
+    # this assumes x is sorted in ascending order
+    v_copy = copy(v)
+    result = [[]]
+    x_old = v_copy[1]
+    while length(v_copy) > 0
+        x_new = popfirst!(v_copy)
+        if abs(x_new - x_old) <= degen_tol
+            push!(result[end], x_new)
+        else
+            push!(result, [x_new])
+            x_old = x_new
+        end
+    end
+    return result
+end
