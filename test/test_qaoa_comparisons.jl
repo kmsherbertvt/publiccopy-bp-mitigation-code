@@ -52,13 +52,18 @@ function _run_qaoa_comparison_test(test_ham, energy_errors, max_pars, n)
     )
 
     println("Comparisons")
-    println("The expected errors are: $(ho_lun_result.energy)")
-    println("The actual errors are:   $(result.energy[2:end])")
+    println("The expected energies are: $(ho_lun_result.energy)")
+    println("The actual energies are:   $(result.energy[2:end])")
     println("\n")
 
-    println("\n\n\n\n The Hamiltonian diagonal is:")
+    println("Comparisons")
+    println("The expected errors are: $(ho_lun_result.energy .- ground_state_energy)")
+    println("The actual errors are:   $(result.energy[2:end] .- ground_state_energy)")
+    println("\n")
+
+    println("The Hamiltonian diagonal is:")
     println(real(diag(operator_to_matrix(test_ham))))
-    println("\n\n\n\n")
+    println("\n\n\n\n\n\n")
 
     @test all(errors .<= 0.05)
 end
@@ -93,7 +98,7 @@ end
             test_edge_weights[k] = (1, 1, 0.0) .+ test_edge_weights[k]
         end
         test_ham = max_cut_hamiltonian(n, test_edge_weights)
-
+        #energy_errors_from_ho_lun = [1.435, 1.100000162, 0.7703307943, 0.5051596649, 0.2723100032, 0.2700000004, 0.1435766627, 0.08905071275, 0.08639521999, 0.08472358421]
         energy_errors = [0.769436997845, 0.589812430072, 0.412868633019, 0.270777480032, 0.144772193615, 0.076931057079, 0.045960422324, 0.045149948093, 0.000007449742, 0.000000000063, 0.000000000001]
         _run_qaoa_comparison_test(test_ham, energy_errors, length(energy_errors), n)
         println("\n\n\n\n\n")
