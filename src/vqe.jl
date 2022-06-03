@@ -284,7 +284,7 @@ end
 function QAOA(
     hamiltonian::Operator,
     mixers::Array{Operator,1},
-    opt::Opt,
+    opt::Union{Opt, String},
     initial_point::Array{Float64,1},
     num_qubits::Int64,
     initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
