@@ -303,6 +303,29 @@ function QAOA(
         output_state)
 end
 
+function QAOA(
+    hamiltonian::Operator,
+    p::Int,
+    opt::Opt,
+    initial_point::Array{Float64,1},
+    num_qubits::Int64,
+    initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
+    path = nothing, # Should be a CSV file
+    output_state::Union{Nothing,Array{ComplexF64,1}} = nothing
+)
+    mixers = [qaoa_mixer(num_qubits) for i=1:p]
+    return QAOA(
+        hamiltonian,
+        mixers,
+        opt,
+        initial_point,
+        num_qubits,
+        initial_state = initial_state,
+        path = path,
+        output_state = output_state
+    )
+end
+
 mutable struct ADAPTHistory
     energy::Array{Float64,1}
     max_grad::Array{Float64,1}
