@@ -54,19 +54,20 @@ function _run_qaoa_comparison_test(test_ham, energy_errors, max_pars, n)
     )
 
     println("Comparisons")
+
+    println("\n")
     println("The expected energies are:")
     display(ho_lun_result.energy)
     println("The actual energies are:")
     display(result.energy[2:end])
-
-
     println("\n")
-    println("Comparisons")
     println("The expected errors are:")
     display(ho_lun_result.energy .- ground_state_energy)
-    println("\n")
     println("The actual errors are:")
     display(result.energy[2:end] .- ground_state_energy)
+    println("\n")
+    println("The differences in the energies are (i.e. shows agreement):")
+    display(ho_lun_result.energy .- result.energy[2:end])
     println("\n")
 
     println("The Hamiltonian diagonal is:")
