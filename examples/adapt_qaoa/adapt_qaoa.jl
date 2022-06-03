@@ -33,7 +33,8 @@ println("staring script..."); flush(stdout)
 @everywhere function run_adapt_qaoa(seed, pool_name, n)
     t_0 = time()
     d = n-1
-    hamiltonian = random_regular_max_cut_hamiltonian(n, d; seed=seed)
+    rng = MersenneTwister(seed)
+    hamiltonian = random_regular_max_cut_hamiltonian(n, d; rng=rng)
 
     pool = Vector{Operator}()
     push!(pool, qaoa_mixer(n))
