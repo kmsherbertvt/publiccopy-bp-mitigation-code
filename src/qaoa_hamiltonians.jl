@@ -51,8 +51,10 @@ function randomize_edge_weights!(v::Vector{Tuple{Int, Int, T}}; rng = _DEFAULT_R
     end
 end
 
-function random_regular_max_cut_hamiltonian(n::Int, k::Int; rng = _DEFAULT_RNG)
+function random_regular_max_cut_hamiltonian(n::Int, k::Int; rng = _DEFAULT_RNG, weighted = true)
     v = get_random_unweighted_graph_edges(n, k; rng=rng)
-    randomize_edge_weights!(v; rng=rng)
+    if weighted
+        randomize_edge_weights!(v; rng=rng)
+    end
     return max_cut_hamiltonian(n, v)
 end
