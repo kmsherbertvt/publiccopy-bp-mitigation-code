@@ -35,26 +35,32 @@ println("staring script..."); flush(stdout)
 outputs with results for analysis and sampling
 """
 @everywhere function main_adapt(n, ham, pool)
+    pool = Array{Pauli{T},1}() ...
+    callbacks = []
     initial_state = uniform_state(n)
-    adapt_vqe()
+
+    res = adapt_vqe(ham, pool, n, opt_dict, callbacks; initial_state=initial_state)
+    return energies, ansatz
 end
 
 @everywhere function main_adapt_qaoa(n, ham, pool)
+    pool = Array{Operator,1}() ...
+    callbacks = []
     initial_state = uniform_state(n)
-    adapt_qaoa()
+
+    res = adapt_qaoa(ham, pool, n, opt_dict, callbacks; initial_parameter=1e-2, initial_state=initial_state)
+    return energies, ansatz
 end
 
-@everywhere function main_vqe(n, ham, ansatz)
+@everywhere function main_vqe(n, ham, ansatz, rng)
+    ansatz = Array{Pauli{T},1}() ...
     initial_state = uniform_state(n)
-    VQE()
+    initial_point = rand(rng, Uniform(-pi, +pi), length(ansatz))
+
+    res = VQE(ham, ansatz, make_opt(opt_dict, initial_point), initial_point, n, initial_state=initial_state)
+    return energies, ansatz
 end
 
-@everywhere function main_qaoa(n, ham, p)
-    initial_state = uniform_state(n)
-    initial_point = ...
-    path = nothing
-    energy, optimal_parameters, ret, eval_count = QAOA()
-end
 
 # Main sampling
 """ This should take in inputs based on results from (ADAPT-)VQE
@@ -65,11 +71,14 @@ runs and then return statistics on the sampling.
 end
 
 # Main function
-@everywhere function run_instance(seed, n)
+@everywhere function run_instance(seed, n, method)
     rng = MersenneTwister(seed)
     hamiltonian = random_regular_max_cut_hamiltonian(n, n-1; rng=rng, weighted=true)
+    initial_state = uniform_state(n)
 
 
+
+    sample_points(hamiltonian, ansatz, initial_state, num_samples; rng=rng)
 end
 
 # Parallel Debug
