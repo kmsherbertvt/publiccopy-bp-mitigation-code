@@ -1,5 +1,7 @@
 using HDF5
 using NLopt
+using Random
+using Distributions
 
 """ Unpacking a vector refers to taking the original vector (`x`) and
 repeating each element in a new vector some (potentially variable) number
@@ -169,6 +171,31 @@ function _cost_fn_commuting_vqe(
     append!(grad_evals, grad)
     eval_count += 1
     return res
+end
+
+function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = nothing)
+    if rng === nothing
+        rng = _DEFAULT_RNG
+    end
+    eval_count = 0
+    num_pars = length(ansatz)
+
+    result_energy = Array{Float64,1}()
+    result_grads = Array{Float64,1}()
+
+    grad = zeros(Float64, num_pars)
+    x = zeros(Float64, num_pars)
+    psi_1 = similar(initial_state)
+    psi_2 = similar(initial_state)
+    psi_3 = similar(initial_state)
+    psi_4 = similar(initial_state)
+
+    for _=1:num_samples
+        x .= rand(rng, Uniform(-pi, +pi), num_pars)
+        _cost_fn_commuting_vqe(x, grad, ansatz, hamiltonian, result_energy, result_grads, eval_count, psi_4, initial_state, psi_1, psi_2, psi_3, nothing)
+    end
+
+    return (result_energy, result_grads)
 end
 
 function VQE(
