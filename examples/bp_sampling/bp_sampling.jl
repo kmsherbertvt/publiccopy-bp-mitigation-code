@@ -34,31 +34,67 @@ println("staring script..."); flush(stdout)
 """ These should take hyperparameter inputs and return dictionary
 outputs with results for analysis and sampling
 """
-@everywhere function main_adapt(n, ham, pool)
-    pool = Array{Pauli{T},1}() ...
+
+@everywhere function analyze_results!(res_dict, ham)
+    gse = get_ground_state(ham)
+    gap = get_energy_gap(ham)
+    res_dict["energy_errors"] = res_dict["energies"] .- gse
+    res_dict["approx_ratio"] = res_dict["energies"] ./ gse
+    res_dict["relative_error"] = abs(res_dict["energies"]) ./ (gap)
+    res_dict["ground_state_overlaps"] = map(s -> ground_state_overlap(ham, s), res_dict["opt_states"])
+    return res_dict
+end
+
+
+@everywhere function main_adapt(n, ham, pool::Array{Pauli{T},1}) where T<:Unsigned
     callbacks = []
     initial_state = uniform_state(n)
 
     res = adapt_vqe(ham, pool, n, opt_dict, callbacks; initial_state=initial_state)
-    return energies, ansatz
+    res_dict = Dict(
+        "energies" => res.energy,
+        "ansatz" => res.paulis,
+        "max_grads" => res.max_grad,
+        "opt_pars" => res.opt_pars,
+        "opt_states" => res.opt_state
+    )
+    analyze_results!(res_dict, ham)
+    return res_dict
 end
 
-@everywhere function main_adapt_qaoa(n, ham, pool)
-    pool = Array{Operator,1}() ...
+@everywhere function main_adapt_qaoa(n, ham, pool::Array{Operator,1})
     callbacks = []
     initial_state = uniform_state(n)
 
     res = adapt_qaoa(ham, pool, n, opt_dict, callbacks; initial_parameter=1e-2, initial_state=initial_state)
-    return energies, ansatz
+    res_dict =Dict(
+        "energies" => res.energy,
+        "ansatz" => qaoa_ansatz(ham, res.paulis),
+        "max_grads" => res.max_grad,
+        "opt_pars" => res.opt_pars,
+        "opt_states" => res.opt_state
+    )
+    analyze_results!(res_dict, ham)
+    return res_dict
 end
 
-@everywhere function main_vqe(n, ham, ansatz, rng)
-    ansatz = Array{Pauli{T},1}() ...
+@everywhere function main_vqe(n, ham, ansatz::Array{Pauli{T},1}, rng) where T<:Unsigned
     initial_state = uniform_state(n)
+    psi = copy(initial_state)
     initial_point = rand(rng, Uniform(-pi, +pi), length(ansatz))
 
-    res = VQE(ham, ansatz, make_opt(opt_dict, initial_point), initial_point, n, initial_state=initial_state)
-    return energies, ansatz
+    min_en, opt_pt, _, _ = VQE(ham, ansatz, make_opt(opt_dict, initial_point), initial_point, n, initial_state=initial_state)
+    pauli_ansatz!(ansatz, opt_pt, psi, similar(initial_state))
+
+    res_dict = Dict(
+        "energies" => [min_en],
+        "ansatz" => ansatz,
+        "max_grads" => Array{Float64,1}(),
+        "opt_pars" => [opt_pt],
+        "opt_states" => [psi]
+    )
+    analyze_results!(res_dict, ham)
+    return res_dict
 end
 
 
