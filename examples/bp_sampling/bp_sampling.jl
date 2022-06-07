@@ -15,39 +15,36 @@ println("staring script..."); flush(stdout)
 @everywhere using Random
 @everywhere using CSV
 
-@everywhere Random.seed!(42)
-@everywhere rng = MersenneTwister(14)
+#@everywhere Random.seed!(42)
+#@everywhere rng = MersenneTwister(14)
 
 # Hyperparameters
 @everywhere num_samples = 20
+@everywhere num_point_samples = 500
+@everywhere max_grad = 1e-4
 @everywhere opt_alg = "LD_LBFGS"
 @everywhere opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
-@everywhere max_p = 10
-@everywhere max_pars = 2*max_p
-@everywhere max_grad = 1e-4
-@everywhere path="test_data"
-@everywhere n_min = 4
-@everywhere n_max = 14
-@everywhere num_grad_samples = 500
 
-# Main functions
-""" These should take hyperparameter inputs and return dictionary
-outputs with results for analysis and sampling
-"""
 
-@everywhere function analyze_results!(res_dict, ham)
+@everywhere function analyze_results!(res_dict, ham, opt_states)
     gse = get_ground_state(ham)
     gap = get_energy_gap(ham)
     res_dict["energy_errors"] = res_dict["energies"] .- gse
     res_dict["approx_ratio"] = res_dict["energies"] ./ gse
     res_dict["relative_error"] = abs(res_dict["energies"]) ./ (gap)
-    res_dict["ground_state_overlaps"] = map(s -> ground_state_overlap(ham, s), res_dict["opt_states"])
+    res_dict["ground_state_overlaps"] = map(s -> ground_state_overlap(ham, s), opt_states)
+
+    res_dict["final_energy_errors"] = res_dict["energy_errors"][end]
+    res_dict["final_approx_ratio"] = res_dict["approx_ratio"][end]
+    res_dict["final_relative_error"] = res_dict["relative_error"][end]
+    res_dict["final_ground_state_overlaps"] = res_dict["ground_state_overlaps"][end]
+
     return res_dict
 end
 
 
 @everywhere function main_adapt(n, ham, pool::Array{Pauli{T},1}) where T<:Unsigned
-    callbacks = []
+    callbacks = [MaxGradientStopper(max_grad)]
     initial_state = uniform_state(n)
 
     res = adapt_vqe(ham, pool, n, opt_dict, callbacks; initial_state=initial_state)
@@ -56,14 +53,14 @@ end
         "ansatz" => res.paulis,
         "max_grads" => res.max_grad,
         "opt_pars" => res.opt_pars,
-        "opt_states" => res.opt_state
     )
-    analyze_results!(res_dict, ham)
+    analyze_results!(res_dict, ham, res.opt_state)
     return res_dict
 end
 
+
 @everywhere function main_adapt_qaoa(n, ham, pool::Array{Operator,1})
-    callbacks = []
+    callbacks = [MaxGradientStopper(max_grad)]
     initial_state = uniform_state(n)
 
     res = adapt_qaoa(ham, pool, n, opt_dict, callbacks; initial_parameter=1e-2, initial_state=initial_state)
@@ -72,11 +69,11 @@ end
         "ansatz" => qaoa_ansatz(ham, res.paulis),
         "max_grads" => res.max_grad,
         "opt_pars" => res.opt_pars,
-        "opt_states" => res.opt_state
     )
-    analyze_results!(res_dict, ham)
+    analyze_results!(res_dict, ham, res.opt_state)
     return res_dict
 end
+
 
 @everywhere function main_vqe(n, ham, ansatz::Array{Pauli{T},1}, rng) where T<:Unsigned
     initial_state = uniform_state(n)
@@ -91,31 +88,43 @@ end
         "ansatz" => ansatz,
         "max_grads" => Array{Float64,1}(),
         "opt_pars" => [opt_pt],
-        "opt_states" => [psi]
     )
-    analyze_results!(res_dict, ham)
+    analyze_results!(res_dict, ham, res.opt_state)
     return res_dict
 end
 
 
-# Main sampling
-""" This should take in inputs based on results from (ADAPT-)VQE
-runs and then return statistics on the sampling.
-"""
-@everywhere function run_sampling()
-    VQE(num_samples=num_grad_samples)
-end
-
-# Main function
-@everywhere function run_instance(seed, n, method)
+@everywhere function run_instance(seed, n, method, d)
     rng = MersenneTwister(seed)
     hamiltonian = random_regular_max_cut_hamiltonian(n, n-1; rng=rng, weighted=true)
     initial_state = uniform_state(n)
 
+    if method == "adapt_vqe_2l"
+        pool = two_local_pool(n)
+        res = main_adapt(n, hamiltonian, pool)
+    elseif method == "adapt_qaoa_2l"
+        pool = map(p -> Operator([p], [1.0]), two_local_pool(n))
+        push!(pool, qaoa_mixer(n))
+        res = main_adapt_qaoa(n, hamiltonian, pool)
+    elseif method == "qaoa"
+        pool = [qaoa_mixer(n)]
+        res = main_adapt_qaoa(n, hamiltonian, pool)
+    elseif method == "vqe"
+        ansatz = random_two_local_ansatz(n, d; rng=rng)
+        res = main_vqe(n, hamiltonian, ansatz, rng)
+    else
+        error("unrecognized method: $method")
+    end
+    
+    sampled_energy, sampled_grads = sample_points(hamiltonian, res["ansatz"], initial_state, num_point_samples; rng=rng)
 
-
-    sample_points(hamiltonian, ansatz, initial_state, num_samples; rng=rng)
+    return Dict(
+        "result_dict" => res,
+        "sampled_energies" => sampled_energy,
+        "sampled_grads" => sampled_grads
+    )
 end
+
 
 # Parallel Debug
 println("Num procs: $(nprocs())")
