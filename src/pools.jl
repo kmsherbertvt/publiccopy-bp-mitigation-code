@@ -35,3 +35,8 @@ function two_local_pool(n::Int64, axes=[0,1,2,3])
 
     return pool
 end
+
+
+function random_two_local_ansatz(n::Int64, k::Int64, axes=[0,1,2,3]; rng=_DEFAULT_RNG)
+    return sample(rng, two_local_pool(n, axes), k; replace=true)
+end
