@@ -1,125 +1,104 @@
-using LinearAlgebra
-using Test
-using DataFrames
-using AdaptBarren
-using StatsPlots
-using NLopt
-using Random
-using CSV
-using ProgressBars
+using Distributed
 
-Random.seed!(42)
-rng = MersenneTwister(14)
+println("staring script..."); flush(stdout)
+@everywhere using Pkg
+@everywhere Pkg.activate("../../")
+@everywhere Pkg.instantiate()
+@everywhere using AdaptBarren
 
-function mean(x) return sum(x)/length(x) end
-function safe_floor(x::Float64, eps=1e-15, delta=1e-8)
-    if x <= -delta error("Too negative...") end
-    if x <= 0.0
-        return eps
-    else
-        return x
-    end
-end
+@everywhere using LinearAlgebra
+@everywhere using Test
+@everywhere using DataFrames
+@everywhere using StatsBase
+@everywhere using IterTools
+@everywhere using NLopt
+@everywhere using Random
+@everywhere using CSV
+
+@everywhere Random.seed!(42)
+@everywhere rng = MersenneTwister(14)
 
 # Hyperparameters
-num_samples = 20
-opt_alg = "LD_LBFGS"
-opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
-max_p = 40
-max_pars = 2*max_p
-max_grad = 1e-4
-path="test_data"
-n_min = 4
-n_max = 12
+@everywhere num_samples = 20
+@everywhere opt_alg = "LD_LBFGS"
+@everywhere opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
+@everywhere max_p = 10
+@everywhere max_pars = 2*max_p
+@everywhere max_grad = 1e-4
+@everywhere path="test_data"
+@everywhere n_min = 4
+@everywhere n_max = 14
 
 
-function run_qaoa(n, hamiltonian)
-    energy_result = []
-    ground_state_energy = minimum(real(diag(operator_to_matrix(hamiltonian))))
-    for current_p in range(2,max_p)
-        mixers = repeat([qaoa_mixer(n)], current_p)
-        initial_point = rand(rng, Float64, 2*current_p)
-        opt = Opt(Symbol(opt_alg), length(initial_point))
-        opt.maxeval = opt_dict["maxeval"]
-        initial_state = ones(ComplexF64, 2^n) / sqrt(2^n)
-        result = QAOA(hamiltonian, mixers, opt, initial_point, n, initial_state)
-        qaoa_energy = result[1]
-        en_err = qaoa_energy - ground_state_energy
-        push!(energy_result, qaoa_energy)
-    end
-    return energy_result
-end
+@everywhere function run_adapt_qaoa(seed, pool_name, n)
+    t_0 = time()
+    d = n-1
+    rng = MersenneTwister(seed)
+    hamiltonian = random_regular_max_cut_hamiltonian(n, d; rng=rng)
 
-function run_adapt_qaoa(n, hamiltonian)
-    ground_state_energy = minimum(real(diag(operator_to_matrix(hamiltonian))))
-
-    pool = two_local_pool(n)
-    pool = map(p -> Operator([p], [1.0]), pool)
+    pool = Vector{Operator}()
     push!(pool, qaoa_mixer(n))
+    if pool_name == "2l"
+        append!(pool, map(p -> Operator([p], [1.0]), two_local_pool(n)))
+    elseif pool_name == "qaoa"
+        1
+    else
+        error("Invalid pool: $pool")
+    end
+
+    ham_vec = real(diagonal_operator_to_vector(hamiltonian))
+    gse = get_ground_state(hamiltonian)
+    gap = get_energy_gap(hamiltonian)
 
     initial_state = ones(ComplexF64, 2^n) / sqrt(2^n)
     initial_state /= norm(initial_state)
     callbacks = Function[ ParameterStopper(max_pars)]
 
     result = adapt_qaoa(hamiltonian, pool, n, opt_dict, callbacks; initial_parameter=1e-2, initial_state=initial_state, path=path)
+    t_f = time()
+    dt = t_f - t_0
+    println("Finished n=$n, seed=$seed with alg=$pool_name in $dt seconds"); flush(stdout)
 
-    adapt_qaoa_energy = last(result.energy)
-    en_err = adapt_qaoa_energy - ground_state_energy
-
-    return result, (result.energy - repeat([ground_state_energy], length(result.energy)))
+    num_layers = length(result)
+    df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[], overlap=[], time=[], rel_err=[], apprx=[])
+    for k = 1:num_layers
+        d = result[k]
+        en_err = safe_floor(d[:energy]-gse)
+        rel_en_err = en_err / gap
+        gse_overlap = ground_state_overlap(ham_vec, d[:opt_state])
+        push!(df, Dict(
+            :seed=>seed, 
+            :alg=>pool_name, 
+            :apprx=>d[:energy]/gse,
+            :layer=>k, 
+            :err=>en_err,
+            :rel_err=>rel_en_err,
+            :n=>n, 
+            :overlap=>gse_overlap, 
+            :time=>dt
+            ))
+    end
+    return df
 end
+
+# Parallel Debug
+println("Num procs: $(nprocs())")
+println("Num workers: $(nworkers())")
 
 # Main Loop
-results_qaoa = []
-results_adapt = []
-df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[])
+global df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[], overlap=[], time=[], rel_err=[], apprx=[])
+for n=4:2:n_max
+    fn_inputs = collect(product(1:num_samples, ["2l", "qaoa"], [n]))
+    println("starting simulations..."); flush(stdout)
+    #results = map(i -> run_adapt_qaoa(i...), fn_inputs)
+    t_0 = time()
+    results = pmap(i -> run_adapt_qaoa(i...), fn_inputs)
+    t_f = time()
+    dt = t_f - t_0
+    println("The walltime for the n=$n samples was $dt seconds")
 
-lk = ReentrantLock()
-println("Starting simulations...")
-Threads.@threads for i in ProgressBar(1:num_samples, printing_delay=0.1)
-    for n=reverse(n_min:2:n_max)
-        d = n-1
-        hamiltonian = random_regular_max_cut_hamiltonian(n, d)
-        gse = minimum(real(diag(operator_to_matrix(hamiltonian))))
-        _res_qaoa = run_qaoa(n, hamiltonian);
-        hist_adapt, _res_adapt = run_adapt_qaoa(n, hamiltonian);
-
-        lock(lk) do
-            #loop over results in adapt and append to df
-            for (k,en)=enumerate(hist_adapt.energy)
-                push!(df, Dict(:seed=>i, :alg=>"ADAPT", :layer=>k+1, :err=>safe_floor(en-gse), :n=>n))
-            end
-            #loop over results in qaoa and append to df
-            for (k,en)=enumerate(_res_qaoa)
-                # double the number of parameters since k here measures p
-                push!(df, Dict(:seed=>i, :alg=>"QAOA", :layer=>2*k, :err=>safe_floor(en-gse), :n=>n))
-            end
-
-            # Also collect here
-            push!(results_adapt, _res_adapt)
-            push!(results_qaoa, _res_qaoa)
-            CSV.write("data.csv", df)
-        end
-    end
-end
-
-println("Done with simulations, dumping data...")
-CSV.write("data.csv", df)
-println("Plotting...")
-
-### Plotting
-using Plots; gr()
-
-for n_=n_min:2:n_max
-    df_n = filter(:n => n -> n==n_, df)
-    n = n_
-    plot()
-    @df filter(:alg => ==("QAOA"), df_n) plot!(:layer, :err, group=:seed, color=:blue, yaxis=:log, xlim=(2,max_pars), left_margin=10Plots.mm, legend=false)
-    @df filter(:alg => ==("ADAPT"), df_n) plot!(:layer, :err, group=:seed, color=:red, yaxis=:log, xlim=(2,max_pars), left_margin=10Plots.mm, legend=false)
-    savefig("test_qaoa_comp_$n.pdf")
-
-    plot()
-    gdf_n = groupby(df_n, [:layer, :alg])
-    @df combine(gdf_n, :err => (x -> 10^mean(log10.(safe_floor.(x)))) => :err_mean) plot(:layer, :err_mean, group=:alg, yaxis=:log, xlim=(2,max_pars), left_margin=10Plots.mm, legend=true)
-    savefig("test_qaoa_comp_mean_$n.pdf")
+    println("concatenating results..."); flush(stdout)
+    global df = vcat(df, results...)
+    println("dumping data..."); flush(stdout)
+    CSV.write("data.csv", df)
 end

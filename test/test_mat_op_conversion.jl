@@ -47,3 +47,15 @@ end
         end
     end
 end
+
+@testset "Diagonal operator converter consistency" begin
+    for n=2:6
+        for i=1:10
+            d = n-1
+            h_op = random_regular_max_cut_hamiltonian(n, d)
+            h_vec_expected = diag(operator_to_matrix(h_op))
+            h_vec_actual = diagonal_operator_to_vector(h_op)
+            @test norm(h_vec_actual - h_vec_expected) <= 1e-10
+        end
+    end
+end

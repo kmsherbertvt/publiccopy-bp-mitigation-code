@@ -311,8 +311,29 @@ mutable struct ADAPTHistory
     opt_pars::Array{Array{Float64, 1}, 1}
     paulis::Array{Any,1}
     opt_numevals::Array{Any,1}
+    opt_state::Array{Any, 1}
 end
 
+
+function Base.firstindex(hist::ADAPTHistory)
+    return 1
+end
+
+
+function Base.lastindex(hist::ADAPTHistory)
+    return length(hist.energy)
+end
+
+
+function Base.length(hist::ADAPTHistory)
+    return Base.lastindex(hist)
+end
+
+
+function Base.getindex(hist::ADAPTHistory, i::Int)
+    1<=i<=lastindex(hist) || throw(BoundsError(hist, i))
+    return Dict(f => getfield(hist, f)[i] for f in fieldnames(ADAPTHistory))
+end
 
 function adapt_history_dump!(hist::ADAPTHistory, path::String, num_qubits::Int64)
     l = length(hist.energy)
@@ -358,6 +379,7 @@ function adapt_step!(
     push!(hist.opt_pars, opt_pars)
     push!(hist.paulis, pauli_chosen)
     push!(hist.opt_numevals, numevals)
+    push!(hist.opt_state, copy(state))
 end
 
 
@@ -372,7 +394,7 @@ function adapt_vqe(
     path = nothing,
     tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
 ) where T<:Unsigned
-    hist = ADAPTHistory([], [], [], [], [], [], [])
+    hist = ADAPTHistory([], [], [], [], [], [], [], [])
 
     #if path !== nothing
     #    """ in $path the following files will be written
@@ -475,7 +497,7 @@ function adapt_qaoa(
     tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
 )
     #### Initialization
-    hist = ADAPTHistory([], [], [], [], [], [], [])
+    hist = ADAPTHistory([], [], [], [], [], [], [], [])
 
     if tmp === nothing
         tmp = zeros(ComplexF64, 2^num_qubits)
@@ -516,7 +538,7 @@ function adapt_qaoa(
 
         #### Update point
         _init_beta = 0.0
-        _init_gamma = initial_parameter
+        _init_gamma = 0.0
         push!(point, _init_beta)
         push!(point, _init_gamma)
         if length(point) != 2*length(mixers) error("Invalid point size") end
