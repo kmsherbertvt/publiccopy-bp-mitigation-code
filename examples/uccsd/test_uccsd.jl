@@ -51,12 +51,6 @@ hamiltonian = get_ham("n2.ham", num_qubits)
 hf_ind = Int(0b11111111110000000000) + 1
 en_fci = -107.657038063455
 
-# H_4
-num_qubits = 8
-hamiltonian = get_ham("h4.ham", num_qubits)
-(pool_labels, pool) = uccsd_pool(num_qubits, 4)
-hf_ind = Int(0b11110000) + 1
-en_fci = -2.1663874486347625
 
 # H_8
 num_qubits = 16
@@ -64,6 +58,13 @@ hamiltonian = get_ham("h8.ham", num_qubits)
 (pool_labels, pool) = uccsd_pool(num_qubits, 8)
 hf_ind = Int(0b1111111100000000) + 1
 en_fci = -4.307571601998721
+
+# H_4
+num_qubits = 8
+hamiltonian = get_ham("h4.ham", num_qubits)
+(pool_labels, pool) = uccsd_pool(num_qubits, 4)
+hf_ind = Int(0b11110000) + 1
+en_fci = -2.1663874486347625
 
 initial_state = zeros(ComplexF64, 2^num_qubits)
 initial_state[hf_ind] = 1.0 + 0.0im
