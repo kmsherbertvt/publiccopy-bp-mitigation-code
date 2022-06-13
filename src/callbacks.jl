@@ -62,6 +62,16 @@ function EnergyErrorPrinter(gse::Float64)
     return stopper
 end
 
+function EnergyPrinter()
+    function stopper(hist::ADAPTHistory)
+        num_pars = length(hist.opt_pars[end])
+        en = hist.energy[end]
+        println("Pars: $num_pars, En: $en")
+        return false
+    end
+    return stopper
+end
+
 
 function ParameterStopper(max_pars::Int64)
     function stopper(hist::ADAPTHistory)
@@ -78,7 +88,7 @@ end
 function DeltaYStopper(delta::Float64 = 1e-8, n_best::Int64 = 5)
     function stopper(hist::ADAPTHistory)
         en_sort = sort(hist.energy)
-        if len(en_sort) <= n_best
+        if length(en_sort) <= n_best
             return false
         end
         best = en_sort[1]

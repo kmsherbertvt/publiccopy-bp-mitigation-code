@@ -16,7 +16,7 @@ rng = MersenneTwister(14)
         ground_state_energy = minimum(real(diag(operator_to_matrix(hamiltonian))))
 
         mixers = repeat([qaoa_mixer(n)], p)
-        initial_point = rand(rng, Float64, 2*p+1)
+        initial_point = rand(rng, Float64, 2*p)
         #opt = Opt(:LN_COBYLA, length(initial_point))
         opt = Opt(:LD_LBFGS, length(initial_point))
         initial_state = ones(ComplexF64, 2^n) / sqrt(2^n)
@@ -43,7 +43,7 @@ end
 
        initial_state = ones(ComplexF64, 2^n) / sqrt(2^n)
        initial_state /= norm(initial_state)
-       callbacks = Function[ParameterStopper(100), MaxGradientStopper(1e-4)]
+       callbacks = Function[ParameterStopper(100), MaxGradientStopper(1e-8)]
 
        result = adapt_qaoa(hamiltonian, pool, n, opt, callbacks; initial_parameter=1e-2, initial_state=initial_state, path=path)
 
@@ -72,7 +72,7 @@ end
 
         initial_state = ones(ComplexF64, 2^n) / sqrt(2^n)
         initial_state /= norm(initial_state)
-        callbacks = Function[ParameterStopper(50), MaxGradientStopper(1e-4)]
+        callbacks = Function[ParameterStopper(50), MaxGradientStopper(1e-8)]
 
         path=nothing
 

@@ -262,6 +262,10 @@ function commuting_vqe(
 
     (minf,minx,ret) = optimize(opt, initial_point)
 
+    if output_state !== nothing
+        cost_fn(minx, similar(minx))
+    end
+
     return (minf, minx, ret, eval_count)
 end
 
@@ -273,7 +277,7 @@ function qaoa_ansatz(
     p = length(mixers)
     ansatz = zip(mixers, repeat([hamiltonian], p))
     ansatz = collect(Iterators.flatten(ansatz))
-    prepend!(ansatz, [hamiltonian])
+    #prepend!(ansatz, [hamiltonian])
     return ansatz
 end
 
@@ -307,8 +311,29 @@ mutable struct ADAPTHistory
     opt_pars::Array{Array{Float64, 1}, 1}
     paulis::Array{Any,1}
     opt_numevals::Array{Any,1}
+    opt_state::Array{Any, 1}
 end
 
+
+function Base.firstindex(hist::ADAPTHistory)
+    return 1
+end
+
+
+function Base.lastindex(hist::ADAPTHistory)
+    return length(hist.energy)
+end
+
+
+function Base.length(hist::ADAPTHistory)
+    return Base.lastindex(hist)
+end
+
+
+function Base.getindex(hist::ADAPTHistory, i::Int)
+    1<=i<=lastindex(hist) || throw(BoundsError(hist, i))
+    return Dict(f => getfield(hist, f)[i] for f in fieldnames(ADAPTHistory))
+end
 
 function adapt_history_dump!(hist::ADAPTHistory, path::String, num_qubits::Int64)
     l = length(hist.energy)
@@ -340,15 +365,21 @@ function adapt_step!(
         hamiltonian,
         opt_pars,
         pauli_chosen,
-        numevals
+        numevals,
+        grad_state = nothing
         )
-    push!(hist.grads, [imag(exp_val(com, state, tmp)) for com in comms]) # phase?
+    
+    if grad_state === nothing
+        grad_state = state
+    end
+    push!(hist.grads, [abs(exp_val(com, grad_state, tmp)) for com in comms]) # phase?
     push!(hist.max_grad_ind, argmax(map(x -> abs(x), hist.grads[end])))
     push!(hist.max_grad, abs(hist.grads[end][hist.max_grad_ind[end]]))
     push!(hist.energy, real(exp_val(hamiltonian, state, tmp)))
     push!(hist.opt_pars, opt_pars)
     push!(hist.paulis, pauli_chosen)
     push!(hist.opt_numevals, numevals)
+    push!(hist.opt_state, copy(state))
 end
 
 
@@ -446,7 +477,7 @@ function adapt_vqe(
     path = nothing,
     tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
 ) where T<:Unsigned
-    hist = ADAPTHistory([], [], [], [], [], [], [])
+    hist = ADAPTHistory([], [], [], [], [], [], [], [])
 
     #if path !== nothing
     #    """ in $path the following files will be written
@@ -519,6 +550,25 @@ function adapt_vqe(
 end
 
 
+function make_opt(optimizer, point)
+    if optimizer isa String
+        opt_dict = Dict("name" => optimizer)
+    elseif optimizer isa Dict
+        opt_dict = optimizer
+    else
+        throw(ArgumentError("optimizer should be String or Dict"))
+    end
+
+    opt = Opt(Symbol(opt_dict["name"]), length(point))
+    opt_keys = collect(keys(opt_dict))
+    deleteat!(opt_keys,findall(x->x=="name",opt_keys))
+    for akey in opt_keys
+        setproperty!(opt,Symbol(akey),opt_dict[akey])
+    end
+    return opt
+end
+
+
 function adapt_qaoa(
     hamiltonian::Operator,
     pool::Array{Operator,1},
@@ -530,22 +580,8 @@ function adapt_qaoa(
     path = nothing,
     tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
 )
-    hist = ADAPTHistory([], [], [], [], [], [], [])
-
-    #if path !== nothing
-    #    """ in $path the following files will be written
-    #        $path/layer_*.csv - indexed by integer
-    #        $path/adapt_history.csv
-    #    """
-    #end
-
-    if optimizer isa String
-        opt_dict = Dict("name" => optimizer)
-    elseif optimizer isa Dict
-        opt_dict = optimizer
-    else
-        throw(ArgumentError("optimizer should be String or Dict"))
-    end
+    #### Initialization
+    hist = ADAPTHistory([], [], [], [], [], [], [], [])
 
     if tmp === nothing
         tmp = zeros(ComplexF64, 2^num_qubits)
@@ -560,15 +596,21 @@ function adapt_qaoa(
     for _op in pool
         push!(comms, commutator(hamiltonian, _op, false))
     end
-
-    state = copy(initial_state)
-    adapt_step!(hist, comms, tmp, state, hamiltonian, [], nothing, nothing)
-
-    ansatz = Array{Operator, 1}()
-
+    mixers = Array{Operator, 1}()
     layer_count = 0
 
+    state = initial_state
+    point = Vector{Float64}()
+    opt_evals = nothing
+    op_chosen = nothing
+
     while true
+        #### Some book-keeping of variables
+        grad_state = state
+        pauli_ansatz!(hamiltonian.paulis, real(hamiltonian.coeffs)*initial_parameter, grad_state, tmp)
+        adapt_step!(hist, comms, tmp, state, hamiltonian, point, op_chosen, opt_evals, grad_state)
+
+        #### Check Convergence
         for c in callbacks
             if c(hist)
                 return hist
@@ -576,28 +618,19 @@ function adapt_qaoa(
         end
         flush(stdout)
 
-        push!(ansatz, pool[hist.max_grad_ind[end]])
-        #point = vcat(hist.opt_pars[end], [0.0, initial_parameter])
-        point = vcat(hist.opt_pars[end], [initial_parameter, 0.0])
-        if length(point) == 2
-            push!(point, initial_parameter)
-        end
+        #### Get new operator
+        push!(mixers, pool[hist.max_grad_ind[end]])
 
-        opt = Opt(Symbol(opt_dict["name"]), length(point))
-        opt_keys = collect(keys(opt_dict))
-        deleteat!(opt_keys,findall(x->x=="name",opt_keys))
-        for akey in opt_keys
-            setproperty!(opt,Symbol(akey),opt_dict[akey])
-        end
+        #### Update point
+        _init_beta = 0.0
+        _init_gamma = 0.0
+        push!(point, _init_beta)
+        push!(point, _init_gamma)
+        if length(point) != 2*length(mixers) error("Invalid point size") end
 
-	    vqe_path = "$path/vqe_layer_$layer_count.h5"
-
-        state .= initial_state
-
-        energy, point, ret, opt_evals = QAOA(hamiltonian, ansatz, opt, point, num_qubits, state, vqe_path, tmp)
-        state = copy(tmp)
-        adapt_step!(hist, comms, tmp, state, hamiltonian, point,pool[hist.max_grad_ind[end]],opt_evals) # pool operator of the step that just finished
-
-        layer_count += 1
+        output_state = similar(initial_state)
+        min_energy, optimal_point, _, opt_evals = QAOA(hamiltonian, mixers, make_opt(optimizer, point), point, num_qubits, copy(initial_state), nothing, output_state)
+        state .= output_state
+        point .= optimal_point
     end
 end

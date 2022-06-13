@@ -1,4 +1,5 @@
 using LinearAlgebra
+using Random
 using Test
 using AdaptBarren
 
@@ -14,10 +15,10 @@ using AdaptBarren
             optimizer = "LD_LBFGS"
             callbacks = Function[ParameterStopper(200), MaxGradientStopper(1e-10)]
             
-            state = ones(ComplexF64, 2^n)
+            state = rand(ComplexF64, 2^n)
             state /= norm(state)
 
-            result = adapt_vqe(operator, pool, n, optimizer, callbacks; initial_parameter=1e-2, initial_state=state)
+            result = adapt_vqe(operator, pool, n, optimizer, callbacks; initial_parameter=0.0, initial_state=state)
 
             en_adapt = last(result.energy)
 

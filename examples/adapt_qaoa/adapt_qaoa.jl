@@ -1,110 +1,104 @@
-using LinearAlgebra
-using Test
-using AdaptBarren
-using NLopt
-using Random
-using ProgressBars
+using Distributed
 
-Random.seed!(42)
-rng = MersenneTwister(14)
+println("staring script..."); flush(stdout)
+@everywhere using Pkg
+@everywhere Pkg.activate("../../")
+@everywhere Pkg.instantiate()
+@everywhere using AdaptBarren
 
-function _id_x_str(n::Int, k::Int)
-    s = repeat(["I"], n)
-    s[k] = "X"
-    return join(s)
-end
+@everywhere using LinearAlgebra
+@everywhere using Test
+@everywhere using DataFrames
+@everywhere using StatsBase
+@everywhere using IterTools
+@everywhere using NLopt
+@everywhere using Random
+@everywhere using CSV
 
-function qaoa_mixer(n::Int)
-    paulis = [pauli_string_to_pauli(_id_x_str(n, k)) for k in range(1,n)]
-    coeffs = repeat([1.0], n)
-    return Operator(paulis, coeffs)
-end
-
-function safe_floor(x, eps = 1e-5, delta = 1e-10)
-    if x <= -eps error("Too negative: $x < -$eps") end
-    if x <= 0.0 return delta end
-    return x
-end
+@everywhere Random.seed!(42)
+@everywhere rng = MersenneTwister(14)
 
 # Hyperparameters
-num_samples = 20
-opt_alg = "LD_LBFGS"
-#opt_alg = "LN_NELDERMEAD"
-max_p = 14
-max_pars = 2*max_p+1
-max_grad = 1e-4
-path="test_data"
+@everywhere num_samples = 20
+@everywhere opt_alg = "LD_LBFGS"
+@everywhere opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
+@everywhere max_p = 10
+@everywhere max_pars = 2*max_p
+@everywhere max_grad = 1e-4
+@everywhere path="test_data"
+@everywhere n_min = 4
+@everywhere n_max = 14
 
-function run_qaoa(n, hamiltonian)
-    energy_result = []
-    ground_state_energy = minimum(real(diag(operator_to_matrix(hamiltonian))))
-    for current_p in range(2,max_p)
-        mixers = repeat([qaoa_mixer(n)], current_p)
-        initial_point = rand(rng, Float64, 2*current_p+1)
-        opt = Opt(Symbol(opt_alg), length(initial_point))
-        initial_state = ones(ComplexF64, 2^n) / sqrt(2^n)
-        result = QAOA(hamiltonian, mixers, opt, initial_point, n, initial_state)
-        qaoa_energy = result[1]
-        en_err = qaoa_energy - ground_state_energy
-        push!(energy_result, en_err)
-    end
-    return energy_result
-end
 
-function run_adapt_qaoa(n, hamiltonian)
-    ground_state_energy = minimum(real(diag(operator_to_matrix(hamiltonian))))
+@everywhere function run_adapt_qaoa(seed, pool_name, n)
+    t_0 = time()
+    d = n-1
+    rng = MersenneTwister(seed)
+    hamiltonian = random_regular_max_cut_hamiltonian(n, d; rng=rng)
 
-    pool = two_local_pool(n)
-    pool = map(p -> Operator([p], [1.0]), pool)
+    pool = Vector{Operator}()
     push!(pool, qaoa_mixer(n))
+    if pool_name == "2l"
+        append!(pool, map(p -> Operator([p], [1.0]), two_local_pool(n)))
+    elseif pool_name == "qaoa"
+        1
+    else
+        error("Invalid pool: $pool")
+    end
+
+    ham_vec = real(diagonal_operator_to_vector(hamiltonian))
+    gse = get_ground_state(hamiltonian)
+    gap = get_energy_gap(hamiltonian)
 
     initial_state = ones(ComplexF64, 2^n) / sqrt(2^n)
     initial_state /= norm(initial_state)
-    callbacks = Function[ParameterStopper(max_pars), MaxGradientStopper(max_grad)]
+    callbacks = Function[ ParameterStopper(max_pars)]
 
-    result = adapt_qaoa(hamiltonian, pool, n, opt_alg, callbacks; initial_parameter=1e-2, initial_state=initial_state, path=path)
+    result = adapt_qaoa(hamiltonian, pool, n, opt_dict, callbacks; initial_parameter=1e-2, initial_state=initial_state, path=path)
+    t_f = time()
+    dt = t_f - t_0
+    println("Finished n=$n, seed=$seed with alg=$pool_name in $dt seconds"); flush(stdout)
 
-    adapt_qaoa_energy = last(result.energy)
-    en_err = adapt_qaoa_energy - ground_state_energy
-
-    return result.energy - repeat([ground_state_energy], length(result.energy))
+    num_layers = length(result)
+    df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[], overlap=[], time=[], rel_err=[], apprx=[])
+    for k = 1:num_layers
+        d = result[k]
+        en_err = safe_floor(d[:energy]-gse)
+        rel_en_err = en_err / gap
+        gse_overlap = ground_state_overlap(ham_vec, d[:opt_state])
+        push!(df, Dict(
+            :seed=>seed, 
+            :alg=>pool_name, 
+            :apprx=>d[:energy]/gse,
+            :layer=>k, 
+            :err=>en_err,
+            :rel_err=>rel_en_err,
+            :n=>n, 
+            :overlap=>gse_overlap, 
+            :time=>dt
+            ))
+    end
+    return df
 end
+
+# Parallel Debug
+println("Num procs: $(nprocs())")
+println("Num workers: $(nworkers())")
 
 # Main Loop
-results_qaoa = []
-results_adapt = []
+global df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[], overlap=[], time=[], rel_err=[], apprx=[])
+for n=4:2:n_max
+    fn_inputs = collect(product(1:num_samples, ["2l", "qaoa"], [n]))
+    println("starting simulations..."); flush(stdout)
+    #results = map(i -> run_adapt_qaoa(i...), fn_inputs)
+    t_0 = time()
+    results = pmap(i -> run_adapt_qaoa(i...), fn_inputs)
+    t_f = time()
+    dt = t_f - t_0
+    println("The walltime for the n=$n samples was $dt seconds")
 
-n = 6
-d = 5
-
-lk = ReentrantLock()
-println("Starting simulations...")
-Threads.@threads for i in ProgressBar(1:num_samples, printing_delay=0.1)
-    hamiltonian = random_regular_max_cut_hamiltonian(n, d)
-    _res_qaoa = run_qaoa(n, hamiltonian);
-    _res_adapt = run_adapt_qaoa(n, hamiltonian);
-
-    _res_qaoa = map(safe_floor, _res_qaoa)
-    _res_adapt = map(safe_floor, _res_adapt)
-
-    lock(lk) do
-        push!(results_adapt, _res_adapt)
-        push!(results_qaoa, _res_qaoa)
-    end
-
-    #if minimum(_res_adapt) > 1e-5
-    #    v = diag(operator_to_matrix(hamiltonian))
-    #    if norm(imag(v)) > 1e-8 error("Not diagonal") end
-    #    @show _res_adapt
-    #    @show real(v)
-    #end
+    println("concatenating results..."); flush(stdout)
+    global df = vcat(df, results...)
+    println("dumping data..."); flush(stdout)
+    CSV.write("data.csv", df)
 end
-println("Done with simulations, plotting...")
-
-### Plotting
-using Plots; gr()
-plot()
-plot!(results_qaoa, c=:red, yaxis=:log, legend=false)
-plot!(results_adapt, c=:blue, yaxis=:log, legend=false)
-
-savefig("test_qaoa_comp.pdf")

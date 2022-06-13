@@ -7,6 +7,7 @@ include("operator.jl")
 include("fast_grad.jl")
 include("spin_chains.jl")
 include("vqe.jl")
+include("utils.jl")
 include("callbacks.jl")
 include("uccsd.jl")
 include("qaoa_hamiltonians.jl")
@@ -14,10 +15,18 @@ include("qaoa_hamiltonians.jl")
 export ADAPTHistory,
     _cost_fn_commuting_vqe,
     DeltaYStopper,
+    ground_state_overlap,
     FloorStopper,
     adapt_vqe_commuting,
+    get_git_id,
+    clump_degenerate_values,
+    safe_floor,
+    EnergyPrinter,
     MaxGradientStopper,
+    log_mean,
+    get_energy_gap,
     EnergyErrorPrinter,
+    get_ground_state,
     Operator,
     ParameterStopper,
     Pauli,

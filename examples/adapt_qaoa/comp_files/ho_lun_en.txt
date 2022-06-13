@@ -1,0 +1,12 @@
+maxcut objective: -3.18657671056642
+maxcut objective: -3.18657671056642
+ maxcut objective: -2.700664152841788
+ maxcut objective: -2.942402877328991
+ maxcut objective: -3.033065745144752
+ maxcut objective: -3.0332815681747514
+ maxcut objective: -3.1348249996559066
+ maxcut objective: -3.148731803786042
+ maxcut objective: -3.1633603364650416
+ maxcut objective: -3.185926035898161
+ maxcut objective: -3.186576699225072
+ maxcut objective: -3.186576710566354
