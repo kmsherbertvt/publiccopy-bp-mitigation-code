@@ -113,3 +113,15 @@ function FloorStopper(floor::Float64, delta::Float64 = 1e-8)
     end
     return stopper
 end
+
+
+function DeadlineStopper(max_seconds::Int)
+    t_0 = time()
+    function stopper(hist::ADAPTHistory)
+        if time() - t_0 > max_seconds
+            return true
+        else
+            return false
+        end
+    end
+end
