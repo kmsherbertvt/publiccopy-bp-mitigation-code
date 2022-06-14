@@ -4,6 +4,4 @@ The main script in this example is `test_uccsd.jl`. It reads in the Hamiltonian 
 
 The operators added at each layer are printed out in the output in the form `(a,b,i,j)` in the case of a double or `(a,i)` in the case of a single.
 
-```
-julia --threads=auto --project=@. test_uccsd.jl > output.txt
-```
+See `run_examples.sh` for usage.
