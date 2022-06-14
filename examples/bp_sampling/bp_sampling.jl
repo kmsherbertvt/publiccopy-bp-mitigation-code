@@ -22,7 +22,9 @@ println("staring script..."); flush(stdout)
 # Hyperparameters
 @everywhere num_samples = 20
 @everywhere num_point_samples = 500
+@everywhere max_num_qubits = 8
 @everywhere max_grad = 1e-4
+@everywhere vqe_sampling_depths = [20, 40, 60]
 @everywhere opt_alg = "LD_LBFGS"
 @everywhere opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
 
@@ -46,7 +48,7 @@ end
 
 
 @everywhere function main_adapt(n, ham, pool::Array{Pauli{T},1}) where T<:Unsigned
-    callbacks = Function[MaxGradientStopper(max_grad)]
+    callbacks = Function[MaxGradientStopper(max_grad), DeltaYStopper()]
     initial_state = uniform_state(n)
 
     res = adapt_vqe(ham, pool, n, opt_dict, callbacks; initial_state=initial_state)
@@ -62,7 +64,7 @@ end
 
 
 @everywhere function main_adapt_qaoa(n, ham, pool::Array{Operator,1})
-    callbacks = Function[MaxGradientStopper(max_grad)]
+    callbacks = Function[MaxGradientStopper(max_grad), DeltaYStopper()]
     initial_state = uniform_state(n)
 
     res = adapt_qaoa(ham, pool, n, opt_dict, callbacks; initial_parameter=1e-2, initial_state=initial_state)
@@ -130,15 +132,36 @@ end
     )
 end
 
+# Debug
+#run_instance(42, 3, "adapt_vqe_2l", 20)
+#run_instance(42, 3, "adapt_qaoa_2l", 20)
+#run_instance(42, 3, "qaoa", 20)
+#run_instance(42, 3, "vqe", 20)
 
-# Parallel Debug
+
+# Parallel Info
 println("Num procs: $(nprocs())")
 println("Num workers: $(nworkers())")
 
+# Set up problem instances
+instances = []
+for seed=1:num_samples
+    for method=["adapt_vqe_2l", "adapt_qaoa_2l", "qaoa", "vqe"]
+        if method == "vqe"
+            append!(instances, [[seed, method, d] for d in vqe_sampling_depths])
+        else
+            append!(instances, [[seed, method, nothing]])
+        end
+    end
+end
+println("There are $(length(instances)) problem instances for each number of qubits")
+
 # Main Loop
 #global df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[], overlap=[], time=[], rel_err=[], apprx=[])
-
-run_instance(42, 3, "adapt_vqe_2l", 20)
-run_instance(42, 3, "adapt_qaoa_2l", 20)
-run_instance(42, 3, "qaoa", 20)
-run_instance(42, 3, "vqe", 20)
+for n=4:2:max_num_qubits
+    println("Starting n=$n qubits")
+    t_0 = time()
+    results = pmap(inst -> run_instance(inst[1], n, inst[2], inst[3]), instances)
+    println("Dumping")
+    println("Finished n=$n qubits in $(time()-t_0) seconds")
+end
