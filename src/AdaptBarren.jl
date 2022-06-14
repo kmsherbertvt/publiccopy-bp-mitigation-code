@@ -13,6 +13,7 @@ include("qaoa_hamiltonians.jl")
 
 export ADAPTHistory,
     _cost_fn_commuting_vqe,
+    make_opt,
     DeltaYStopper,
     ground_state_overlap,
     FloorStopper,
