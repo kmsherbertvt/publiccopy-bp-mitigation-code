@@ -568,13 +568,18 @@ function adapt_qaoa(
     state = initial_state
     point = Vector{Float64}()
     opt_evals = nothing
-    op_chosen = nothing
 
     while true
         #### Some book-keeping of variables
         grad_state = state
         pauli_ansatz!(hamiltonian.paulis, real(hamiltonian.coeffs)*initial_parameter, grad_state, tmp)
-        adapt_step!(hist, comms, tmp, state, hamiltonian, point, op_chosen, opt_evals, grad_state)
+        if length(hist.max_grad_ind) !== 0
+            chosen_op = pool[hist.max_grad_ind[end]]
+        else
+            chosen_op = nothing
+        end
+
+        adapt_step!(hist, comms, tmp, state, hamiltonian, point, chosen_op, opt_evals, grad_state)
 
         #### Check Convergence
         for c in callbacks
