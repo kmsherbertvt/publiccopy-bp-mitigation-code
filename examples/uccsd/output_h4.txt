@@ -1,5 +1,5 @@
 /usr/bin
-Using 32/32 threads
+Using 1/32 threads
 Number of operators in the pool is: 26
 Pars: 0, EnErr: 0.06784151163672503
 Pars: 0, MaxGrad: 0.2745656798642825
