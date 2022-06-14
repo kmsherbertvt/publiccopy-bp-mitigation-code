@@ -5,6 +5,14 @@ mutable struct Operator
     coeffs::Array{ComplexF64,1}
 end
 
+function Operator(p::Pauli)
+    return Operator([p], [1.0])
+end
+
+function Operator(o::Operator)
+    return o
+end
+
 function group_inds_by_eq(A::Array)
     l = length(A)
     grps = Dict{typeof(A[1]), Array{Int64,1}}()
