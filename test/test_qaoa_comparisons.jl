@@ -152,4 +152,28 @@ end
         println("\n\n\n\n\n")
     end
 
+    @testset "Yanzhu max-k-sat comparison" begin
+        println("Begin Yanzhu's comparison")
+        n = 4
+        m = 5
+        k = 2
+
+        sat_problem = SATProblem(random_k_sat_instance(n, m, k))
+
+        println("The problem has n=$n, m=$m, k=$k")
+        display(sat_problem.A)
+        println("")
+
+        if k == 2
+            test_ham = max_1_2_sat_ham(sat_problem)
+        elseif k == 3
+            test_ham = max_1_3_sat_ham(sat_problem)
+        else
+            error("Invalid k=$k")
+        end
+
+        energy_errors = zeros(Float64, 10)
+        _run_qaoa_comparison_test(test_ham, energy_errors, length(energy_errors), n)
+        println("\n\n\n\n\n")
+    end
 end
