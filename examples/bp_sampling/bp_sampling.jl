@@ -10,6 +10,7 @@ println("staring script..."); flush(stdout)
 @everywhere using Test
 @everywhere using DataFrames
 @everywhere using StatsBase
+@everywhere using Distributions
 @everywhere using IterTools
 @everywhere using NLopt
 @everywhere using Random
@@ -29,10 +30,11 @@ println("staring script..."); flush(stdout)
 @everywhere function analyze_results!(res_dict, ham, opt_states)
     gse = get_ground_state(ham)
     gap = get_energy_gap(ham)
+    ham_vec = real(diagonal_operator_to_vector(ham))
     res_dict["energy_errors"] = res_dict["energies"] .- gse
     res_dict["approx_ratio"] = res_dict["energies"] ./ gse
-    res_dict["relative_error"] = abs(res_dict["energies"]) ./ (gap)
-    res_dict["ground_state_overlaps"] = map(s -> ground_state_overlap(ham, s), opt_states)
+    res_dict["relative_error"] = abs.(res_dict["energies"]) ./ (gap)
+    res_dict["ground_state_overlaps"] = map(s -> ground_state_overlap(ham_vec, s), opt_states)
 
     res_dict["final_energy_errors"] = res_dict["energy_errors"][end]
     res_dict["final_approx_ratio"] = res_dict["approx_ratio"][end]
@@ -44,13 +46,13 @@ end
 
 
 @everywhere function main_adapt(n, ham, pool::Array{Pauli{T},1}) where T<:Unsigned
-    callbacks = [MaxGradientStopper(max_grad)]
+    callbacks = Function[MaxGradientStopper(max_grad)]
     initial_state = uniform_state(n)
 
     res = adapt_vqe(ham, pool, n, opt_dict, callbacks; initial_state=initial_state)
-    res_dict = Dict(
+    res_dict = Dict{Any,Any}(
         "energies" => res.energy,
-        "ansatz" => res.paulis,
+        "ansatz" => map(p -> Operator(p), filter(x -> x !== nothing, res.paulis)),
         "max_grads" => res.max_grad,
         "opt_pars" => res.opt_pars,
     )
@@ -60,13 +62,16 @@ end
 
 
 @everywhere function main_adapt_qaoa(n, ham, pool::Array{Operator,1})
-    callbacks = [MaxGradientStopper(max_grad)]
+    callbacks = Function[MaxGradientStopper(max_grad)]
     initial_state = uniform_state(n)
 
     res = adapt_qaoa(ham, pool, n, opt_dict, callbacks; initial_parameter=1e-2, initial_state=initial_state)
-    res_dict =Dict(
+    res.paulis
+    mixers = map(p->Operator(p),filter(p -> p !== nothing,res.paulis))
+    ansatz = qaoa_ansatz(ham, mixers)
+    res_dict =Dict{Any,Any}(
         "energies" => res.energy,
-        "ansatz" => qaoa_ansatz(ham, res.paulis),
+        "ansatz" => ansatz,
         "max_grads" => res.max_grad,
         "opt_pars" => res.opt_pars,
     )
@@ -80,16 +85,16 @@ end
     psi = copy(initial_state)
     initial_point = rand(rng, Uniform(-pi, +pi), length(ansatz))
 
-    min_en, opt_pt, _, _ = VQE(ham, ansatz, make_opt(opt_dict, initial_point), initial_point, n, initial_state=initial_state)
+    min_en, opt_pt, _, _ = VQE(ham, ansatz, make_opt(opt_dict, initial_point), initial_point, n, initial_state)
     pauli_ansatz!(ansatz, opt_pt, psi, similar(initial_state))
 
-    res_dict = Dict(
+    res_dict = Dict{Any,Any}(
         "energies" => [min_en],
-        "ansatz" => ansatz,
+        "ansatz" => map(p->Operator(p),ansatz),
         "max_grads" => Array{Float64,1}(),
         "opt_pars" => [opt_pt],
     )
-    analyze_results!(res_dict, ham, res.opt_state)
+    analyze_results!(res_dict, ham, [psi])
     return res_dict
 end
 
@@ -131,4 +136,9 @@ println("Num procs: $(nprocs())")
 println("Num workers: $(nworkers())")
 
 # Main Loop
-global df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[], overlap=[], time=[], rel_err=[], apprx=[])
+#global df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[], overlap=[], time=[], rel_err=[], apprx=[])
+
+run_instance(42, 3, "adapt_vqe_2l", 20)
+run_instance(42, 3, "adapt_qaoa_2l", 20)
+run_instance(42, 3, "qaoa", 20)
+run_instance(42, 3, "vqe", 20)
