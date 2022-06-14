@@ -46,6 +46,7 @@ function max_1_2_sat_ham(F::SATProblem)
             continue
         end
     end
+    op_chop!(H)
     return H
 end
 
@@ -58,16 +59,16 @@ function max_1_3_sat_ham(F::SATProblem)
         hi = -sum(F.A[i,:])
         H += (hi/2) * _get_z_term(i)
     end
-
+    op_chop!(H)
     return H
 end
 
-function random_k_sat_instance(n::Integer, m::Integer, k::Integer)
+function random_k_sat_instance(n::Integer, m::Integer, k::Integer; rng = _DEFAULT_RNG)
     a = zeros(Int, n)
     for i=1:k a[i] = 1 end
     
     sample_space = unique(collect(permutations(a)))
-    vecs = sample(sample_space, m; replace=false)
+    vecs = sample(rng, sample_space, m; replace=false)
 
     A = zeros(Int, n, m)
     for (i,v)=enumerate(vecs)
@@ -77,8 +78,8 @@ function random_k_sat_instance(n::Integer, m::Integer, k::Integer)
     return A
 end
 
-function random_k_sat_hamiltonian(n::Integer, m::Integer, k::Integer)
-    A = random_k_sat_instance(n, m, k)
+function random_k_sat_hamiltonian(n::Integer, m::Integer, k::Integer; rng = _DEFAULT_RNG)
+    A = random_k_sat_instance(n, m, k; rng)
     P = SATProblem(A)
     if k == 2
         return max_1_2_sat_ham(P)
