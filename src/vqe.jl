@@ -394,7 +394,7 @@ function adapt_vqe_commuting(
     path = nothing,
     tmp::Union{Nothing, Array{ComplexF64,1}} = nothing
 ) where T<:Unsigned
-    hist = ADAPTHistory([], [], [], [], [], [], [])
+    hist = ADAPTHistory([], [], [], [], [], [], [], [])
 
     #if path !== nothing
     #    """ in $path the following files will be written
