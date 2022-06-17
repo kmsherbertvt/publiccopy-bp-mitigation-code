@@ -20,9 +20,9 @@ println("staring script..."); flush(stdout)
 #@everywhere rng = MersenneTwister(14)
 
 # Hyperparameters
-@everywhere num_samples = 20
-@everywhere num_point_samples = 500
-@everywhere max_num_qubits = 8
+@everywhere num_samples = 2
+@everywhere num_point_samples = 5
+@everywhere max_num_qubits = 6
 @everywhere max_grad = 1e-4
 @everywhere vqe_sampling_depths = [20, 40, 60]
 @everywhere opt_alg = "LD_LBFGS"
@@ -198,9 +198,9 @@ for n=4:2:max_num_qubits
         end
     end
 
-    CSV.write("data/data_res_$(n).csv", df_res)
-    CSV.write("data/data_en_$(n).csv", df_ens)
-    CSV.write("data/data_grad_$(n).csv", df_grads)
+    CSV.write("data/data_res_$(n).csv.test", df_res)
+    CSV.write("data/data_en_$(n).csv.test", df_ens)
+    CSV.write("data/data_grad_$(n).csv.test", df_grads)
 
     println("Finished n=$n qubits in $(time()-t_0) seconds"); flush(stdout)
 end
