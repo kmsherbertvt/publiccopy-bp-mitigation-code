@@ -198,9 +198,9 @@ for n=4:2:max_num_qubits
         end
     end
 
-    CSV.write("data_res_$(n).csv", df_res)
-    CSV.write("data_en_$(n).csv", df_ens)
-    CSV.write("data_grad_$(n).csv", df_grads)
+    CSV.write("data/data_res_$(n).csv", df_res)
+    CSV.write("data/data_en_$(n).csv", df_ens)
+    CSV.write("data/data_grad_$(n).csv", df_grads)
 
     println("Finished n=$n qubits in $(time()-t_0) seconds"); flush(stdout)
 end
