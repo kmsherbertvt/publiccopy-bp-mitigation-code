@@ -128,7 +128,8 @@ end
     return Dict(
         "result_dict" => res,
         "sampled_energies" => sampled_energy,
-        "sampled_grads" => sampled_grads
+        "sampled_grads" => sampled_grads,
+        "pars_dict" => Dict("seed" => seed, "method" => method, "n" => n, "d" => d),
     )
 end
 
@@ -140,8 +141,8 @@ end
 
 
 # Parallel Info
-println("Num procs: $(nprocs())")
-println("Num workers: $(nworkers())")
+println("Num procs: $(nprocs())"); flush(stdout)
+println("Num workers: $(nworkers())"); flush(stdout)
 
 # Set up problem instances
 instances = []
@@ -150,18 +151,56 @@ for seed=1:num_samples
         if method == "vqe"
             append!(instances, [[seed, method, d] for d in vqe_sampling_depths])
         else
-            append!(instances, [[seed, method, nothing]])
+            append!(instances, [[seed, method, missing]])
         end
     end
 end
-println("There are $(length(instances)) problem instances for each number of qubits")
+println("There are $(length(instances)) problem instances for each number of qubits"); flush(stdout)
 
 # Main Loop
-#global df = DataFrame(seed=[], alg=[], layer=[], err=[], n=[], overlap=[], time=[], rel_err=[], apprx=[])
 for n=4:2:max_num_qubits
-    println("Starting n=$n qubits")
+    println("Starting n=$n qubits"); flush(stdout)
     t_0 = time()
     results = pmap(inst -> run_instance(inst[1], n, inst[2], inst[3]), instances)
-    println("Dumping")
-    println("Finished n=$n qubits in $(time()-t_0) seconds")
+    println("Dumping"); flush(stdout)
+    df_res   = DataFrame(n=[], method=[], d=[], seed=[], 
+        energies=[], 
+        max_grads=[], 
+        opt_pars=[], 
+        energy_errors=[], 
+        approx_ratio=[], 
+        relative_error=[],
+        ground_state_overlaps=[],
+        final_energy_errors=[],
+        final_approx_ratio=[],
+        final_relative_error=[],
+        final_ground_state_overlaps=[]
+        )
+    df_grads = DataFrame(n=[], method=[], d=[], seed=[],
+        grad=[]
+        )
+    df_ens   = DataFrame(n=[], method=[], d=[], seed=[],
+        en=[]
+        )
+    for res in results
+        _res_dict = res["result_dict"]
+        pop!(_res_dict, "ansatz")
+        _pars_dict = res["pars_dict"]
+        _energies = res["sampled_energies"]
+        _grads = res["sampled_grads"]
+
+        push!(df_res, merge(_pars_dict, _res_dict))
+        for e in _energies
+            push!(df_ens, merge(Dict("en" => e), _pars_dict))
+        end
+        for g in _grads
+            push!(df_grads, merge(Dict("grad" => g), _pars_dict))
+        end
+    end
+
+    CSV.write("data_res_$(n).csv", df_res)
+    CSV.write("data_en_$(n).csv", df_ens)
+    CSV.write("data_grad_$(n).csv", df_grads)
+
+    println("Finished n=$n qubits in $(time()-t_0) seconds"); flush(stdout)
 end
