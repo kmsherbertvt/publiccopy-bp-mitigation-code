@@ -116,6 +116,7 @@ end
     hamiltonian = random_regular_max_cut_hamiltonian(n, n-1; rng=rng, weighted=true)
     initial_state = uniform_state(n)
 
+    t_0 = time()
     if method == "adapt_vqe_2l"
         pool = two_local_pool(n)
         res = main_adapt(n, hamiltonian, pool)
@@ -133,7 +134,9 @@ end
     else
         error("unrecognized method: $method")
     end
+    res["sim_dur"] = time() - t_0
     
+    t_0 = time()
     if method === "vqe"
         _depths = [d]
     else
@@ -145,6 +148,7 @@ end
     sampled_energies_list = [ens for (_, ens, _)=sample_pairs]
     sampled_grads_list = [grads for (_, _, grads)=sample_pairs]
     sampled_depths = [dp for (dp, _, _)=sample_pairs]
+    res["samp_dur"] = time() - t_0
 
     return Dict(
         "result_dict" => res,
@@ -180,6 +184,8 @@ for n=4:2:max_num_qubits
     println("Dumping"); flush(stdout)
     df_res   = DataFrame(n=[], method=[], d=[], seed=[], 
         energies=[], 
+        sim_dur=[],
+        samp_dur=[],
         max_grads=[], 
         opt_pars=[], 
         energy_errors=[], 
