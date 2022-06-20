@@ -25,6 +25,7 @@ println("staring script..."); flush(stdout)
 @everywhere max_num_qubits = 6
 @everywhere max_grad = 1e-4
 @everywhere vqe_sampling_depths = [20, 40, 60]
+@everywhere adapt_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
 @everywhere opt_alg = "LD_LBFGS"
 @everywhere opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
 
@@ -126,16 +127,28 @@ end
     elseif method == "vqe"
         ansatz = random_two_local_ansatz(n, d; rng=rng)
         res = main_vqe(n, hamiltonian, ansatz, rng)
+        res["ansatz"] = map(p->Operator(p),ansatz)
     else
         error("unrecognized method: $method")
     end
     
-    sampled_energy, sampled_grads = sample_points(hamiltonian, res["ansatz"], initial_state, num_point_samples; rng=rng)
+    if method === "vqe"
+        _depths = [d]
+    else
+        ans_len = length(res["ansatz"])
+        _depths = copy(adapt_sampling_depths)
+        _depths = vcat(filter(x -> x<ans_len, _depths), ans_len)
+    end
+    sample_pairs = [(dp, sample_points(hamiltonian, res["ansatz"][1:dp], initial_state, num_point_samples; rng=rng)...) for dp=_depths]
+    sampled_energies_list = [ens for (_, ens, _)=sample_pairs]
+    sampled_grads_list = [grads for (_, _, grads)=sample_pairs]
+    sampled_depths = [dp for (dp, _, _)=sample_pairs]
 
     return Dict(
         "result_dict" => res,
-        "sampled_energies" => sampled_energy,
-        "sampled_grads" => sampled_grads,
+        "sampled_energies_list" => sampled_energies_list,
+        "sampled_grads_list" => sampled_grads_list,
+        "sampled_depths" => sampled_depths,
         "pars_dict" => Dict("seed" => seed, "method" => method, "n" => n, "d" => d),
     )
 end
@@ -186,15 +199,19 @@ for n=4:2:max_num_qubits
         _res_dict = res["result_dict"]
         pop!(_res_dict, "ansatz")
         _pars_dict = res["pars_dict"]
-        _energies = res["sampled_energies"]
-        _grads = res["sampled_grads"]
 
         push!(df_res, merge(_pars_dict, _res_dict))
-        for e in _energies
-            push!(df_ens, merge(Dict("en" => e), _pars_dict))
-        end
-        for g in _grads
-            push!(df_grads, merge(Dict("grad" => g), _pars_dict))
+        for (d,_energies,_grads)=zip(res["sampled_depths"], res["sampled_energies_list"], res["sampled_grads_list"])
+            for e in _energies
+                _d_out = merge(Dict("en" => e), _pars_dict)
+                _d_out["d"] = d
+                push!(df_ens, _d_out)
+            end
+            for g in _grads
+                _d_out = merge(Dict("grad" => g), _pars_dict)
+                _d_out["d"] = d
+                push!(df_grads, _d_out)
+            end
         end
     end
 
