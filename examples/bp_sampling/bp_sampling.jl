@@ -101,6 +101,13 @@ end
 end
 
 
+# Debug
+#run_instance(42, 3, "adapt_vqe_2l", 20)
+#run_instance(42, 3, "adapt_qaoa_2l", 20)
+#run_instance(42, 3, "qaoa", 20)
+#run_instance(42, 3, "vqe", 20)
+
+
 @everywhere function run_instance(seed, n, method, d)
     rng = MersenneTwister(seed)
     hamiltonian = random_regular_max_cut_hamiltonian(n, n-1; rng=rng, weighted=true)
@@ -132,13 +139,6 @@ end
         "pars_dict" => Dict("seed" => seed, "method" => method, "n" => n, "d" => d),
     )
 end
-
-# Debug
-#run_instance(42, 3, "adapt_vqe_2l", 20)
-#run_instance(42, 3, "adapt_qaoa_2l", 20)
-#run_instance(42, 3, "qaoa", 20)
-#run_instance(42, 3, "vqe", 20)
-
 
 # Parallel Info
 println("Num procs: $(nprocs())"); flush(stdout)
