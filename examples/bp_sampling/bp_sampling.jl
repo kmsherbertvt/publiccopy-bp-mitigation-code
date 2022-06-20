@@ -24,6 +24,7 @@ println("staring script..."); flush(stdout)
 @everywhere num_point_samples = 5
 @everywhere max_num_qubits = 6
 @everywhere max_grad = 1e-4
+@everywhere max_adapt_layers = 50
 @everywhere vqe_sampling_depths = [20, 40, 60]
 @everywhere adapt_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
 @everywhere opt_alg = "LD_LBFGS"
@@ -50,7 +51,7 @@ end
 
 
 @everywhere function main_adapt(n, ham, pool::Array{Pauli{T},1}) where T<:Unsigned
-    callbacks = Function[MaxGradientStopper(max_grad), DeltaYStopper()]
+    callbacks = Function[MaxGradientStopper(max_grad), DeltaYStopper(), ParameterStopper(max_adapt_layers)]
     initial_state = uniform_state(n)
 
     res = adapt_vqe(ham, pool, n, opt_dict, callbacks; initial_state=initial_state)
@@ -66,7 +67,7 @@ end
 
 
 @everywhere function main_adapt_qaoa(n, ham, pool::Array{Operator,1})
-    callbacks = Function[MaxGradientStopper(max_grad), DeltaYStopper()]
+    callbacks = Function[MaxGradientStopper(max_grad), DeltaYStopper(), ParameterStopper(max_adapt_layers)]
     initial_state = uniform_state(n)
 
     res = adapt_qaoa(ham, pool, n, opt_dict, callbacks; initial_parameter=1e-2, initial_state=initial_state)
