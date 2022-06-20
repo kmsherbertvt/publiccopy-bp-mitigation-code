@@ -28,7 +28,8 @@ println("staring script..."); flush(stdout)
 @everywhere adapt_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
 @everywhere opt_alg = "LD_LBFGS"
 @everywhere opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
-
+@everywhere data_path_prefix = "data/data"
+@everywhere data_path_suffix = "csv.test"
 
 @everywhere function analyze_results!(res_dict, ham, opt_states)
     gse = get_ground_state(ham)
@@ -215,9 +216,9 @@ for n=4:2:max_num_qubits
         end
     end
 
-    CSV.write("data/data_res_$(n).csv.test", df_res)
-    CSV.write("data/data_en_$(n).csv.test", df_ens)
-    CSV.write("data/data_grad_$(n).csv.test", df_grads)
+    CSV.write("$(data_path_prefix)_res_$(n).$(data_path_suffix)", df_res)
+    CSV.write("$(data_path_prefix)_en_$(n).$(data_path_suffix)", df_ens)
+    CSV.write("$(data_path_prefix)_grad_$(n).$(data_path_suffix)", df_grads)
 
     println("Finished n=$n qubits in $(time()-t_0) seconds"); flush(stdout)
 end
