@@ -73,7 +73,7 @@ function plot_1(aggr)
     return main_plot
 end
 
-function plot_2(figure_of_merit; leg_pos = :topright)
+function plot_2(figure_of_merit; leg_pos = :topright, yaxis_scale = :log, select_instance = missing)
     """ 3 plots comparing layer-wise performance,
     x axis is number of layers, y axis is mean figure of merit, hue num qubits """
     plot_names = ["qaoa", "adapt_qaoa_2l", "adapt_vqe_2l"]
@@ -82,14 +82,22 @@ function plot_2(figure_of_merit; leg_pos = :topright)
     aggr_fn = x -> mean(abs.(x))
     ylabel = string(figure_of_merit)
 
-    _df = copy(df_res)
+    if select_instance !== missing
+        _n = select_instance["n"]
+        _seed = select_instance["seed"]
+        _df = filter(:n => ==(_n), filter(:seed => ==(_seed), copy(df_res)))
+        filename = filename * "_n$(_n)seed$(_seed)"
+    else
+        _df = copy(df_res)
+    end
+
     _df = flatten_and_count(_df, figure_of_merit, :depth)
 
     plots = Dict()
     for nm in plot_names
         _df_tmp = mean_on(filter(:method => ==(nm), _df), [:n, :depth], figure_of_merit; aggr_fn = aggr_fn)
         plots[nm] = @df _df_tmp plot(:depth, cols(figure_of_merit), group=:n, 
-            yaxis=:log, 
+            yaxis=yaxis_scale, 
             title=uppercase(nm),
             xlabel="Layers",
             ylabel=ylabel,
@@ -111,6 +119,18 @@ function main()
     plot_2(:approx_ratio; leg_pos=:bottomright)
     plot_2(:relative_error; leg_pos=:bottomright)
     plot_2(:ground_state_overlaps; leg_pos=:bottomleft)
+
+    individual_instances = [
+        Dict("n"=>12, "seed"=>17), Dict("n"=>12, "seed"=>1),
+        Dict("n"=>6, "seed"=>17), Dict("n"=>6, "seed"=>1),
+        ]
+    for inst in individual_instances
+        plot_2(:energies; leg_pos=:topright, select_instance=inst)
+        plot_2(:energy_errors; leg_pos=:bottomleft, yaxis_scale=:linear, select_instance=inst)
+        plot_2(:approx_ratio; leg_pos=:bottomright, select_instance=inst)
+        plot_2(:relative_error; leg_pos=:bottomright, select_instance=inst)
+        plot_2(:ground_state_overlaps; leg_pos=:bottomleft, select_instance=inst)
+    end
 end
 
 main()
