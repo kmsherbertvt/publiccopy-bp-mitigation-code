@@ -33,29 +33,40 @@ end
 
 # Main Plots
 
-function plot_1()
+function plot_1(aggr)
     """ 4 plots, x axis is number of layers, y axis is var grad, hue num qubits """
     plot_names = unique(df_en[!, :method])
 
+    if aggr === "var"
+        filename = "convergence_gradient_variance"
+        aggr_fn = var
+        ylabel = "Var(Grad)"
+    elseif aggr === "mean"
+        filename = "convergence_gradient_mean"
+        aggr_fn = x -> mean(abs.(x))
+        ylabel = "Mean(Grad)"
+    end
+
     plots = Dict()
     for nm in plot_names
-        _df = mean_on(filter(:method => ==(nm), df_grad), [:n, :d], :grad; aggr_fn = var)
+        _df = mean_on(filter(:method => ==(nm), df_grad), [:n, :d], :grad; aggr_fn = aggr_fn)
         plots[nm] = @df _df plot(:d, :grad, group=:n, 
             yaxis=:log, 
             title=uppercase(nm),
             xlabel="Layers",
-            ylabel="var(grad)"
+            ylabel=ylabel
             )
     end
 
     main_plot = plot(collect(values(plots))...)
-    fig_out("variance_convergence")
+    fig_out(filename)
     return main_plot
 end
 
 # Main
 function main()
-    plot_1()
+    plot_1("mean")
+    plot_1("var")
 end
 
 main()
