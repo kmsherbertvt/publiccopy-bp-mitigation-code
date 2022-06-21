@@ -25,7 +25,7 @@ println("staring script..."); flush(stdout)
 @everywhere max_num_qubits = 12
 @everywhere max_grad = 1e-4
 @everywhere max_adapt_layers = 50
-@everywhere vqe_sampling_depths = [20, 40, 60]
+@everywhere vqe_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
 @everywhere adapt_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
 @everywhere opt_alg = "LD_LBFGS"
 @everywhere opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
