@@ -20,9 +20,9 @@ println("staring script..."); flush(stdout)
 #@everywhere rng = MersenneTwister(14)
 
 # Hyperparameters
-@everywhere num_samples = 20
-@everywhere num_point_samples = 50
-@everywhere max_num_qubits = 12
+@everywhere num_samples = 50
+@everywhere num_point_samples = 200
+@everywhere max_num_qubits = 8
 @everywhere max_grad = 1e-4
 @everywhere max_adapt_layers = 50
 @everywhere vqe_sampling_depths = [20, 40, 60]
