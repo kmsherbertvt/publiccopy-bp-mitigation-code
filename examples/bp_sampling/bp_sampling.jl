@@ -20,9 +20,9 @@ println("staring script..."); flush(stdout)
 #@everywhere rng = MersenneTwister(14)
 
 # Hyperparameters
-@everywhere num_samples = 2
-@everywhere num_point_samples = 5
-@everywhere max_num_qubits = 6
+@everywhere num_samples = 20
+@everywhere num_point_samples = 50
+@everywhere max_num_qubits = 12
 @everywhere max_grad = 1e-4
 @everywhere max_adapt_layers = 50
 @everywhere vqe_sampling_depths = [20, 40, 60]
@@ -30,7 +30,7 @@ println("staring script..."); flush(stdout)
 @everywhere opt_alg = "LD_LBFGS"
 @everywhere opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
 @everywhere data_path_prefix = "data/data"
-@everywhere data_path_suffix = "csv.test"
+@everywhere data_path_suffix = "csv"
 
 @everywhere function analyze_results!(res_dict, ham, opt_states)
     gse = get_ground_state(ham)
