@@ -73,13 +73,22 @@ function plot_1(aggr)
     return main_plot
 end
 
-function plot_2(figure_of_merit; leg_pos = :topright, yaxis_scale = :log, select_instance = missing)
+function plot_2(figure_of_merit;
+        leg_pos = :topright, 
+        yaxis_scale = :log, 
+        select_instance = missing,
+        safe_floor_agg = false
+        )
     """ 3 plots comparing layer-wise performance,
     x axis is number of layers, y axis is mean figure of merit, hue num qubits """
     plot_names = ["qaoa", "adapt_qaoa_2l", "adapt_vqe_2l"]
 
     filename = "convergence_$(string(figure_of_merit))"
-    aggr_fn = x -> mean(abs.(x))
+    if safe_floor_agg
+        aggr_fn = x -> mean(safe_floor.(x))
+    else
+        aggr_fn = x -> mean(x)
+    end
     ylabel = string(figure_of_merit)
 
     if select_instance !== missing
@@ -114,22 +123,22 @@ end
 function main()
     plot_1("mean")
     plot_1("var")
-    plot_2(:energies; leg_pos=:topright)
-    plot_2(:energy_errors; leg_pos=:bottomleft)
+    plot_2(:energies; leg_pos=:topright, yaxis_scale=nothing)
+    plot_2(:energy_errors; leg_pos=:bottomleft, safe_floor_agg=true)
     plot_2(:approx_ratio; leg_pos=:bottomright)
-    plot_2(:relative_error; leg_pos=:bottomright)
-    plot_2(:ground_state_overlaps; leg_pos=:bottomleft)
+    plot_2(:relative_error; leg_pos=:bottomright, yaxis_scale=nothing)
+    plot_2(:ground_state_overlaps; leg_pos=:bottomleft, safe_floor_agg=true)
 
     individual_instances = [
         Dict("n"=>12, "seed"=>17), Dict("n"=>12, "seed"=>1),
         Dict("n"=>6, "seed"=>17), Dict("n"=>6, "seed"=>1),
         ]
     for inst in individual_instances
-        plot_2(:energies; leg_pos=:topright, select_instance=inst)
-        plot_2(:energy_errors; leg_pos=:bottomleft, yaxis_scale=:linear, select_instance=inst)
+        plot_2(:energies; leg_pos=:topright, select_instance=inst, yaxis_scale=nothing)
+        plot_2(:energy_errors; leg_pos=:bottomleft, select_instance=inst, safe_floor_agg=true)
         plot_2(:approx_ratio; leg_pos=:bottomright, select_instance=inst)
-        plot_2(:relative_error; leg_pos=:bottomright, select_instance=inst)
-        plot_2(:ground_state_overlaps; leg_pos=:bottomleft, select_instance=inst)
+        plot_2(:relative_error; leg_pos=:bottomright, select_instance=inst, yaxis_scale=nothing)
+        plot_2(:ground_state_overlaps; leg_pos=:bottomleft, select_instance=inst, safe_floor_agg=true)
     end
 end
 
