@@ -111,6 +111,15 @@ function pauli_string_to_pauli(ps::Array{Int64,1}, type_out = UInt64)
     )
 end
 
+function pauli_indices_to_pauli(n::Int64, l::Vector{Tuple{Int64, Int64}})
+    ps = zeros(Int64, n)
+    for (i,a)=l
+        ps[i] = a
+    end
+    reverse!(ps)
+    return pauli_string_to_pauli(ps)
+end
+
 function pauli_to_pauli_string(P::Pauli{T}, n::Int) where T<:Unsigned
     plist = ["I","X","Y","Z"]
     pax = pauli_to_axes(P,n) .+ 1
