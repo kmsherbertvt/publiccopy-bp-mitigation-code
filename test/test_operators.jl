@@ -248,6 +248,12 @@ function pauli_axes_to_str(ax::Array{Int64, 1})
     return String(res)
 end
 
+@testset "Basic pauli constructor" begin
+    pauli_actual = pauli_indices_to_pauli(5, [(1, 1), (2, 2), (3, 3)])
+    pauli_expected = pauli_string_to_pauli("ZYX")
+    @test pauli_actual == pauli_expected
+end
+
 
 @testset "Nilpotent paulis" begin
     for n=2:5
