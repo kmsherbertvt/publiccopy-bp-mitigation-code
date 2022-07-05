@@ -7,8 +7,9 @@ using AdaptBarren
     P = SATProblem(A)
     @test P.n == 4
     @test P.m == 2
+    n = P.n
     expected_vec = reverse([1,0,0,-1,-1,0,0,1,1,0,0,-1,-1,0,0,1]) .+ 1
-    actual_vec = Int.(real(diag(operator_to_matrix(max_1_2_sat_ham(P)))))
+    actual_vec = Int.(real(diag(operator_to_matrix(max_1_2_sat_ham(P), n))))
     @test norm(actual_vec .- expected_vec) <= 1e-4
 end
 
