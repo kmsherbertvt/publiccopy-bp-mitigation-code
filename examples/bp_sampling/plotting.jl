@@ -55,16 +55,25 @@ function plot_1(aggr)
         filename = "convergence_gradient_mean"
         aggr_fn = x -> mean(abs.(x))
         ylabel = "Mean(Grad)"
+    else
+        error("Invalid aggr=$aggr")
     end
+    ymin = minimum(df_grad[!, :grad])
+    ymax = maximum(df_grad[!, :grad])
 
     plots = Dict()
     for nm in plot_names
         _df = mean_on(filter(:method => ==(nm), df_grad), [:n, :d], :grad; aggr_fn = aggr_fn)
         plots[nm] = @df _df plot(:d, :grad, group=:n, 
             yaxis=:log, 
-            title=uppercase(nm),
+            title=replace(uppercase(nm), "_" => " "),
             xlabel="Layers",
-            ylabel=ylabel
+            ylabel=ylabel,
+            #ylim=(ymin,ymax),
+            top_margin    = 10Plots.mm,
+            #right_margin  = 5Plots.mm,
+            left_margin   = 20Plots.mm,
+            bottom_margin = 10Plots.mm,
             )
     end
 
