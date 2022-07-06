@@ -1,3 +1,5 @@
+using IterTools
+
 function minimal_complete_pool(n::Int64)
     res = Array{String,1}(["ZY","YI"])
     for i=3:n
@@ -12,6 +14,32 @@ function minimal_complete_pool(n::Int64)
     return map(pauli_string_to_pauli,res)
 end
 
+function one_local_pool_from_axes(n::Int64, axes::Vector{Int64})
+    pool = Array{Pauli{UInt64},1}()
+    for i=1:n
+        for a=axes
+            p_new = pauli_indices_to_pauli(n, [(i, a)])
+            if !(p_new in pool)
+                push!(pool, p_new)
+            end
+        end
+    end
+    return pool
+end
+
+function two_local_pool_from_pairs(n::Int64, pairs::Vector{Tuple{Int64, Int64}}; include_reverses = true)
+    pool = Array{Pauli{UInt64},1}()
+    for (i,j)=product(1:n,1:n)
+        if (!include_reverses) & (i>j) continue end
+        for (a,b)=pairs
+            p_new = pauli_indices_to_pauli(n, [(i, a), (j, b)])
+            if !(p_new in pool)
+                push!(pool, p_new)
+            end
+        end
+    end
+    return pool
+end
 
 function two_local_pool(n::Int64, axes=[0,1,2,3])
     pool = Array{Pauli{UInt64},1}()

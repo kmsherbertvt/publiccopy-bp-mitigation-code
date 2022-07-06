@@ -11,9 +11,11 @@ function _run_qaoa_comparison_test(test_ham, energy_errors, max_pars, n)
     path="test_data"
 
     # Define pool
-    pool = two_local_pool(n)
+    #pool = two_local_pool(n)
+    pool = two_local_pool_from_pairs(n, [(1,1),(2,2),(2,3)]; include_reverses=false)
+    #append!(pool, one_local_pool_from_axes(n, [1,2,3]))
     pool = map(p -> Operator([p], [1.0]), pool)
-    push!(pool, qaoa_mixer(n))
+    #push!(pool, qaoa_mixer(n))
 
     formatted_ops = collect(map(String, pool))
 
@@ -150,6 +152,25 @@ end
         test_ham = max_cut_hamiltonian(n, test_edge_weights)
         _run_qaoa_comparison_test(test_ham, energy_errors, length(energy_errors), n)
         println("\n\n\n\n\n")
+    end
+
+    for i=1:32
+        base_path = "./data/adapt_qaoa_comp/$i"
+        n = 6
+        if i==4 continue end
+        @testset "Run comparison $i" begin
+            println("Begin comparison $i")
+            test_edge_weights = eval(Meta.parse(readline("$(base_path)/elist.txt")))
+            energy_errors = eval(Meta.parse(readline("$(base_path)/error_formatted.txt")))
+            # Shift index for 1-indexing
+            for k=1:length(test_edge_weights)
+                test_edge_weights[k] = (1, 1, 0.0) .+ test_edge_weights[k]
+            end
+            n = 6
+            test_ham = max_cut_hamiltonian(n, test_edge_weights)
+            _run_qaoa_comparison_test(test_ham, energy_errors, length(energy_errors), n)
+            println("\n\n")
+        end
     end
 
 end
