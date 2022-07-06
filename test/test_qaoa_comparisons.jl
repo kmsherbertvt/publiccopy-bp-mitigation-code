@@ -11,9 +11,11 @@ function _run_qaoa_comparison_test(test_ham, energy_errors, max_pars, n)
     path="test_data"
 
     # Define pool
-    pool = two_local_pool(n)
+    #pool = two_local_pool(n)
+    pool = two_local_pool_from_pairs(n, [(1,1),(2,2),(2,3)]; include_reverses=false)
+    #append!(pool, one_local_pool_from_axes(n, [1,2,3]))
     pool = map(p -> Operator([p], [1.0]), pool)
-    push!(pool, qaoa_mixer(n))
+    #push!(pool, qaoa_mixer(n))
 
     formatted_ops = collect(map(String, pool))
 
