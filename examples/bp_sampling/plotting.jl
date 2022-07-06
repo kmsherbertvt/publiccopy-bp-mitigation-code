@@ -2,6 +2,7 @@ using AdaptBarren
 using DataFrames
 using Plots
 using StatsBase
+using IterTools: product
 using StatsPlots
 using CSV
 using Statistics
@@ -93,6 +94,9 @@ function plot_2(figure_of_merit;
     plot_names = ["qaoa", "adapt_qaoa_2l", "adapt_vqe_2l"]
 
     filename = "convergence_$(string(figure_of_merit))"
+    if select_instance !== missing
+        filename = "inst_" * filename
+    end
     if safe_floor_agg
         aggr_fn = x -> mean(safe_floor.(x))
     else
@@ -112,18 +116,29 @@ function plot_2(figure_of_merit;
     _df = flatten_and_count(_df, figure_of_merit, :depth)
 
     plots = Dict()
+    ymin = minimum(_df[!, figure_of_merit])
+    ymax = maximum(_df[!, figure_of_merit])
     for nm in plot_names
         _df_tmp = mean_on(filter(:method => ==(nm), _df), [:n, :depth], figure_of_merit; aggr_fn = aggr_fn)
         plots[nm] = @df _df_tmp plot(:depth, cols(figure_of_merit), group=:n, 
             yaxis=yaxis_scale, 
-            title=uppercase(nm),
+            title=replace(uppercase(nm), "_" => " "),
             xlabel="Layers",
-            ylabel=ylabel,
+            #ylim=(ymin,ymax),
             legend=leg_pos
             )
     end
 
-    main_plot = plot(collect(values(plots))..., layout=(1, length(plot_names)))
+    main_plot = plot(
+        collect(values(plots))...,
+        layout=(1, length(plot_names)),
+        top_margin    = 5Plots.mm,
+        right_margin  = 10Plots.mm,
+        left_margin   = 10Plots.mm,
+        bottom_margin = 10Plots.mm,
+        link=:y,
+        plot_title=titlecase(replace(ylabel, "_" => " "))
+        )
     fig_out(filename)
     return main_plot
 end
@@ -132,21 +147,18 @@ end
 function main()
     plot_1("mean")
     plot_1("var")
-    plot_2(:energies; leg_pos=:topright, yaxis_scale=nothing)
+    plot_2(:energies; leg_pos=:topright, yaxis_scale=:linear)
     plot_2(:energy_errors; leg_pos=:bottomleft, safe_floor_agg=true)
     plot_2(:approx_ratio; leg_pos=:bottomright)
-    plot_2(:relative_error; leg_pos=:bottomright, yaxis_scale=nothing)
+    #plot_2(:relative_error; leg_pos=:bottomright, yaxis_scale=:linear) # This is just the approximation ratio
     plot_2(:ground_state_overlaps; leg_pos=:bottomleft, safe_floor_agg=true)
 
-    individual_instances = [
-        Dict("n"=>12, "seed"=>17), Dict("n"=>12, "seed"=>1),
-        Dict("n"=>6, "seed"=>17), Dict("n"=>6, "seed"=>1),
-        ]
+    individual_instances = [Dict("n" => n, "seed" => seed) for (n,seed)=product(4:2:12,1:5)]
     for inst in individual_instances
-        plot_2(:energies; leg_pos=:topright, select_instance=inst, yaxis_scale=nothing)
+        plot_2(:energies; leg_pos=:topright, select_instance=inst, yaxis_scale=:linear)
         plot_2(:energy_errors; leg_pos=:bottomleft, select_instance=inst, safe_floor_agg=true)
         plot_2(:approx_ratio; leg_pos=:bottomright, select_instance=inst)
-        plot_2(:relative_error; leg_pos=:bottomright, select_instance=inst, yaxis_scale=nothing)
+        #plot_2(:relative_error; leg_pos=:bottomright, select_instance=inst, yaxis_scale=:linear) # This is just the approximation ratio
         plot_2(:ground_state_overlaps; leg_pos=:bottomleft, select_instance=inst, safe_floor_agg=true)
     end
 end
