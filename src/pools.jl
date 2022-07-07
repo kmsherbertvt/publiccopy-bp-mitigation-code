@@ -66,5 +66,7 @@ end
 
 
 function random_two_local_ansatz(n::Int64, k::Int64, axes=[0,1,2,3]; rng=_DEFAULT_RNG)
-    return sample(rng, two_local_pool(n, axes), k; replace=true)
+    pool = two_local_pool(n, axes)
+    append!(pool, one_local_pool_from_axes(n, [1,2,3]))
+    return sample(rng, pool, k; replace=true)
 end
