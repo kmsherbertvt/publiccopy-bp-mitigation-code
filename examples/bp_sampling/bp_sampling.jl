@@ -119,9 +119,12 @@ end
     t_0 = time()
     if method == "adapt_vqe_2l"
         pool = two_local_pool(n)
+        append!(pool, one_local_pool_from_axes(n, [1,2,3]))
         res = main_adapt(n, hamiltonian, pool)
     elseif method == "adapt_qaoa_2l"
-        pool = map(p -> Operator([p], [1.0]), two_local_pool(n))
+        pool = two_local_pool(n)
+        append!(pool, one_local_pool_from_axes(n, [1,2,3]))
+        pool = map(p -> Operator([p], [1.0]), pool)
         push!(pool, qaoa_mixer(n))
         res = main_adapt_qaoa(n, hamiltonian, pool)
     elseif method == "qaoa"
@@ -163,24 +166,24 @@ end
 println("Num procs: $(nprocs())"); flush(stdout)
 println("Num workers: $(nworkers())"); flush(stdout)
 
-# Set up problem instances
-instances = []
+# Set up problem problem_instances
+problem_instances = []
 for seed=1:num_samples
     for method=["adapt_vqe_2l", "adapt_qaoa_2l", "qaoa", "vqe"]
         if method == "vqe"
-            append!(instances, [[seed, method, d] for d in vqe_sampling_depths])
+            append!(problem_instances, [[seed, method, d] for d in vqe_sampling_depths])
         else
-            append!(instances, [[seed, method, missing]])
+            append!(problem_instances, [[seed, method, missing]])
         end
     end
 end
-println("There are $(length(instances)) problem instances for each number of qubits"); flush(stdout)
+println("There are $(length(problem_instances)) problem problem_instances for each number of qubits"); flush(stdout)
 
 # Main Loop
 for n=4:2:max_num_qubits
     println("Starting n=$n qubits"); flush(stdout)
     t_0 = time()
-    results = pmap(inst -> run_instance(inst[1], n, inst[2], inst[3]), instances)
+    results = pmap(inst -> run_instance(inst[1], n, inst[2], inst[3]), problem_instances)
     println("Dumping"); flush(stdout)
     df_res   = DataFrame(n=[], method=[], d=[], seed=[], 
         energies=[], 
