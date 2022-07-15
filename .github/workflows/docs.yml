@@ -1,23 +1,26 @@
-name: Build Docs
+name: Documentation
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main # update to match your development branch (master, main, dev, trunk, ...)
+    tags: '*'
+  pull_request:
 
 jobs:
-  docs:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        julia-version: ['1.7']
-        julia-arch: [x64]
-        os: [ubuntu-latest]
+  build:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
         with:
-          version: ${{ matrix.julia-version }}
-          arch: ${{ matrix.julia-arch }}
-      - name: Build docs
-        run: |
-          cd docs
-          julia --color=yes --project=@. -e 'using Pkg; Pkg.instantiate();'
-          julia --color=yes --project=@. make.jl
+          version: '1.7'
+      - name: Install dependencies
+        run: julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
+      - name: Build and deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # If authenticating with GitHub Actions token
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }} # If authenticating with SSH deploy key
+        run: julia --project=docs/ docs/make.jl
