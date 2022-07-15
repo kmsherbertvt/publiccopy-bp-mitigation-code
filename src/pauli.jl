@@ -2,22 +2,23 @@ import Base
 using LinearAlgebra
 import IterTools: enumerate
 
+"""
+    Pauli{T<:Unsigned}
+
+Pauli mask representation of a Pauli string.
+This type is parametric on `T` so that smaller
+sized integers can be used to represent the Pauli
+string, if possible. This also performs a check that
+the given integers constitute a valid Pauli string.
+
+# Examples
+Pauli string: `"IIXYZYZIYIZ"`
+* `id:  11000001010 -> 1546`
+* `x:  00100000000 -> 256`
+* `y:  00010100100 -> 164`
+* `z:  00001010001 -> 81`
+"""
 struct Pauli{T<:Unsigned}
-    #=
-    Pauli mask representation of a Pauli string.
-    This type is parametric on `T` so that smaller
-    sized integers can be used to represent the Pauli
-    string, if possible. This also performs a check that
-    the given integers constitute a valid Pauli string.
-
-    Example:
-    Pauli string: "IIXYZYZIYIZ"
-              id:  11000001010 -> 1546
-               x:  00100000000 -> 256
-               y:  00010100100 -> 164
-               z:  00001010001 -> 81
-
-    =#
     id::T
     x::T
     y::T
@@ -56,6 +57,11 @@ end
 Base.:(==)(lhs ::Pauli, rhs ::Pauli) = (lhs.x == rhs.x) && (lhs.y == rhs.y) && (lhs.z == rhs.z) && (lhs.id == rhs.id) && (lhs.phase == rhs.phase)
 
 
+"""
+    num_qubits(P::Pauli)
+
+Determine the number of qubits on which `P` acts non-trivially.
+"""
 function num_qubits(P::Pauli)
     return maximum(map(k -> ndigits(k, base=2), [P.x, P.y, P.z]))
 end
@@ -80,6 +86,14 @@ function pauli_to_axes(P::Pauli{T}, n::Int) where T<:Unsigned
 end
 
 
+"""
+    pauli_string_to_pauli(ps::String)
+
+Create a `Pauli` object from a given Pauli string.
+
+The rightmost element of the string is interpreted as the first-indexed qubit,
+i.e. `IIXY` has the `Y` operator acting on qubit 1.
+"""
 function pauli_string_to_pauli(ps::String, type_out = UInt64)
     l = zeros(Int64, length(ps))
     for (i, c)=enumerate(ps)
@@ -111,6 +125,7 @@ function pauli_string_to_pauli(ps::Array{Int64,1}, type_out = UInt64)
     )
 end
 
+
 function pauli_indices_to_pauli(n::Int64, l::Vector{Tuple{Int64, Int64}})
     ps = zeros(Int64, n)
     for (i,a)=l
@@ -120,6 +135,11 @@ function pauli_indices_to_pauli(n::Int64, l::Vector{Tuple{Int64, Int64}})
     return pauli_string_to_pauli(ps)
 end
 
+"""
+    pauli_to_pauli_string(P::Pauli{T}, n::Int)
+
+Create a Pauli string from the given Pauli.
+"""
 function pauli_to_pauli_string(P::Pauli{T}, n::Int) where T<:Unsigned
     plist = ["I","X","Y","Z"]
     pax = pauli_to_axes(P,n) .+ 1
@@ -195,6 +215,13 @@ function pauli_apply(pm::Pauli, a::Int64)
 end
 
 
+"""
+    pauli_mult!(pm::Pauli, state::Array{ComplexF64,1}, result::Array{ComplexF64,1})
+
+Compute the action of a Pauli string on a given statevector and store the result.
+
+Note that the result is stored `result` and `state` remains unchanged.
+"""
 function pauli_mult!(pm::Pauli, state::Array{ComplexF64,1}, result::Array{ComplexF64,1})
     N = length(state)
     for i=0:N-1
@@ -206,6 +233,11 @@ function pauli_mult!(pm::Pauli, state::Array{ComplexF64,1}, result::Array{Comple
 end
 
 
+"""
+    pauli_commute(P::Pauli, Q::Pauli)
+
+Return whether Paulis `P` and `Q` compute.
+"""
 function pauli_commute(P::Pauli, Q::Pauli)
     id = (P.id | Q.id)
     x = (P.x & Q.x)|id
@@ -221,6 +253,11 @@ function pauli_commute(P::Pauli, Q::Pauli)
 end
 
 
+"""
+    pauli_product(P::Pauli, Q::Pauli)
+
+Compute the product of the operators `P` and `Q` and return the result.
+"""
 function pauli_product(P::Pauli, Q::Pauli)
     phase = typeof(P.x)(0)
 
