@@ -37,3 +37,22 @@ jobs:
           julia --color=yes --project=.. -e 'using Pkg; Pkg.instantiate();'
           julia --color=yes --project=.. runtests.jl
         #      - uses: julia-actions/julia-runtest@v1
+  docs:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        julia-version: ['1.7']
+        julia-arch: [x64]
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.julia-version }}
+          arch: ${{ matrix.julia-arch }}
+      - name: Run Julia Tests
+        run: |
+          cd docs
+          julia --color=yes --project=@. -e 'using Pkg; Pkg.instantiate();'
+          julia --color=yes --project=@. make.jl
+        #      - uses: julia-actions/julia-runtest@v1
