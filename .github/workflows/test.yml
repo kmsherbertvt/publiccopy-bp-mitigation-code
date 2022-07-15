@@ -1,4 +1,4 @@
-name: Run tests
+name: Run CI
 
 on: [push, pull_request]
 
@@ -50,9 +50,8 @@ jobs:
         with:
           version: ${{ matrix.julia-version }}
           arch: ${{ matrix.julia-arch }}
-      - name: Run Julia Tests
+      - name: Build docs
         run: |
           cd docs
           julia --color=yes --project=@. -e 'using Pkg; Pkg.instantiate();'
           julia --color=yes --project=@. make.jl
-        #      - uses: julia-actions/julia-runtest@v1
