@@ -23,7 +23,7 @@ println("staring script..."); flush(stdout)
 @everywhere num_samples = 50
 @everywhere num_point_samples = 200
 @everywhere max_num_qubits = 12
-@everywhere max_grad = 1e-4
+@everywhere max_grad = 1e-6
 @everywhere max_adapt_layers = 50
 @everywhere vqe_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
 @everywhere adapt_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
@@ -231,4 +231,8 @@ for n=4:2:max_num_qubits
     CSV.write("$(data_path_prefix)_grad_$(n).$(data_path_suffix)", df_grads)
 
     println("Finished n=$n qubits in $(time()-t_0) seconds"); flush(stdout)
+    #Base.run(`echo "\n" >> ~/docker-services/n8n/data/locks/my_jobs.txt`)
+    io = open("/home/sam/docker-services/n8n/data/locks/my_jobs.txt", "a");
+    write(io, "\n{\"status\": \"DONE\", \"name\": \"Sims n=$n\"}")
+    close(io)
 end

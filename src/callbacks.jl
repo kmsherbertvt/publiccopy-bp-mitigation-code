@@ -4,7 +4,11 @@ returns true if the outer loop should halt,
 and false if it should continue.
 =#
 
+"""
+    MaxGradientStopper(eps::Float64 = 1e-8)
 
+Halts the algorithm if the maximum gradient falls below `eps`.
+"""
 function MaxGradientStopper(eps::Float64 = 1e-8)
     function stopper(hist::ADAPTHistory)
         if abs(hist.max_grad[end]) < eps
@@ -16,6 +20,11 @@ function MaxGradientStopper(eps::Float64 = 1e-8)
     return stopper
 end
 
+"""
+    MaxGradientPrinter()
+
+Print the maximum gradient at each layer.
+"""
 function MaxGradientPrinter()
     function stopper(hist::ADAPTHistory)
         num_pars = length(hist.opt_pars[end])
@@ -26,6 +35,15 @@ function MaxGradientPrinter()
     return stopper
 end
 
+"""
+    OperatorIndexPrinter(formatted_ops = nothing)
+
+At each layer, indicate the operator chosen by the ADAPT criterion.
+
+If `formatted_ops === nothing`, the index of each operator as it exists
+in the pool will be printed. If a list of strings is given, the string
+of that index will instead be printed.
+"""
 function OperatorIndexPrinter(formatted_ops = nothing)
     function stopper(hist::ADAPTHistory)
         num_pars = length(hist.opt_pars[end])
@@ -41,6 +59,11 @@ function OperatorIndexPrinter(formatted_ops = nothing)
     return stopper
 end
 
+"""
+    ParameterPrinter()
+
+Prints the optimal parameters at each iteration.
+"""
 function ParameterPrinter()
     function stopper(hist::ADAPTHistory)
         num_pars = length(hist.opt_pars[end])
@@ -52,6 +75,12 @@ function ParameterPrinter()
 end
 
 
+"""
+    EnergyErrorPrinter(gse::Float64)
+
+Print the difference between the energy at the last iteration
+and the ground state energy, given as the argument `gse`.
+"""
 function EnergyErrorPrinter(gse::Float64)
     function stopper(hist::ADAPTHistory)
         num_pars = length(hist.opt_pars[end])
@@ -62,6 +91,11 @@ function EnergyErrorPrinter(gse::Float64)
     return stopper
 end
 
+"""
+    EnergyPrinter()
+
+Print the energy returned at the last iteration.
+"""
 function EnergyPrinter()
     function stopper(hist::ADAPTHistory)
         num_pars = length(hist.opt_pars[end])
@@ -73,6 +107,11 @@ function EnergyPrinter()
 end
 
 
+"""
+    ParameterStopper(max_pars::Int64)
+
+Halt the algorithm if the maximum number of parameters is exceeded.
+"""
 function ParameterStopper(max_pars::Int64)
     function stopper(hist::ADAPTHistory)
         if length(hist.opt_pars) >= max_pars + 1
@@ -84,7 +123,13 @@ function ParameterStopper(max_pars::Int64)
     return stopper
 end
 
+"""
+    DeltaYStopper(delta::Float64 = 1e-8, n_best::Int64 = 5)
 
+Halt the algorithm if the `n_best` many energies are all within `delta` of each other.
+
+This is supposed to indicate that the algorithm has stalled in performance.
+"""
 function DeltaYStopper(delta::Float64 = 1e-8, n_best::Int64 = 5)
     function stopper(hist::ADAPTHistory)
         en_sort = sort(hist.energy)
@@ -103,6 +148,11 @@ function DeltaYStopper(delta::Float64 = 1e-8, n_best::Int64 = 5)
 end
 
 
+"""
+    FloorStopper(floor::Float64, delta::Float64 = 1e-8)
+
+Halt the algorithm if the current energy falls within `delta` of `floor`.
+"""
 function FloorStopper(floor::Float64, delta::Float64 = 1e-8)
     function stopper(hist::ADAPTHistory)
         if abs(hist.energy[end] - floor) <= delta

@@ -173,6 +173,13 @@ function _cost_fn_commuting_vqe(
     return res
 end
 
+
+"""
+    sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = nothing)
+
+Compute samples of the VQE cost function and its gradient components for the given Hamiltonian,
+list of generators, and initial state. Optional RNG for determining points to be sampled.
+"""
 function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = nothing)
     if rng === nothing
         rng = _DEFAULT_RNG
@@ -198,6 +205,24 @@ function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = no
     return (result_energy, result_grads)
 end
 
+
+"""
+    VQE(...)
+
+Run the VQE algorithm.
+
+# Arguments
+
+- `hamiltonian::Operator`: Hamiltonian to minimize.
+- `ansatz::Array{Pauli{T},1}`: List of generators to use.
+- `opt::Union{Opt,String}`: Numerical to use, or string to specify `NLopt` optimizer.
+- `initial_point::Array{Float64,1}`: Initial point to use for optimization.
+- `num_qubits::Int64`: Number of qubits.
+- `initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing`: Initial state for the ansatz.
+- `path = nothing; # Should be a CSV file`: (Unused)
+- `rand_range = (-π,+π)`: (Unused, use `sample_points` instead)
+- `num_samples = 50`: (Unused, use `sample_points` instead)
+"""
 function VQE(
     hamiltonian::Operator,
     ansatz::Array{Pauli{T},1},
@@ -254,6 +279,14 @@ function VQE(
 end
 
 
+"""
+    commuting_vqe(...)
+
+Similar to `VQE`. Here, generators in the ansatz which are sums of Pauli strings
+are allowed, however, it is assumed that the terms in each generator mutually commute.
+
+This is useful for running QAOA and Fermionic anstaze.
+"""
 function commuting_vqe(
     hamiltonian::Operator,
     ansatz::Array{Operator,1},
@@ -308,6 +341,14 @@ function qaoa_ansatz(
     return ansatz
 end
 
+"""
+    QAOA(mixers::Array{Operator,1}, ...)
+
+Run the QAOA algorithm
+
+# Arguments that differ from `VQE`
+- `mixers::Array{Operator,1}`: Mixers to use, interleaved with the cost Hamiltonian.
+"""
 function QAOA(
     hamiltonian::Operator,
     mixers::Array{Operator,1},
@@ -330,6 +371,14 @@ function QAOA(
         output_state)
 end
 
+"""
+    QAOA(p::Int, ...)
+
+Run the QAOA algorithm with a specified number of layers `p`. Uses the `X_1 + ... X_n` mixer.
+
+# Arguments that differ from `VQE`
+- `p::Int`: The number of times to repeat the cost function and mixer in the ansatz.
+"""
 function QAOA(
     hamiltonian::Operator,
     p::Int,
@@ -353,6 +402,11 @@ function QAOA(
     )
 end
 
+"""
+    ADAPTHistory
+
+Stores various relevant quantities when running the ADAPT-VQE algorithm.
+"""
 mutable struct ADAPTHistory
     energy::Array{Float64,1}
     max_grad::Array{Float64,1}
@@ -433,6 +487,17 @@ function adapt_step!(
 end
 
 
+"""
+    adapt_vqe(...)
+
+Run the ADAPT-VQE algorithm.
+
+# Arguments (that are different from `VQE`)
+- `pool::Array{Pauli{T},1}`: List of Pauli operators to use in the pool.
+- `callbacks::Array{Function}`: List of callbacks to run at each layer of the algorithm.
+- `initial_parameter::Float64 = 0.0`: Initial parameter to use when initializing a new layer.
+- `initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing`: Initial state to use for the ansatz.
+"""
 function adapt_vqe(
     hamiltonian::Operator,
     pool::Array{Pauli{T},1},
@@ -535,6 +600,17 @@ function make_opt(optimizer, point)
 end
 
 
+"""
+    adapt_qaoa(...)
+
+Run the ADAPT-QAOA algorithm.
+
+# Arguments (that are different from `VQE`)
+- `pool::Array{Pauli{T},1}`: List of Pauli operators to use in the pool.
+- `callbacks::Array{Function}`: List of callbacks to run at each layer of the algorithm.
+- `initial_parameter::Float64 = 0.0`: Initial parameter to use when initializing a new layer.
+- `initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing`: Initial state to use for the ansatz.
+"""
 function adapt_qaoa(
     hamiltonian::Operator,
     pool::Array{Operator,1},
