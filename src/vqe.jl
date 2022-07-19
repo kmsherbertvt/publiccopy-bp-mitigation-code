@@ -180,7 +180,7 @@ end
 Compute samples of the VQE cost function and its gradient components for the given Hamiltonian,
 list of generators, and initial state. Optional RNG for determining points to be sampled.
 """
-function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = nothing)
+function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = nothing, dist = nothing, point = nothing)
     if rng === nothing
         rng = _DEFAULT_RNG
     end
@@ -198,7 +198,14 @@ function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = no
     psi_4 = similar(initial_state)
 
     for _=1:num_samples
-        x .= rand(rng, Uniform(-pi, +pi), num_pars)
+        if (dist === nothing) && (point === nothing)
+            x .= rand(rng, Uniform(-pi, +pi), num_pars)
+        else
+            x .= rand(rng, Uniform(-pi, +pi), num_pars)
+            x /= norm(x)
+            x *= dist
+            x += point
+        end
         _cost_fn_commuting_vqe(x, grad, ansatz, hamiltonian, result_energy, result_grads, eval_count, psi_4, initial_state, psi_1, psi_2, psi_3, nothing)
     end
 
