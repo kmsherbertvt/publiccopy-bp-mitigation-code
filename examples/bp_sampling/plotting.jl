@@ -16,14 +16,20 @@ qubit_range = 4:2:12
 gid = "CID:$(get_git_id())"
 
 # Data Import
+t_0 = time()
+println("Loading data...")
 df_en = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_en_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 df_grad = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_grad_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 df_ball_en = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_en_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 df_ball_grad = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_grad_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 df_res = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_res_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 cols_to_eval = [ :energies, :max_grads, :opt_pars, :energy_errors, :approx_ratio, :relative_error, :ground_state_overlaps, ]
+println("Took $(time()-t_0) seconds")
+println("Transforming data...")
+t_0 = time()
 transform!(df_res, cols_to_eval .=> ByRow(x -> eval(Meta.parse(x))) .=> cols_to_eval)
 transform!(df_res, :energies .=> ByRow(x -> length(x)) .=> :final_depth)
+println("Took $(time()-t_0) seconds")
 
 # Utility Functions
 function mean_on(df, grp_cols, mean_col; aggr_fn = mean)
@@ -181,4 +187,7 @@ function main()
     end
 end
 
+t_0 = time()
+println("Starting plots...")
 main()
+println("Took $(time()-t_0) seconds")
