@@ -3,6 +3,7 @@ using DataFrames
 using Plots
 using StatsBase
 using IterTools: product
+using LinearAlgebra: norm
 using StatsPlots
 using CSV
 using Statistics
@@ -14,6 +15,17 @@ DATA_DIR = "./data"
 DATA_SUFFIX = "csv"
 qubit_range = 4:2:12
 gid = "CID:$(get_git_id())"
+
+function diff_opt_pars(opt_pars:: Vector{Vector{Float64}})
+    res = Vector{Float64}()
+    for i=1:(length(opt_pars)-1)
+        if length(opt_pars[i]) == 0 continue end
+        v1 = opt_pars[i]
+        v2 = opt_pars[i+1][1:length(v1)]
+        push!(res, norm(v1 .- v2))
+    end
+    return res
+end
 
 # Data Import
 t_0 = time()
@@ -29,6 +41,7 @@ println("Transforming data...")
 t_0 = time()
 transform!(df_res, cols_to_eval .=> ByRow(x -> eval(Meta.parse(x))) .=> cols_to_eval)
 transform!(df_res, :energies .=> ByRow(x -> length(x)) .=> :final_depth)
+transform!(df_res, :opt_pars .=> ByRow(x -> diff_opt_pars(x)) .=> :opt_pars_diffs)
 println("Took $(time()-t_0) seconds")
 
 # Utility Functions
@@ -171,6 +184,7 @@ function main()
     plot_1("var", "layers")
     plot_1("mean", "ball")
     plot_1("var", "ball")
+    plot_2(:opt_pars_diffs, leg_pos=:topright, yaxis_scale=:log, safe_floor_agg=true)
     plot_2(:energies; leg_pos=:topright, yaxis_scale=:linear)
     plot_2(:energy_errors; leg_pos=:bottomleft, safe_floor_agg=true)
     plot_2(:approx_ratio; leg_pos=:bottomright)
@@ -180,6 +194,7 @@ function main()
     individual_instances = [Dict("n" => n, "seed" => seed) for (n,seed)=product(4:2:12,1:5)]
     for inst in individual_instances
         plot_2(:energies; leg_pos=:topright, select_instance=inst, yaxis_scale=:linear)
+        plot_2(:opt_pars_diffs, leg_pos=:topright, select_instance=inst, yaxis_scale=:log, safe_floor_agg=true)
         plot_2(:energy_errors; leg_pos=:bottomleft, select_instance=inst, safe_floor_agg=true)
         plot_2(:approx_ratio; leg_pos=:bottomright, select_instance=inst)
         #plot_2(:relative_error; leg_pos=:bottomright, select_instance=inst, yaxis_scale=:linear) # This is just the approximation ratio
