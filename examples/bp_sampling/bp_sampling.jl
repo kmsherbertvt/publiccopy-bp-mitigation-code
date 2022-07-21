@@ -27,6 +27,7 @@ println("staring script..."); flush(stdout)
 @everywhere max_adapt_layers = 50
 @everywhere vqe_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
 @everywhere adapt_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
+@everywhere ball_sampling_radii = collect(0:0.2:5)
 @everywhere opt_alg = "LD_LBFGS"
 @everywhere opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
 @everywhere data_path_prefix = "data/data"
@@ -139,7 +140,6 @@ end
     end
     res["sim_dur"] = time() - t_0
     
-    t_0 = time()
     if method === "vqe"
         _depths = [d]
     else
@@ -147,17 +147,31 @@ end
         _depths = copy(adapt_sampling_depths)
         _depths = vcat(filter(x -> x<ans_len, _depths), ans_len)
     end
+    # Whole space sampling
+    t_0 = time()
     sample_pairs = [(dp, sample_points(hamiltonian, res["ansatz"][1:dp], initial_state, num_point_samples; rng=rng)...) for dp=_depths]
     sampled_energies_list = [ens for (_, ens, _)=sample_pairs]
     sampled_grads_list = [grads for (_, _, grads)=sample_pairs]
     sampled_depths = [dp for (dp, _, _)=sample_pairs]
     res["samp_dur"] = time() - t_0
 
+    # Ball sampling
+    t_0 = time()
+    optimal_point = res["opt_pars"][end]
+    ball_sample_pairs = [(rp, sample_points(hamiltonian, res["ansatz"], initial_state, Int(floor(sqrt(num_point_samples))); rng=rng, dist=rp, point=optimal_point)...) for rp=ball_sampling_radii]
+    ball_sampled_energies_list = [ens for (_, ens, _)=ball_sample_pairs]
+    ball_sampled_grads_list = [grads for (_, _, grads)=ball_sample_pairs]
+    ball_sampled_rads = [rp for (rp, _, _)=ball_sample_pairs]
+    res["ball_samp_dur"] = time() - t_0
+
     return Dict(
         "result_dict" => res,
         "sampled_energies_list" => sampled_energies_list,
         "sampled_grads_list" => sampled_grads_list,
         "sampled_depths" => sampled_depths,
+        "ball_sampled_energies_list" => ball_sampled_energies_list,
+        "ball_sampled_grads_list" => ball_sampled_grads_list,
+        "ball_sampled_rads" => ball_sampled_rads,
         "pars_dict" => Dict("seed" => seed, "method" => method, "n" => n, "d" => d),
     )
 end
@@ -189,6 +203,7 @@ for n=4:2:max_num_qubits
         energies=[], 
         sim_dur=[],
         samp_dur=[],
+        ball_samp_dur=[],
         max_grads=[], 
         opt_pars=[], 
         energy_errors=[], 
@@ -206,12 +221,20 @@ for n=4:2:max_num_qubits
     df_ens   = DataFrame(n=[], method=[], d=[], seed=[],
         en=[]
         )
+    df_grads_ball = DataFrame(n=[], method=[], rad=[], seed=[],
+        grad=[]
+        )
+    df_ens_ball   = DataFrame(n=[], method=[], rad=[], seed=[],
+        en=[]
+        )
     for res in results
         _res_dict = res["result_dict"]
         pop!(_res_dict, "ansatz")
         _pars_dict = res["pars_dict"]
 
         push!(df_res, merge(_pars_dict, _res_dict))
+        # Whole sampling
+        _l = length(res["ball_sampled_grads_list"])
         for (d,_energies,_grads)=zip(res["sampled_depths"], res["sampled_energies_list"], res["sampled_grads_list"])
             for e in _energies
                 _d_out = merge(Dict("en" => e), _pars_dict)
@@ -224,11 +247,31 @@ for n=4:2:max_num_qubits
                 push!(df_grads, _d_out)
             end
         end
+
+        # Ball sampling
+        _l = length(res["ball_sampled_grads_list"])
+        for (rad,_energies,_grads)=zip(res["ball_sampled_rads"], res["ball_sampled_energies_list"], res["ball_sampled_grads_list"])
+            for e in _energies
+                _d_out = merge(Dict("en" => e), _pars_dict)
+                _d_out["rad"] = rad
+                delete!(_d_out, "d")
+                push!(df_ens_ball, _d_out)
+            end
+            for g in _grads
+                _d_out = merge(Dict("grad" => g), _pars_dict)
+                _d_out["rad"] = rad
+                delete!(_d_out, "d")
+                push!(df_grads_ball, _d_out)
+            end
+        end
     end
 
     CSV.write("$(data_path_prefix)_res_$(n).$(data_path_suffix)", df_res)
     CSV.write("$(data_path_prefix)_en_$(n).$(data_path_suffix)", df_ens)
     CSV.write("$(data_path_prefix)_grad_$(n).$(data_path_suffix)", df_grads)
+
+    CSV.write("$(data_path_prefix)_ball_en_$(n).$(data_path_suffix)", df_ens_ball)
+    CSV.write("$(data_path_prefix)_ball_grad_$(n).$(data_path_suffix)", df_grads_ball)
 
     println("Finished n=$n qubits in $(time()-t_0) seconds"); flush(stdout)
     #Base.run(`echo "\n" >> ~/docker-services/n8n/data/locks/my_jobs.txt`)

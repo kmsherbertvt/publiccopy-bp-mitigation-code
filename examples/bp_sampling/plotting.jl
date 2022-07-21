@@ -18,6 +18,8 @@ gid = "CID:$(get_git_id())"
 # Data Import
 df_en = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_en_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 df_grad = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_grad_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
+df_ball_en = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_en_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
+df_ball_grad = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_grad_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 df_res = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_res_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 cols_to_eval = [ :energies, :max_grads, :opt_pars, :energy_errors, :approx_ratio, :relative_error, :ground_state_overlaps, ]
 transform!(df_res, cols_to_eval .=> ByRow(x -> eval(Meta.parse(x))) .=> cols_to_eval)
@@ -44,31 +46,45 @@ end
 
 # Main Plots
 
-function plot_1(aggr)
+function plot_1(aggr, sampling)
     """ 4 plots, x axis is number of layers, y axis is var grad, hue num qubits """
     plot_names = unique(df_en[!, :method])
 
+    if sampling === "ball"
+        _df_grad = df_ball_grad
+        _df_en = df_ball_en
+        x_axis = :rad
+        x_axis_label = "Radius"
+    elseif sampling === "layers"
+        _df_grad = df_grad
+        _df_en = df_en
+        x_axis = :d
+        x_axis_label = "Layers"
+    else
+        error("Invalid method: $sampling")
+    end
+
     if aggr === "var"
-        filename = "convergence_gradient_variance"
+        filename = "convergence_$(sampling)_gradient_variance"
         aggr_fn = var
         ylabel = "Var(Grad)"
     elseif aggr === "mean"
-        filename = "convergence_gradient_mean"
+        filename = "convergence_$(sampling)_gradient_mean"
         aggr_fn = x -> mean(abs.(x))
         ylabel = "Mean(Grad)"
     else
         error("Invalid aggr=$aggr")
     end
-    ymin = minimum(df_grad[!, :grad])
-    ymax = maximum(df_grad[!, :grad])
+    ymin = minimum(_df_grad[!, :grad])
+    ymax = maximum(_df_grad[!, :grad])
 
     plots = Dict()
     for nm in plot_names
-        _df = mean_on(filter(:method => ==(nm), df_grad), [:n, :d], :grad; aggr_fn = aggr_fn)
-        plots[nm] = @df _df plot(:d, :grad, group=:n, 
+        _df = mean_on(filter(:method => ==(nm), _df_grad), [:n, x_axis], :grad; aggr_fn = aggr_fn)
+        plots[nm] = @df _df plot(cols(x_axis), :grad, group=:n, 
             yaxis=:log, 
             title=replace(uppercase(nm), "_" => " "),
-            xlabel="Layers",
+            xlabel=x_axis_label,
             ylabel=ylabel,
             #ylim=(ymin,ymax),
             top_margin    = 10Plots.mm,
@@ -145,8 +161,10 @@ end
 
 # Main
 function main()
-    plot_1("mean")
-    plot_1("var")
+    plot_1("mean", "layers")
+    plot_1("var", "layers")
+    plot_1("mean", "ball")
+    plot_1("var", "ball")
     plot_2(:energies; leg_pos=:topright, yaxis_scale=:linear)
     plot_2(:energy_errors; leg_pos=:bottomleft, safe_floor_agg=true)
     plot_2(:approx_ratio; leg_pos=:bottomright)
