@@ -67,6 +67,8 @@ function _run_qaoa_comparison_test(test_ham, energy_errors, max_pars, n)
     display(result.energy[2:end] .- ground_state_energy)
     println("\n")
     println("The differences in the energies are (i.e. shows agreement):")
+    println("Positive means my code performs better")
+    println("Negative means my code performs worse")
     display(ho_lun_result.energy .- result.energy[2:end])
     println("\n")
 
@@ -172,7 +174,7 @@ end
             error("Invalid k=$k")
         end
 
-        energy_errors = zeros(Float64, 10)
+        energy_errors = [2.0000000057212752, 1.5000028550573936, 1.0000000009467891, 1.0000000001022606, 1.0000000000250417, 1.0000000000011189, 1.0000000000000315, 1.0000000000000189, 1.0000000000000060, 1.0000000000000047] .- 1.0
         _run_qaoa_comparison_test(test_ham, energy_errors, length(energy_errors), n)
         println("\n\n\n\n\n")
     end
