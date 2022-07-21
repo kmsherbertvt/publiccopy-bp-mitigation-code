@@ -72,6 +72,11 @@ function _run_qaoa_comparison_test(test_ham, energy_errors, max_pars, n)
     display(ho_lun_result.energy .- result.energy[2:end])
     println("\n")
 
+    println("The history-reported optimal parameters are:")
+    for (i,v)=enumerate(result.opt_pars)
+        println("Step $i : $v")
+    end
+
     println("The Hamiltonian diagonal is:")
     println(real(diag(operator_to_matrix(test_ham))))
     println("\n\n\n\n\n\n")
