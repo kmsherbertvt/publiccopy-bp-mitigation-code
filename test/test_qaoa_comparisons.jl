@@ -24,7 +24,7 @@ function _run_qaoa_comparison_test(test_ham, energy_errors, max_pars, n)
     initial_state /= norm(initial_state)
 
     # Define Callbacks
-    callbacks = Function[ParameterStopper(max_pars), OperatorIndexPrinter(formatted_ops)]
+    callbacks = Function[ParameterStopper(max_pars), OperatorIndexPrinter(formatted_ops), ParameterPrinter()]
 
     # Run ADAPT-QAOA
     result = adapt_qaoa(test_ham, pool, n, opt_dict, callbacks; initial_parameter=1e-2, initial_state=initial_state, path=path)
