@@ -198,5 +198,6 @@ end
             _run_qaoa_comparison_test(test_ham, energy_errors, length(energy_errors), n)
             println("\n\n")
         end
+    end
     
 end
