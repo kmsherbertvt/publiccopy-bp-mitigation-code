@@ -90,6 +90,20 @@ function pauli_rotation!(
 end
 
 
+"""
+    pauli_ansatz!(axes, pars, result::Array{ComplexF64,1}, tmp::Array{ComplexF64,1})
+
+Evolve `result` according to the given ansatz and angles.
+
+Note that `result` is the initial state, evolved inplace, and is also the
+resulting state. `tmp` is also mutated, but should be considered junk.
+    
+# Arguments
+- `axes::Array{Pauli{T},1} where T<:UInt`: The generators used in the ansatz.
+- `pars::Array{Float64,1}`: The angles of rotation for each of the generators.
+- `result::Array{ComplexF64,1}`: The state to be evolved.
+- `tmp::Array{ComplexF64,1}`: A temporary vector.
+"""
 function pauli_ansatz!(
         axes, 
         pars, 
@@ -108,6 +122,11 @@ function pauli_ansatz!(
 end
 
 
+"""
+    qaoa_layer!(hamiltonian::Array{Float64,1}, gamma::Float64, result::Array{ComplexF64,1})
+
+Given a diagonal operator (`hamiltonian`), evolve the state `result` by an angle `gamma`.
+"""
 function qaoa_layer!(
         hamiltonian::Array{Float64,1},
         gamma::Float64,

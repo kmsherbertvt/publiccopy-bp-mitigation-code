@@ -18,6 +18,17 @@ function qaoa_mixer(n::Int)
 end
 
 
+"""
+    max_cut_hamiltonian(n::Int, edges::Vector{Tuple{Int, Int, T}}) where T<:Real
+
+Return the max cut Hamiltonian acting on `n` qubits which corresponds to the edge
+set `edges`.
+
+# Examples
+
+Elements of the edge set look like `(1,2,5.0)` corresponding to an edge between
+vertices `1` and `2` with edge weight `5.0`.
+"""
 function max_cut_hamiltonian(n::Int, edges::Vector{Tuple{Int, Int, T}}) where T<:Real
     operator = Operator([], [])
 
@@ -51,6 +62,16 @@ function randomize_edge_weights!(v::Vector{Tuple{Int, Int, T}}; rng = _DEFAULT_R
     end
 end
 
+
+"""
+    random_regular_max_cut_hamiltonian(n::Int, k::Int; rng = _DEFAULT_RNG, weighted = true)
+
+Return a random Hamiltonian for a max cut problem on `n` qubits.
+
+The corresponding graph is degree `k`. If an RNG is provided, this will be used to sample
+the graph and edge weights. If `weighted` is true, the edge weights will be randomly sampled
+from the uniform distribution `U(0,1)`.
+"""
 function random_regular_max_cut_hamiltonian(n::Int, k::Int; rng = _DEFAULT_RNG, weighted = true)
     v = get_random_unweighted_graph_edges(n, k; rng=rng)
     if weighted

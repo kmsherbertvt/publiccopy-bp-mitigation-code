@@ -2,6 +2,21 @@ using StatsBase
 
 _PAULI_DICT = Dict(0 => "I", 1 => "X", 2 => "Y", 3 => "Z")
 
+"""
+    uniform_state(n::Int)
+
+Return the vector representation of the all `|+>` state on `n` qubits.
+"""
+function uniform_state(n::Int)
+    initial_state = ones(ComplexF64, 2^n) / sqrt(2^n)
+    initial_state /= norm(initial_state)
+    return initial_state
+end
+
+function energy_improving(v)
+    return all(diff(v) .<= 0)
+end
+
 function String(pauli::Pauli{T}; zero_index = false) where T<:UInt
     ax = reverse(pauli_to_axes(pauli, num_qubits(pauli)))
     s = "["

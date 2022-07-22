@@ -1,3 +1,24 @@
+"""
+    fast_grad!( ham::Operator, ansatz, pars, result, psi::Vector{ComplexF64}, sigma::Vector{ComplexF64}, tmp1::Vector{ComplexF64}, tmp2::Vector{ComplexF64}) where T <: Unsigned
+
+Compute the gradient of the VQE cost function using an efficient method.
+
+# Counting matrix multiplications
+The number of required matrix multiplications is
+`1 + N + |support(ham)| + N-1 + N*(1+1+1) = 2*N + 3*N = 5*N ~ O(N)`
+
+This could in principle be reduced to 3*N multiplications, but at this point I don't want to spend more time optimizing this.
+
+# Arguments
+- `ham::Operator`: Hamiltonian to compute the expectation value with respect to.
+- `ansatz`: List of generators for ansatz.
+- `pars`: Parameters used in the ansatz.
+- `result`: Vector to store the resulting gradient.
+- `psi::Vector{ComplexF64}`: Temporary vector.
+- `sigma::Vector{ComplexF64}`: Initial state for the ansatz.
+- `tmp1::Vector{ComplexF64}`: Temporary vector.
+- `tmp2::Vector{ComplexF64`: Temporary vector.
+"""
 function fast_grad!(
         ham::Operator,
         ansatz,
@@ -8,11 +29,6 @@ function fast_grad!(
         tmp1::Vector{ComplexF64},
         tmp2::Vector{ComplexF64}
     ) where T <: Unsigned
-    """ Counting matrix multiplications:
-    1 + N + |support(ham)| + N-1 + N*(1+1+1) = 2*N + 3*N = 5*N ~ O(N)
-    This could in principle be reduced to 3*N multiplications, but at
-    this point I don't want to spend more time optimizing this.
-    """
 
     N = length(ansatz)
 
@@ -43,6 +59,21 @@ function fast_grad!(
 end
 
 
+"""
+    finite_difference!(ham::Operator, ansatz::Vector{Pauli{T}}, pars::Vector{Float64}, result::Vector{Float64}, initial_state::Vector{ComplexF64}, tmp1::Vector{ComplexF64}, tmp2::Vector{ComplexF64}, eps::Float64 = 1e-8) where T <: Unsigned
+
+Compute the gradient of the VQE cost function using the finite difference method.
+
+# Arguments
+- `ham::Operator`: Hamiltonian to compute the expectation value with respect to.
+- `ansatz`: List of generators for ansatz.
+- `pars`: Parameters used in the ansatz.
+- `result`: Vector to store the resulting gradient.
+- `initial_state::Vector{ComplexF64}`: Initial state for the ansatz.
+- `tmp1::Vector{ComplexF64}`: Temporary vector.
+- `tmp2::Vector{ComplexF64}`: Temporary vector.
+- `eps::Float64 = 1e-8`: Small value to use for finite difference.
+"""
 function finite_difference!(
         ham::Operator,
         ansatz::Vector{Pauli{T}},

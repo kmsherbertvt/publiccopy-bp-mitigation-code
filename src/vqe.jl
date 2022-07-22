@@ -1,5 +1,7 @@
 using HDF5
 using NLopt
+using Random
+using Distributions
 
 """ Unpacking a vector refers to taking the original vector (`x`) and
 repeating each element in a new vector some (potentially variable) number
@@ -171,6 +173,56 @@ function _cost_fn_commuting_vqe(
     return res
 end
 
+
+"""
+    sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = nothing)
+
+Compute samples of the VQE cost function and its gradient components for the given Hamiltonian,
+list of generators, and initial state. Optional RNG for determining points to be sampled.
+"""
+function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = nothing)
+    if rng === nothing
+        rng = _DEFAULT_RNG
+    end
+    eval_count = 0
+    num_pars = length(ansatz)
+
+    result_energy = Array{Float64,1}()
+    result_grads = Array{Float64,1}()
+
+    grad = zeros(Float64, num_pars)
+    x = zeros(Float64, num_pars)
+    psi_1 = similar(initial_state)
+    psi_2 = similar(initial_state)
+    psi_3 = similar(initial_state)
+    psi_4 = similar(initial_state)
+
+    for _=1:num_samples
+        x .= rand(rng, Uniform(-pi, +pi), num_pars)
+        _cost_fn_commuting_vqe(x, grad, ansatz, hamiltonian, result_energy, result_grads, eval_count, psi_4, initial_state, psi_1, psi_2, psi_3, nothing)
+    end
+
+    return (result_energy, result_grads)
+end
+
+
+"""
+    VQE(...)
+
+Run the VQE algorithm.
+
+# Arguments
+
+- `hamiltonian::Operator`: Hamiltonian to minimize.
+- `ansatz::Array{Pauli{T},1}`: List of generators to use.
+- `opt::Union{Opt,String}`: Numerical to use, or string to specify `NLopt` optimizer.
+- `initial_point::Array{Float64,1}`: Initial point to use for optimization.
+- `num_qubits::Int64`: Number of qubits.
+- `initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing`: Initial state for the ansatz.
+- `path = nothing; # Should be a CSV file`: (Unused)
+- `rand_range = (-π,+π)`: (Unused, use `sample_points` instead)
+- `num_samples = 50`: (Unused, use `sample_points` instead)
+"""
 function VQE(
     hamiltonian::Operator,
     ansatz::Array{Pauli{T},1},
@@ -227,6 +279,14 @@ function VQE(
 end
 
 
+"""
+    commuting_vqe(...)
+
+Similar to `VQE`. Here, generators in the ansatz which are sums of Pauli strings
+are allowed, however, it is assumed that the terms in each generator mutually commute.
+
+This is useful for running QAOA and Fermionic anstaze.
+"""
 function commuting_vqe(
     hamiltonian::Operator,
     ansatz::Array{Operator,1},
@@ -281,10 +341,18 @@ function qaoa_ansatz(
     return ansatz
 end
 
+"""
+    QAOA(mixers::Array{Operator,1}, ...)
+
+Run the QAOA algorithm
+
+# Arguments that differ from `VQE`
+- `mixers::Array{Operator,1}`: Mixers to use, interleaved with the cost Hamiltonian.
+"""
 function QAOA(
     hamiltonian::Operator,
     mixers::Array{Operator,1},
-    opt::Opt,
+    opt::Union{Opt, String},
     initial_point::Array{Float64,1},
     num_qubits::Int64,
     initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
@@ -303,6 +371,42 @@ function QAOA(
         output_state)
 end
 
+"""
+    QAOA(p::Int, ...)
+
+Run the QAOA algorithm with a specified number of layers `p`. Uses the `X_1 + ... X_n` mixer.
+
+# Arguments that differ from `VQE`
+- `p::Int`: The number of times to repeat the cost function and mixer in the ansatz.
+"""
+function QAOA(
+    hamiltonian::Operator,
+    p::Int,
+    opt::Opt,
+    initial_point::Array{Float64,1},
+    num_qubits::Int64,
+    initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
+    path = nothing, # Should be a CSV file
+    output_state::Union{Nothing,Array{ComplexF64,1}} = nothing
+)
+    mixers = [qaoa_mixer(num_qubits) for i=1:p]
+    return QAOA(
+        hamiltonian,
+        mixers,
+        opt,
+        initial_point,
+        num_qubits,
+        initial_state = initial_state,
+        path = path,
+        output_state = output_state
+    )
+end
+
+"""
+    ADAPTHistory
+
+Stores various relevant quantities when running the ADAPT-VQE algorithm.
+"""
 mutable struct ADAPTHistory
     energy::Array{Float64,1}
     max_grad::Array{Float64,1}
@@ -383,6 +487,17 @@ function adapt_step!(
 end
 
 
+"""
+    adapt_vqe(...)
+
+Run the ADAPT-VQE algorithm.
+
+# Arguments (that are different from `VQE`)
+- `pool::Array{Pauli{T},1}`: List of Pauli operators to use in the pool.
+- `callbacks::Array{Function}`: List of callbacks to run at each layer of the algorithm.
+- `initial_parameter::Float64 = 0.0`: Initial parameter to use when initializing a new layer.
+- `initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing`: Initial state to use for the ansatz.
+"""
 function adapt_vqe(
     hamiltonian::Operator,
     pool::Array{Pauli{T},1},
@@ -485,6 +600,17 @@ function make_opt(optimizer, point)
 end
 
 
+"""
+    adapt_qaoa(...)
+
+Run the ADAPT-QAOA algorithm.
+
+# Arguments (that are different from `VQE`)
+- `pool::Array{Pauli{T},1}`: List of Pauli operators to use in the pool.
+- `callbacks::Array{Function}`: List of callbacks to run at each layer of the algorithm.
+- `initial_parameter::Float64 = 0.0`: Initial parameter to use when initializing a new layer.
+- `initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing`: Initial state to use for the ansatz.
+"""
 function adapt_qaoa(
     hamiltonian::Operator,
     pool::Array{Operator,1},
@@ -518,13 +644,18 @@ function adapt_qaoa(
     state = initial_state
     point = Vector{Float64}()
     opt_evals = nothing
-    op_chosen = nothing
 
     while true
         #### Some book-keeping of variables
         grad_state = state
         pauli_ansatz!(hamiltonian.paulis, real(hamiltonian.coeffs)*initial_parameter, grad_state, tmp)
-        adapt_step!(hist, comms, tmp, state, hamiltonian, point, op_chosen, opt_evals, grad_state)
+        if length(hist.max_grad_ind) !== 0
+            chosen_op = pool[hist.max_grad_ind[end]]
+        else
+            chosen_op = nothing
+        end
+
+        adapt_step!(hist, comms, tmp, state, hamiltonian, point, chosen_op, opt_evals, grad_state)
 
         #### Check Convergence
         for c in callbacks
