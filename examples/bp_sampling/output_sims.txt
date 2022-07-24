@@ -2081,3 +2081,77 @@ staring script...
       From worker 4:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
       From worker 4:	└ @ Base loading.jl:1132
       From worker 17:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 17:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 17:	└ @ Base loading.jl:1132
+      From worker 16:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 16:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 16:	└ @ Base loading.jl:1132
+      From worker 2:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 2:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 2:	└ @ Base loading.jl:1132
+      From worker 28:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 28:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 28:	└ @ Base loading.jl:1132
+      From worker 12:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 12:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 12:	└ @ Base loading.jl:1132
+      From worker 13:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 13:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 13:	└ @ Base loading.jl:1132
+      From worker 24:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 24:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 24:	└ @ Base loading.jl:1132
+      From worker 7:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 7:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 7:	└ @ Base loading.jl:1132
+      From worker 9:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 9:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 9:	└ @ Base loading.jl:1132
+      From worker 20:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 20:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 20:	└ @ Base loading.jl:1132
+      From worker 26:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 26:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 26:	└ @ Base loading.jl:1132
+      From worker 3:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 3:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 3:	└ @ Base loading.jl:1132
+      From worker 19:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 19:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 19:	└ @ Base loading.jl:1132
+      From worker 21:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 21:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 21:	└ @ Base loading.jl:1132
+      From worker 5:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 5:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 5:	└ @ Base loading.jl:1132
+      From worker 25:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 25:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 25:	└ @ Base loading.jl:1132
+      From worker 6:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 6:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 6:	└ @ Base loading.jl:1132
+      From worker 11:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 11:	│   exception = Required dependency FilePathsBase [48062228-2e41-5def-b9a4-89aafe57970f] failed to load from a cache file.
+      From worker 11:	└ @ Base loading.jl:1132
+      From worker 10:	┌ Warning: The call to compilecache failed to create a usable precompiled cache file for CSV [336ed68f-0bac-5ca0-87d4-7b16caf5d00b]
+      From worker 10:	│   exception = Invalid input in module list: expected FilePathsBase.
+      From worker 10:	└ @ Base loading.jl:1132
+Num procs: 29
+Num workers: 28
+There are 1650 problem problem_instances for each number of qubits
+Starting n=4 qubits
+Dumping
+Finished n=4 qubits in 3245.2627050876617 seconds
+Starting n=6 qubits
+Dumping
+Finished n=6 qubits in 4644.077509880066 seconds
+Starting n=8 qubits
+Dumping
+Finished n=8 qubits in 6697.820920944214 seconds
+Starting n=10 qubits
+Dumping
+Finished n=10 qubits in 16690.142310857773 seconds
+Starting n=12 qubits
+Dumping
+Finished n=12 qubits in 82924.40182209015 seconds

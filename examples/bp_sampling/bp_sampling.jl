@@ -249,6 +249,10 @@ for n=4:2:max_num_qubits
         end
 
         # Ball sampling
+        """ This is taking a while, this could potentially be improved in terms
+        of performance by doing something like `df_tmp = DataFrame(rad=res["ball_sampled_rads"], ...)`
+        and then `df_tmp["n"] = n`, etc., then concatenating then DataFrames.
+        """
         _l = length(res["ball_sampled_grads_list"])
         for (rad,_energies,_grads)=zip(res["ball_sampled_rads"], res["ball_sampled_energies_list"], res["ball_sampled_grads_list"])
             for e in _energies
