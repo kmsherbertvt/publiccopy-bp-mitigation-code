@@ -29,20 +29,20 @@ end
 
 # Data Import
 t_0 = time()
-println("Loading data...")
+println("Loading data..."); flush(stdout)
 df_en = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_en_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 df_grad = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_grad_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 df_ball_en = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_en_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 df_ball_grad = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_grad_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 df_res = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_res_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 cols_to_eval = [ :energies, :max_grads, :opt_pars, :energy_errors, :approx_ratio, :relative_error, :ground_state_overlaps, ]
-println("Took $(time()-t_0) seconds")
-println("Transforming data...")
+println("Took $(time()-t_0) seconds"); flush(stdout)
+println("Transforming data..."); flush(stdout)
 t_0 = time()
 transform!(df_res, cols_to_eval .=> ByRow(x -> eval(Meta.parse(x))) .=> cols_to_eval)
 transform!(df_res, :energies .=> ByRow(x -> length(x)) .=> :final_depth)
 transform!(df_res, :opt_pars .=> ByRow(x -> diff_opt_pars(x)) .=> :opt_pars_diffs)
-println("Took $(time()-t_0) seconds")
+println("Took $(time()-t_0) seconds"); flush(stdout)
 
 # Utility Functions
 function mean_on(df, grp_cols, mean_col; aggr_fn = mean)
@@ -65,7 +65,7 @@ end
 
 # Main Plots
 
-function plot_1(aggr, sampling)
+function plot_1(aggr, sampling, fn)
     """ 4 plots, x axis is number of layers, y axis is var grad, hue num qubits """
     plot_names = unique(df_en[!, :method])
 
@@ -83,24 +83,38 @@ function plot_1(aggr, sampling)
         error("Invalid method: $sampling")
     end
 
+    if fn === "grad"
+        _df_fn = _df_grad
+        st = "Grad"
+        st_long = "gradient"
+        symb = :grad
+    elseif fn === "en"
+        _df_fn = _df_en
+        st = "En"
+        st_long = "energy"
+        symb = :en
+    else
+        error("invalid fn")
+    end
+
     if aggr === "var"
-        filename = "convergence_$(sampling)_gradient_variance"
+        filename = "convergence_$(sampling)_$(st_long)_variance"
         aggr_fn = var
-        ylabel = "Var(Grad)"
+        ylabel = "Var($st)"
     elseif aggr === "mean"
-        filename = "convergence_$(sampling)_gradient_mean"
+        filename = "convergence_$(sampling)_$(st_long)_mean"
         aggr_fn = x -> mean(abs.(x))
-        ylabel = "Mean(Grad)"
+        ylabel = "Mean($st)"
     else
         error("Invalid aggr=$aggr")
     end
-    ymin = minimum(_df_grad[!, :grad])
-    ymax = maximum(_df_grad[!, :grad])
+    ymin = minimum(_df_fn[!, symb])
+    ymax = maximum(_df_fn[!, symb])
 
     plots = Dict()
     for nm in plot_names
-        _df = mean_on(filter(:method => ==(nm), _df_grad), [:n, x_axis], :grad; aggr_fn = aggr_fn)
-        plots[nm] = @df _df plot(cols(x_axis), :grad, group=:n, 
+        _df = mean_on(filter(:method => ==(nm), _df_fn), [:n, x_axis], symb; aggr_fn = aggr_fn)
+        plots[nm] = @df _df plot(cols(x_axis), cols(symb), group=:n, 
             yaxis=:log, 
             title=replace(uppercase(nm), "_" => " "),
             xlabel=x_axis_label,
@@ -180,29 +194,35 @@ end
 
 # Main
 function main()
-    plot_1("mean", "layers")
-    plot_1("var", "layers")
-    plot_1("mean", "ball")
-    plot_1("var", "ball")
-    plot_2(:opt_pars_diffs, leg_pos=:topright, yaxis_scale=:log, safe_floor_agg=true)
-    plot_2(:energies; leg_pos=:topright, yaxis_scale=:linear)
-    plot_2(:energy_errors; leg_pos=:bottomleft, safe_floor_agg=true)
-    plot_2(:approx_ratio; leg_pos=:bottomright)
-    #plot_2(:relative_error; leg_pos=:bottomright, yaxis_scale=:linear) # This is just the approximation ratio
-    plot_2(:ground_state_overlaps; leg_pos=:bottomleft, safe_floor_agg=true)
+    plot_1("mean", "layers", "grad")
+    plot_1("var", "layers", "grad")
+    plot_1("mean", "ball", "grad")
+    plot_1("var", "ball", "grad")
 
-    individual_instances = [Dict("n" => n, "seed" => seed) for (n,seed)=product(4:2:12,1:5)]
-    for inst in individual_instances
-        plot_2(:energies; leg_pos=:topright, select_instance=inst, yaxis_scale=:linear)
-        plot_2(:opt_pars_diffs, leg_pos=:topright, select_instance=inst, yaxis_scale=:log, safe_floor_agg=true)
-        plot_2(:energy_errors; leg_pos=:bottomleft, select_instance=inst, safe_floor_agg=true)
-        plot_2(:approx_ratio; leg_pos=:bottomright, select_instance=inst)
-        #plot_2(:relative_error; leg_pos=:bottomright, select_instance=inst, yaxis_scale=:linear) # This is just the approximation ratio
-        plot_2(:ground_state_overlaps; leg_pos=:bottomleft, select_instance=inst, safe_floor_agg=true)
-    end
+    plot_1("mean", "layers", "en")
+    plot_1("var", "layers", "en")
+    plot_1("mean", "ball", "en")
+    plot_1("var", "ball", "en")
+    
+    #plot_2(:opt_pars_diffs, leg_pos=:topright, yaxis_scale=:log, safe_floor_agg=true)
+    #plot_2(:energies; leg_pos=:topright, yaxis_scale=:linear)
+    #plot_2(:energy_errors; leg_pos=:bottomleft, safe_floor_agg=true)
+    #plot_2(:approx_ratio; leg_pos=:bottomright)
+    ##plot_2(:relative_error; leg_pos=:bottomright, yaxis_scale=:linear) # This is just the approximation ratio
+    #plot_2(:ground_state_overlaps; leg_pos=:bottomleft, safe_floor_agg=true)
+
+    #individual_instances = [Dict("n" => n, "seed" => seed) for (n,seed)=product(4:2:12,1:5)]
+    #for inst in individual_instances
+    #    plot_2(:energies; leg_pos=:topright, select_instance=inst, yaxis_scale=:linear)
+    #    plot_2(:opt_pars_diffs, leg_pos=:topright, select_instance=inst, yaxis_scale=:log, safe_floor_agg=true)
+    #    plot_2(:energy_errors; leg_pos=:bottomleft, select_instance=inst, safe_floor_agg=true)
+    #    plot_2(:approx_ratio; leg_pos=:bottomright, select_instance=inst)
+    #    #plot_2(:relative_error; leg_pos=:bottomright, select_instance=inst, yaxis_scale=:linear) # This is just the approximation ratio
+    #    plot_2(:ground_state_overlaps; leg_pos=:bottomleft, select_instance=inst, safe_floor_agg=true)
+    #end
 end
 
 t_0 = time()
-println("Starting plots...")
+println("Starting plots..."); flush(stdout)
 main()
-println("Took $(time()-t_0) seconds")
+println("Took $(time()-t_0) seconds"); flush(stdout)
