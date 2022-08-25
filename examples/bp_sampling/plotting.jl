@@ -204,22 +204,22 @@ function main()
     plot_1("mean", "ball", "en")
     plot_1("var", "ball", "en")
     
-    #plot_2(:opt_pars_diffs, leg_pos=:topright, yaxis_scale=:log, safe_floor_agg=true)
-    #plot_2(:energies; leg_pos=:topright, yaxis_scale=:linear)
-    #plot_2(:energy_errors; leg_pos=:bottomleft, safe_floor_agg=true)
-    #plot_2(:approx_ratio; leg_pos=:bottomright)
-    ##plot_2(:relative_error; leg_pos=:bottomright, yaxis_scale=:linear) # This is just the approximation ratio
-    #plot_2(:ground_state_overlaps; leg_pos=:bottomleft, safe_floor_agg=true)
+    plot_2(:opt_pars_diffs, leg_pos=:topright, yaxis_scale=:log, safe_floor_agg=true)
+    plot_2(:energies; leg_pos=:topright, yaxis_scale=:linear)
+    plot_2(:energy_errors; leg_pos=:bottomleft, safe_floor_agg=true)
+    plot_2(:approx_ratio; leg_pos=:bottomright)
+    #plot_2(:relative_error; leg_pos=:bottomright, yaxis_scale=:linear) # This is just the approximation ratio
+    plot_2(:ground_state_overlaps; leg_pos=:bottomleft, safe_floor_agg=true)
 
-    #individual_instances = [Dict("n" => n, "seed" => seed) for (n,seed)=product(4:2:12,1:5)]
-    #for inst in individual_instances
-    #    plot_2(:energies; leg_pos=:topright, select_instance=inst, yaxis_scale=:linear)
-    #    plot_2(:opt_pars_diffs, leg_pos=:topright, select_instance=inst, yaxis_scale=:log, safe_floor_agg=true)
-    #    plot_2(:energy_errors; leg_pos=:bottomleft, select_instance=inst, safe_floor_agg=true)
-    #    plot_2(:approx_ratio; leg_pos=:bottomright, select_instance=inst)
-    #    #plot_2(:relative_error; leg_pos=:bottomright, select_instance=inst, yaxis_scale=:linear) # This is just the approximation ratio
-    #    plot_2(:ground_state_overlaps; leg_pos=:bottomleft, select_instance=inst, safe_floor_agg=true)
-    #end
+    individual_instances = [Dict("n" => n, "seed" => seed) for (n,seed)=product(4:2:12,1:5)]
+    for inst in individual_instances
+        plot_2(:energies; leg_pos=:topright, select_instance=inst, yaxis_scale=:linear)
+        plot_2(:opt_pars_diffs, leg_pos=:topright, select_instance=inst, yaxis_scale=:log, safe_floor_agg=true)
+        plot_2(:energy_errors; leg_pos=:bottomleft, select_instance=inst, safe_floor_agg=true)
+        plot_2(:approx_ratio; leg_pos=:bottomright, select_instance=inst)
+        #plot_2(:relative_error; leg_pos=:bottomright, select_instance=inst, yaxis_scale=:linear) # This is just the approximation ratio
+        plot_2(:ground_state_overlaps; leg_pos=:bottomleft, select_instance=inst, safe_floor_agg=true)
+    end
 end
 
 t_0 = time()
