@@ -1,8 +1,8 @@
 /usr/bin
 Using 1/32 threads
 Loading data...
-Took 131.1474630832672 seconds
+Took 125.09134984016418 seconds
 Transforming data...
-Took 26.162611961364746 seconds
+Took 26.906182050704956 seconds
 Starting plots...
-Took 105.76525712013245 seconds
+Took 895.6791429519653 seconds
