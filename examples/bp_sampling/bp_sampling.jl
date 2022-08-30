@@ -278,8 +278,4 @@ for n=4:2:max_num_qubits
     CSV.write("$(data_path_prefix)_ball_grad_$(n).$(data_path_suffix)", df_grads_ball)
 
     println("Finished n=$n qubits in $(time()-t_0) seconds"); flush(stdout)
-    #Base.run(`echo "\n" >> ~/docker-services/n8n/data/locks/my_jobs.txt`)
-    io = open("/home/sam/docker-services/n8n/data/locks/my_jobs.txt", "a");
-    write(io, "\n{\"status\": \"DONE\", \"name\": \"Sims n=$n\"}")
-    close(io)
 end
