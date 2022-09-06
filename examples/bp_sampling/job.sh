@@ -26,13 +26,13 @@ export MKL_NUM_THREADS=1
 export OMP_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
 
-echo "Usage: sbatch job.sh script.jl"
-export INFILE=$1
-export OUTFILE="${INFILE}.out"
-echo $INFILE
-echo $OUTFILE
+#echo "Usage: sbatch job.sh script.jl"
+#export INFILE=$1
+#export OUTFILE="${INFILE}.out"
+#echo $INFILE
+#echo $OUTFILE
 
-julia --project=$JULIAENV --procs=auto $INFILE >& $OUTFILE
-julia --project=$JULIAENV --procs=auto plotting.jl >& plotting.jl.out
+julia --project=$JULIAENV --procs=auto bp_sampling.jl >& output_sims.txt
+julia --project=$JULIAENV plotting.jl >& output_plots.txt
 
 exit
