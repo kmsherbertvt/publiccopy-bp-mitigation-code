@@ -27,7 +27,7 @@ println("staring script..."); flush(stdout)
 @everywhere max_adapt_layers = 50
 @everywhere vqe_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
 @everywhere adapt_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
-@everywhere ball_sampling_radii = collect(0:0.2:5)
+@everywhere ball_sampling_radii = vcat(0.0:0.01:(0.2-0.01),0.2:0.2:5)
 @everywhere opt_alg = "LD_LBFGS"
 @everywhere opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
 @everywhere data_path_prefix = "data/data"
