@@ -132,14 +132,19 @@ function plot_1(aggr, sampling, fn, select_instance = missing)
             xlabel=x_axis_label,
             ylabel=ylabel,
             #ylim=(ymin,ymax),
-            top_margin    = 10Plots.mm,
+            #top_margin    = 10Plots.mm,
             #right_margin  = 5Plots.mm,
-            left_margin   = 20Plots.mm,
-            bottom_margin = 10Plots.mm,
+            #left_margin   = 20Plots.mm,
+            #bottom_margin = 10Plots.mm,
             )
     end
 
-    main_plot = plot(collect(values(plots))...)
+    main_plot = plot(collect(values(plots))...,
+        top_margin    = 5Plots.mm,
+        right_margin  = 10Plots.mm,
+        left_margin   = 15Plots.mm,
+        bottom_margin = 10Plots.mm
+    )
     fig_out(filename)
     return main_plot
 end
