@@ -19,6 +19,9 @@ rng = MersenneTwister(42);
 
     point = rand(rng, Uniform(-pi, +pi), length(ansatz))
 
+    l_min = []
+    l_max = []
+
     for _=1:2
         result_energies, result_gradients = sample_points(hamiltonian, ansatz, initial_state, num_samples; rng=rng, dist=0.0, point=point)
 
@@ -27,5 +30,11 @@ rng = MersenneTwister(42);
 
         delta = maximum(result_energies) - minimum(result_energies)
         @test abs(delta) <= 1e-6
+
+        push!(l_min, minimum(result_energies))
+        push!(l_max, maximum(result_energies))
     end
+
+    @test abs(l_min[1] - l_min[2]) <= 1e-6
+    @test abs(l_max[1] - l_max[2]) <= 1e-6
 end
