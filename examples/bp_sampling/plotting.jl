@@ -65,7 +65,7 @@ end
 
 # Main Plots
 
-function plot_1(aggr, sampling, fn)
+function plot_1(aggr, sampling, fn, select_instance = missing)
     """ 4 plots, x axis is number of layers, y axis is var grad, hue num qubits """
     plot_names = unique(df_en[!, :method])
 
@@ -108,6 +108,18 @@ function plot_1(aggr, sampling, fn)
     else
         error("Invalid aggr=$aggr")
     end
+
+    if select_instance !== missing
+        filename = "inst_" * filename
+    end
+
+    if select_instance !== missing
+        _n = select_instance["n"]
+        _seed = select_instance["seed"]
+        _df_fn = filter(:n => ==(_n), filter(:seed => ==(_seed), copy(_df_fn)))
+        filename = filename * "_n$(_n)seed$(_seed)"
+    end
+
     ymin = minimum(_df_fn[!, symb])
     ymax = maximum(_df_fn[!, symb])
 
@@ -194,15 +206,13 @@ end
 
 # Main
 function main()
-    plot_1("mean", "layers", "grad")
-    plot_1("var", "layers", "grad")
-    plot_1("mean", "ball", "grad")
-    plot_1("var", "ball", "grad")
-
-    plot_1("mean", "layers", "en")
-    plot_1("var", "layers", "en")
-    plot_1("mean", "ball", "en")
-    plot_1("var", "ball", "en")
+    for fn in ["mean", "var"]
+        for strat in ["layers", "ball"]
+            for fom in ["grad", "en"]
+                plot_1(fn, strat, fom, missing)
+            end
+        end
+    end
     
     plot_2(:opt_pars_diffs, leg_pos=:topright, yaxis_scale=:log, safe_floor_agg=true)
     plot_2(:energies; leg_pos=:topright, yaxis_scale=:linear)
@@ -213,6 +223,13 @@ function main()
 
     individual_instances = [Dict("n" => n, "seed" => seed) for (n,seed)=product(4:2:12,1:5)]
     for inst in individual_instances
+        for fn in ["mean", "var"]
+            for strat in ["layers", "ball"]
+                for fom in ["grad", "en"]
+                    plot_1(fn, strat, fom, inst)
+                end
+            end
+        end
         plot_2(:energies; leg_pos=:topright, select_instance=inst, yaxis_scale=:linear)
         plot_2(:opt_pars_diffs, leg_pos=:topright, select_instance=inst, yaxis_scale=:log, safe_floor_agg=true)
         plot_2(:energy_errors; leg_pos=:bottomleft, select_instance=inst, safe_floor_agg=true)

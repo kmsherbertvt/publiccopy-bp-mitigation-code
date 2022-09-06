@@ -209,7 +209,11 @@ function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = no
         _cost_fn_commuting_vqe(x, grad, ansatz, hamiltonian, result_energy, result_grads, eval_count, psi_4, initial_state, psi_1, psi_2, psi_3, nothing)
     end
 
-    return (result_energy, result_grads)
+    min_energy = get_ground_state(hamiltonian)
+    result_errors = result_energy .- min_energy
+    result_relative_errors = result_errors ./ get_energy_gap(hamiltonian)
+
+    return (result_energy, result_grads, result_errors, result_relative_errors)
 end
 
 
