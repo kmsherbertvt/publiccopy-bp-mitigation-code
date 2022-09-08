@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Job Admin Stuff
-#SBATCH --mail-user=mute-arcjobs@saem.xyz
-#SBATCH --mail-type=ALL
+#SBATCH --mail-user=gbarron+ping@vt.edu
+#SBATCH --mail-type=END,FAILED
 #SBATCH -A qc_group
 #SBATCH -p normal_q
 
@@ -32,7 +32,7 @@ export OPENBLAS_NUM_THREADS=1
 #echo $INFILE
 #echo $OUTFILE
 
-julia --project=$JULIAENV --procs=auto bp_sampling.jl >& output_sims.txt
+#julia --project=$JULIAENV --procs=auto bp_sampling.jl >& output_sims.txt
 julia --project=$JULIAENV plotting.jl >& output_plots.txt
 
 exit
