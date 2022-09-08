@@ -103,7 +103,8 @@ function plot_1(aggr, sampling, fn, select_instance = missing)
         ylabel = "Var($st)"
     elseif aggr === "mean"
         filename = "convergence_$(sampling)_$(st_long)_mean"
-        aggr_fn = x -> mean(abs.(x))
+        aggr_fn = x -> mean(x)
+        #aggr_fn = x -> mean(abs.(x))
         ylabel = "Mean($st)"
     else
         error("Invalid aggr=$aggr")
