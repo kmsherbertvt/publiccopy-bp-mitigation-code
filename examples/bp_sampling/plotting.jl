@@ -31,10 +31,30 @@ end
 # Data Import
 t_0 = time()
 println("Loading data..."); flush(stdout)
+
 df_en = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_en_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 df_grad = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_grad_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
+df_en_errs = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_en_errs_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
+df_rel_en_errs = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_rel_en_errs_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
+
 df_ball_en = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_en_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 df_ball_grad = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_grad_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
+df_ball_en_errs = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_en_errs_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
+df_ball_rel_en_errs = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_rel_en_errs_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
+
+df_dict_ball = Dict(
+    "en" => df_ball_en,
+    "grad" => df_ball_grad,
+    "en_errs" => df_ball_en_errs,
+    "rel_en_errs" => df_ball_rel_en_errs,
+)
+df_dict = Dict(
+    "en" => df_en,
+    "grad" => df_grad,
+    "en_errs" => df_en_errs,
+    "rel_en_errs" => df_rel_en_errs,
+)
+
 df_res = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_res_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 cols_to_eval = [ :energies, :max_grads, :opt_pars, :energy_errors, :approx_ratio, :relative_error, :ground_state_overlaps, ]
 println("Took $(time()-t_0) seconds"); flush(stdout)
@@ -71,13 +91,11 @@ function plot_1(aggr, sampling, fn, select_instance = missing)
     plot_names = unique(df_en[!, :method])
 
     if sampling === "ball"
-        _df_grad = df_ball_grad
-        _df_en = df_ball_en
+        _df_dict = df_dict_ball
         x_axis = :rad
         x_axis_label = "Radius"
     elseif sampling === "layers"
-        _df_grad = df_grad
-        _df_en = df_en
+        _df_dict = df_dict
         x_axis = :d
         x_axis_label = "Layers"
     else
@@ -85,15 +103,25 @@ function plot_1(aggr, sampling, fn, select_instance = missing)
     end
 
     if fn === "grad"
-        _df_fn = _df_grad
+        _df_fn = _df_dict["grad"]
         st = "Grad"
         st_long = "gradient"
         symb = :grad
     elseif fn === "en"
-        _df_fn = _df_en
+        _df_fn = _df_dict["en"]
         st = "En"
         st_long = "energy"
         symb = :en
+    elseif fn === "en_errs"
+        _df_fn = _df_dict["en_errs"]
+        st = "En Errs"
+        st_long = "energy_errors"
+        symb = :en_err
+    elseif fn === "rel_en_errs"
+        _df_fn = _df_dict["rel_en_errs"]
+        st = "Rel En Errs"
+        st_long = "relative_energy_errors"
+        symb = :rel_en_err
     else
         error("invalid fn")
     end
@@ -215,7 +243,7 @@ end
 function main()
     for fn in ["mean", "var"]
         for strat in ["layers", "ball"]
-            for fom in ["grad", "en"]
+            for fom in ["grad", "en", "en_errs", "rel_en_errs"]
                 plot_1(fn, strat, fom, missing)
             end
         end
@@ -232,7 +260,7 @@ function main()
     for inst in individual_instances
         for fn in ["mean", "var"]
             for strat in ["layers", "ball"]
-                for fom in ["grad", "en"]
+                for fom in ["grad", "en", "en_errs", "rel_en_errs"]
                     plot_1(fn, strat, fom, inst)
                 end
             end
