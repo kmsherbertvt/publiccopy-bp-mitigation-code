@@ -22,7 +22,7 @@ println("staring script..."); flush(stdout)
 # Hyperparameters
 @everywhere num_samples = 50
 @everywhere num_point_samples = 200
-@everywhere max_num_qubits = 12
+@everywhere max_num_qubits = 6
 @everywhere max_grad = 1e-6
 @everywhere max_adapt_layers = 50
 @everywhere vqe_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)

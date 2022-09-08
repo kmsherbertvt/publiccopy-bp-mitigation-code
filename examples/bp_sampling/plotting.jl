@@ -13,7 +13,8 @@ gr();
 FIGS_DIR = "./figs"
 DATA_DIR = "./data"
 DATA_SUFFIX = "csv"
-qubit_range = 4:2:12
+max_num_qubits = 6
+qubit_range = 4:2:max_num_qubits
 gid = "CID:$(get_git_id())"
 
 function diff_opt_pars(opt_pars:: Vector{Vector{Float64}})
@@ -128,7 +129,7 @@ function plot_1(aggr, sampling, fn, select_instance = missing)
     for nm in plot_names
         _df = mean_on(filter(:method => ==(nm), _df_fn), [:n, x_axis], symb; aggr_fn = aggr_fn)
         plots[nm] = @df _df plot(cols(x_axis), cols(symb), group=:n, 
-            yaxis=:log, 
+            #yaxis=:log, 
             title=replace(uppercase(nm), "_" => " "),
             xlabel=x_axis_label,
             ylabel=ylabel,
@@ -227,7 +228,7 @@ function main()
     #plot_2(:relative_error; leg_pos=:bottomright, yaxis_scale=:linear) # This is just the approximation ratio
     plot_2(:ground_state_overlaps; leg_pos=:bottomleft, safe_floor_agg=true)
 
-    individual_instances = [Dict("n" => n, "seed" => seed) for (n,seed)=product(4:2:12,1:5)]
+    individual_instances = [Dict("n" => n, "seed" => seed) for (n,seed)=product(4:2:max_num_qubits,1:5)]
     for inst in individual_instances
         for fn in ["mean", "var"]
             for strat in ["layers", "ball"]
