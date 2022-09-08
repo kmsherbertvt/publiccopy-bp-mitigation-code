@@ -13,7 +13,7 @@ gr();
 FIGS_DIR = "./figs"
 DATA_DIR = "./data"
 DATA_SUFFIX = "csv"
-max_num_qubits = 6
+max_num_qubits = 12
 qubit_range = 4:2:max_num_qubits
 gid = "CID:$(get_git_id())"
 
