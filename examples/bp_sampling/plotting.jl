@@ -102,26 +102,39 @@ function plot_1(aggr, sampling, fn, select_instance = missing)
         error("Invalid method: $sampling")
     end
 
+
     if fn === "grad"
         _df_fn = _df_dict["grad"]
         st = "Grad"
         st_long = "gradient"
         symb = :grad
+        use_safe_floor = false
+        use_abs = true
+        yaxis_scale = :linear
     elseif fn === "en"
         _df_fn = _df_dict["en"]
         st = "En"
         st_long = "energy"
         symb = :en
+        use_safe_floor = false
+        use_abs = false
+        yaxis_scale = :linear
     elseif fn === "en_errs"
         _df_fn = _df_dict["en_errs"]
         st = "En Errs"
         st_long = "energy_errors"
         symb = :en_err
+        use_safe_floor = true
+        use_abs = true
+        yaxis_scale = :linear
     elseif fn === "rel_en_errs"
         _df_fn = _df_dict["rel_en_errs"]
         st = "Rel En Errs"
         st_long = "relative_energy_errors"
         symb = :rel_en_err
+        use_safe_floor = true
+        use_abs = true
+        yaxis_scale = :linear
     else
         error("invalid fn")
     end
@@ -132,8 +145,10 @@ function plot_1(aggr, sampling, fn, select_instance = missing)
         ylabel = "Var($st)"
     elseif aggr === "mean"
         filename = "convergence_$(sampling)_$(st_long)_mean"
-        aggr_fn = x -> mean(x)
-        #aggr_fn = x -> mean(abs.(x))
+        _if_abs = if use_abs abs else identity end
+        _if_sfl = if use_safe_floor safe_floor else identity end
+        #aggr_fn = x -> mean(x)
+        aggr_fn = x -> mean(_if_abs.(_if_sfl.(x)))
         ylabel = "Mean($st)"
     else
         error("Invalid aggr=$aggr")
@@ -157,7 +172,7 @@ function plot_1(aggr, sampling, fn, select_instance = missing)
     for nm in plot_names
         _df = mean_on(filter(:method => ==(nm), _df_fn), [:n, x_axis], symb; aggr_fn = aggr_fn)
         plots[nm] = @df _df plot(cols(x_axis), cols(symb), group=:n, 
-            #yaxis=:log, 
+            yaxis=yaxis_scale, 
             title=replace(uppercase(nm), "_" => " "),
             xlabel=x_axis_label,
             ylabel=ylabel,

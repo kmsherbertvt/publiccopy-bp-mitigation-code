@@ -4,9 +4,9 @@
 Threads set to 1 by default, try julia -t 17 ...
 Couldn't find Project.toml, using default
 Loading data...
-Took 128.74781799316406 seconds
+Took 109.14613008499146 seconds
 Transforming data...
-Took 11.718115091323853 seconds
+Took 11.69129490852356 seconds
 Starting plots...
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
@@ -19,6 +19,10 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -404,6 +408,7 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Possible loss of precision in routine SET_WINDOW
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2549,7 +2554,7 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
-Took 1564.8186779022217 seconds
+Took 1531.0430858135223 seconds
 ┌ Warning: Skipped yaxis arg linear
 └ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
 ┌ Warning: Skipped yaxis arg linear
@@ -2610,6 +2615,508 @@ Took 1564.8186779022217 seconds
 └ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
 ┌ Warning: Skipped yaxis arg linear
 └ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: Skipped yaxis arg linear
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: No strict ticks found
+└ @ PlotUtils ~/.julia/packages/PlotUtils/jNTYY/src/ticks.jl:191
+┌ Warning: Invalid negative or zero value 0.0 found at series index 1 for log10 based yscale
+└ @ Plots ~/.julia/packages/Plots/dNEbX/src/utils.jl:95
 ┌ Warning: Skipped yaxis arg linear
 └ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
 ┌ Warning: Skipped yaxis arg linear
