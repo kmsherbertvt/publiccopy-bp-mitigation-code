@@ -4,141 +4,150 @@
 Threads set to 1 by default, try julia -t 17 ...
 Couldn't find Project.toml, using default
 staring script...
-      From worker 45:	  Activating project at `~/bp-mitigation-code`
-      From worker 50:	  Activating project at `~/bp-mitigation-code`
-      From worker 49:	  Activating project at `~/bp-mitigation-code`
-      From worker 90:	  Activating project at `~/bp-mitigation-code`
-      From worker 66:	  Activating project at `~/bp-mitigation-code`
-      From worker 61:	  Activating project at `~/bp-mitigation-code`
-      From worker 91:	  Activating project at `~/bp-mitigation-code`
-      From worker 87:	  Activating project at `~/bp-mitigation-code`
-      From worker 78:	  Activating project at `~/bp-mitigation-code`
-      From worker 82:	  Activating project at `~/bp-mitigation-code`
-      From worker 104:	  Activating project at `~/bp-mitigation-code`
       From worker 20:	  Activating project at `~/bp-mitigation-code`
-      From worker 107:	  Activating project at `~/bp-mitigation-code`
-      From worker 64:	  Activating project at `~/bp-mitigation-code`
-      From worker 115:	  Activating project at `~/bp-mitigation-code`
-      From worker 2:	  Activating project at `~/bp-mitigation-code`
-      From worker 88:	  Activating project at `~/bp-mitigation-code`
-      From worker 52:	  Activating project at `~/bp-mitigation-code`
+      From worker 51:	  Activating project at `~/bp-mitigation-code`
+      From worker 79:	  Activating project at `~/bp-mitigation-code`
+      From worker 84:	  Activating project at `~/bp-mitigation-code`
+      From worker 47:	  Activating project at `~/bp-mitigation-code`
+      From worker 72:	  Activating project at `~/bp-mitigation-code`
+      From worker 17:	  Activating project at `~/bp-mitigation-code`
+      From worker 4:	  Activating project at `~/bp-mitigation-code`
+      From worker 29:	  Activating project at `~/bp-mitigation-code`
+      From worker 9:	  Activating project at `~/bp-mitigation-code`
+      From worker 33:	  Activating project at `~/bp-mitigation-code`
       From worker 76:	  Activating project at `~/bp-mitigation-code`
+      From worker 74:	  Activating project at `~/bp-mitigation-code`
+      From worker 53:	  Activating project at `~/bp-mitigation-code`
+      From worker 120:	  Activating project at `~/bp-mitigation-code`
+      From worker 37:	  Activating project at `~/bp-mitigation-code`
+      From worker 6:	  Activating project at `~/bp-mitigation-code`
+      From worker 98:	  Activating project at `~/bp-mitigation-code`
+      From worker 39:	  Activating project at `~/bp-mitigation-code`
+      From worker 43:	  Activating project at `~/bp-mitigation-code`
+      From worker 69:	  Activating project at `~/bp-mitigation-code`
+      From worker 28:	  Activating project at `~/bp-mitigation-code`
+      From worker 86:	  Activating project at `~/bp-mitigation-code`
+      From worker 19:	  Activating project at `~/bp-mitigation-code`
+      From worker 3:	  Activating project at `~/bp-mitigation-code`
+      From worker 87:	  Activating project at `~/bp-mitigation-code`
+      From worker 27:	  Activating project at `~/bp-mitigation-code`
+      From worker 58:	  Activating project at `~/bp-mitigation-code`
+      From worker 121:	  Activating project at `~/bp-mitigation-code`
+      From worker 103:	  Activating project at `~/bp-mitigation-code`
+      From worker 111:	  Activating project at `~/bp-mitigation-code`
+      From worker 71:	  Activating project at `~/bp-mitigation-code`
+      From worker 8:	  Activating project at `~/bp-mitigation-code`
+      From worker 10:	  Activating project at `~/bp-mitigation-code`
+      From worker 119:	  Activating project at `~/bp-mitigation-code`
+      From worker 63:	  Activating project at `~/bp-mitigation-code`
+      From worker 25:	  Activating project at `~/bp-mitigation-code`
+      From worker 123:	  Activating project at `~/bp-mitigation-code`
+      From worker 55:	  Activating project at `~/bp-mitigation-code`
+      From worker 88:	  Activating project at `~/bp-mitigation-code`
+      From worker 91:	  Activating project at `~/bp-mitigation-code`
+      From worker 35:	  Activating project at `~/bp-mitigation-code`
+      From worker 26:	  Activating project at `~/bp-mitigation-code`
+      From worker 21:	  Activating project at `~/bp-mitigation-code`
+      From worker 118:	  Activating project at `~/bp-mitigation-code`
+      From worker 114:	  Activating project at `~/bp-mitigation-code`
+      From worker 13:	  Activating project at `~/bp-mitigation-code`
+      From worker 96:	  Activating project at `~/bp-mitigation-code`
+      From worker 78:	  Activating project at `~/bp-mitigation-code`
+      From worker 104:	  Activating project at `~/bp-mitigation-code`
+      From worker 126:	  Activating project at `~/bp-mitigation-code`
+      From worker 41:	  Activating project at `~/bp-mitigation-code`
+      From worker 16:	  Activating project at `~/bp-mitigation-code`
+      From worker 82:	  Activating project at `~/bp-mitigation-code`
+      From worker 64:	  Activating project at `~/bp-mitigation-code`
+      From worker 112:	  Activating project at `~/bp-mitigation-code`
+      From worker 56:	  Activating project at `~/bp-mitigation-code`
+      From worker 113:	  Activating project at `~/bp-mitigation-code`
+      From worker 49:	  Activating project at `~/bp-mitigation-code`
+      From worker 62:	  Activating project at `~/bp-mitigation-code`
+      From worker 14:	  Activating project at `~/bp-mitigation-code`
+      From worker 127:	  Activating project at `~/bp-mitigation-code`
+      From worker 110:	  Activating project at `~/bp-mitigation-code`
+      From worker 129:	  Activating project at `~/bp-mitigation-code`
+      From worker 80:	  Activating project at `~/bp-mitigation-code`
+      From worker 18:	  Activating project at `~/bp-mitigation-code`
+      From worker 57:	  Activating project at `~/bp-mitigation-code`
+      From worker 73:	  Activating project at `~/bp-mitigation-code`
+      From worker 66:	  Activating project at `~/bp-mitigation-code`
+      From worker 100:	  Activating project at `~/bp-mitigation-code`
+      From worker 32:	  Activating project at `~/bp-mitigation-code`
       From worker 60:	  Activating project at `~/bp-mitigation-code`
-      From worker 77:	  Activating project at `~/bp-mitigation-code`
+      From worker 44:	  Activating project at `~/bp-mitigation-code`
+      From worker 61:	  Activating project at `~/bp-mitigation-code`
+      From worker 45:	  Activating project at `~/bp-mitigation-code`
+      From worker 122:	  Activating project at `~/bp-mitigation-code`
+      From worker 115:	  Activating project at `~/bp-mitigation-code`
+      From worker 85:	  Activating project at `~/bp-mitigation-code`
+      From worker 105:	  Activating project at `~/bp-mitigation-code`
       From worker 40:	  Activating project at `~/bp-mitigation-code`
+      From worker 5:	  Activating project at `~/bp-mitigation-code`
+      From worker 50:	  Activating project at `~/bp-mitigation-code`
+      From worker 12:	  Activating project at `~/bp-mitigation-code`
+      From worker 101:	  Activating project at `~/bp-mitigation-code`
+      From worker 107:	  Activating project at `~/bp-mitigation-code`
+      From worker 23:	  Activating project at `~/bp-mitigation-code`
+      From worker 67:	  Activating project at `~/bp-mitigation-code`
+      From worker 48:	  Activating project at `~/bp-mitigation-code`
+      From worker 116:	  Activating project at `~/bp-mitigation-code`
+      From worker 125:	  Activating project at `~/bp-mitigation-code`
+      From worker 54:	  Activating project at `~/bp-mitigation-code`
+      From worker 68:	  Activating project at `~/bp-mitigation-code`
+      From worker 90:	  Activating project at `~/bp-mitigation-code`
+      From worker 128:	  Activating project at `~/bp-mitigation-code`
+      From worker 46:	  Activating project at `~/bp-mitigation-code`
       From worker 99:	  Activating project at `~/bp-mitigation-code`
+      From worker 30:	  Activating project at `~/bp-mitigation-code`
+      From worker 15:	  Activating project at `~/bp-mitigation-code`
+      From worker 36:	  Activating project at `~/bp-mitigation-code`
       From worker 34:	  Activating project at `~/bp-mitigation-code`
       From worker 11:	  Activating project at `~/bp-mitigation-code`
-      From worker 58:	  Activating project at `~/bp-mitigation-code`
-      From worker 126:	  Activating project at `~/bp-mitigation-code`
-      From worker 111:	  Activating project at `~/bp-mitigation-code`
-      From worker 129:	  Activating project at `~/bp-mitigation-code`
-      From worker 117:	  Activating project at `~/bp-mitigation-code`
-      From worker 23:	  Activating project at `~/bp-mitigation-code`
-      From worker 37:	  Activating project at `~/bp-mitigation-code`
+      From worker 94:	  Activating project at `~/bp-mitigation-code`
+      From worker 24:	  Activating project at `~/bp-mitigation-code`
+      From worker 93:	  Activating project at `~/bp-mitigation-code`
+      From worker 92:	  Activating project at `~/bp-mitigation-code`
+      From worker 83:	  Activating project at `~/bp-mitigation-code`
       From worker 97:	  Activating project at `~/bp-mitigation-code`
-      From worker 119:	  Activating project at `~/bp-mitigation-code`
-      From worker 73:	  Activating project at `~/bp-mitigation-code`
-      From worker 89:	  Activating project at `~/bp-mitigation-code`
-      From worker 128:	  Activating project at `~/bp-mitigation-code`
-      From worker 63:	  Activating project at `~/bp-mitigation-code`
-      From worker 32:	  Activating project at `~/bp-mitigation-code`
-      From worker 48:	  Activating project at `~/bp-mitigation-code`
-      From worker 39:	  Activating project at `~/bp-mitigation-code`
-      From worker 19:	  Activating project at `~/bp-mitigation-code`
-      From worker 17:	  Activating project at `~/bp-mitigation-code`
-      From worker 120:	  Activating project at `~/bp-mitigation-code`
-      From worker 68:	  Activating project at `~/bp-mitigation-code`
-      From worker 122:	  Activating project at `~/bp-mitigation-code`
-      From worker 43:	  Activating project at `~/bp-mitigation-code`
-      From worker 5:	  Activating project at `~/bp-mitigation-code`
-      From worker 56:	  Activating project at `~/bp-mitigation-code`
-      From worker 75:	  Activating project at `~/bp-mitigation-code`
-      From worker 46:	  Activating project at `~/bp-mitigation-code`
-      From worker 79:	  Activating project at `~/bp-mitigation-code`
+      From worker 59:	  Activating project at `~/bp-mitigation-code`
       From worker 7:	  Activating project at `~/bp-mitigation-code`
-      From worker 57:	  Activating project at `~/bp-mitigation-code`
-      From worker 51:	  Activating project at `~/bp-mitigation-code`
-      From worker 8:	  Activating project at `~/bp-mitigation-code`
+      From worker 95:	  Activating project at `~/bp-mitigation-code`
       From worker 81:	  Activating project at `~/bp-mitigation-code`
+      From worker 89:	  Activating project at `~/bp-mitigation-code`
+      From worker 106:	  Activating project at `~/bp-mitigation-code`
+      From worker 102:	  Activating project at `~/bp-mitigation-code`
+      From worker 2:	  Activating project at `~/bp-mitigation-code`
+      From worker 108:	  Activating project at `~/bp-mitigation-code`
+      From worker 38:	  Activating project at `~/bp-mitigation-code`
+      From worker 117:	  Activating project at `~/bp-mitigation-code`
+      From worker 77:	  Activating project at `~/bp-mitigation-code`
+      From worker 42:	  Activating project at `~/bp-mitigation-code`
+      From worker 52:	  Activating project at `~/bp-mitigation-code`
+      From worker 31:	  Activating project at `~/bp-mitigation-code`
+      From worker 75:	  Activating project at `~/bp-mitigation-code`
       From worker 65:	  Activating project at `~/bp-mitigation-code`
-      From worker 123:	  Activating project at `~/bp-mitigation-code`
       From worker 124:	  Activating project at `~/bp-mitigation-code`
       From worker 70:	  Activating project at `~/bp-mitigation-code`
-      From worker 98:	  Activating project at `~/bp-mitigation-code`
-      From worker 85:	  Activating project at `~/bp-mitigation-code`
-      From worker 28:	  Activating project at `~/bp-mitigation-code`
-      From worker 62:	  Activating project at `~/bp-mitigation-code`
-      From worker 72:	  Activating project at `~/bp-mitigation-code`
-      From worker 108:	  Activating project at `~/bp-mitigation-code`
-      From worker 13:	  Activating project at `~/bp-mitigation-code`
-      From worker 9:	  Activating project at `~/bp-mitigation-code`
-      From worker 18:	  Activating project at `~/bp-mitigation-code`
-      From worker 6:	  Activating project at `~/bp-mitigation-code`
-      From worker 10:	  Activating project at `~/bp-mitigation-code`
-      From worker 95:	  Activating project at `~/bp-mitigation-code`
-      From worker 12:	  Activating project at `~/bp-mitigation-code`
-      From worker 38:	  Activating project at `~/bp-mitigation-code`
-      From worker 101:	  Activating project at `~/bp-mitigation-code`
-      From worker 84:	  Activating project at `~/bp-mitigation-code`
-      From worker 86:	  Activating project at `~/bp-mitigation-code`
-      From worker 125:	  Activating project at `~/bp-mitigation-code`
-      From worker 83:	  Activating project at `~/bp-mitigation-code`
-      From worker 30:	  Activating project at `~/bp-mitigation-code`
-      From worker 31:	  Activating project at `~/bp-mitigation-code`
-      From worker 80:	  Activating project at `~/bp-mitigation-code`
       From worker 109:	  Activating project at `~/bp-mitigation-code`
-      From worker 24:	  Activating project at `~/bp-mitigation-code`
-      From worker 36:	  Activating project at `~/bp-mitigation-code`
-      From worker 26:	  Activating project at `~/bp-mitigation-code`
-      From worker 16:	  Activating project at `~/bp-mitigation-code`
-      From worker 15:	  Activating project at `~/bp-mitigation-code`
-      From worker 92:	  Activating project at `~/bp-mitigation-code`
-      From worker 102:	  Activating project at `~/bp-mitigation-code`
-      From worker 71:	  Activating project at `~/bp-mitigation-code`
-      From worker 106:	  Activating project at `~/bp-mitigation-code`
-      From worker 93:	  Activating project at `~/bp-mitigation-code`
-      From worker 103:	  Activating project at `~/bp-mitigation-code`
-      From worker 110:	  Activating project at `~/bp-mitigation-code`
-      From worker 21:	  Activating project at `~/bp-mitigation-code`
-      From worker 100:	  Activating project at `~/bp-mitigation-code`
-      From worker 121:	  Activating project at `~/bp-mitigation-code`
-      From worker 3:	  Activating project at `~/bp-mitigation-code`
-      From worker 96:	  Activating project at `~/bp-mitigation-code`
-      From worker 41:	  Activating project at `~/bp-mitigation-code`
       From worker 22:	  Activating project at `~/bp-mitigation-code`
-      From worker 114:	  Activating project at `~/bp-mitigation-code`
-      From worker 67:	  Activating project at `~/bp-mitigation-code`
-      From worker 74:	  Activating project at `~/bp-mitigation-code`
-      From worker 27:	  Activating project at `~/bp-mitigation-code`
-      From worker 25:	  Activating project at `~/bp-mitigation-code`
-      From worker 55:	  Activating project at `~/bp-mitigation-code`
-      From worker 94:	  Activating project at `~/bp-mitigation-code`
-      From worker 53:	  Activating project at `~/bp-mitigation-code`
-      From worker 14:	  Activating project at `~/bp-mitigation-code`
-      From worker 47:	  Activating project at `~/bp-mitigation-code`
-      From worker 105:	  Activating project at `~/bp-mitigation-code`
-      From worker 59:	  Activating project at `~/bp-mitigation-code`
-      From worker 33:	  Activating project at `~/bp-mitigation-code`
-      From worker 42:	  Activating project at `~/bp-mitigation-code`
-      From worker 44:	  Activating project at `~/bp-mitigation-code`
-      From worker 29:	  Activating project at `~/bp-mitigation-code`
-      From worker 4:	  Activating project at `~/bp-mitigation-code`
-      From worker 54:	  Activating project at `~/bp-mitigation-code`
-      From worker 118:	  Activating project at `~/bp-mitigation-code`
-      From worker 69:	  Activating project at `~/bp-mitigation-code`
-      From worker 113:	  Activating project at `~/bp-mitigation-code`
-      From worker 112:	  Activating project at `~/bp-mitigation-code`
-      From worker 127:	  Activating project at `~/bp-mitigation-code`
-      From worker 116:	  Activating project at `~/bp-mitigation-code`
-      From worker 35:	  Activating project at `~/bp-mitigation-code`
 Num procs: 129
 Num workers: 128
 There are 1650 problem problem_instances for each number of qubits
 Starting n=4 qubits
 Dumping
-Finished n=4 qubits in 13810.707960128784 seconds
+Finished n=4 qubits in 11154.600625991821 seconds
 Starting n=6 qubits
 Dumping
-Finished n=6 qubits in 10968.937210798264 seconds
+Finished n=6 qubits in 10921.99374294281 seconds
+Starting n=8 qubits
+Dumping
+Finished n=8 qubits in 12556.966989994049 seconds
+Starting n=10 qubits
+Dumping
+Finished n=10 qubits in 17457.981271982193 seconds
+Starting n=12 qubits
+Dumping
+Finished n=12 qubits in 45515.193423986435 seconds
   Activating project at `~/bp-mitigation-code`
