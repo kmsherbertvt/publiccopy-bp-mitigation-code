@@ -9,11 +9,28 @@ using CSV
 using Statistics
 gr();
 
+if length(ARGS) >= 1
+    debug_arg = ARGS[1]
+    if debug_arg == "debug"
+        debug = true
+    else
+        error("Invalid arg: $debug_arg")
+    end
+else
+    debug = false
+end
+
 # Hyperparameters
-FIGS_DIR = "./figs"
-DATA_DIR = "./data"
+if debug
+    max_num_qubits = 6
+    FIGS_DIR = "./debug_figs"
+    DATA_DIR = "./debug_data"
+else
+    max_num_qubits = 12
+    FIGS_DIR = "./figs"
+    DATA_DIR = "./data"
+end
 DATA_SUFFIX = "csv"
-max_num_qubits = 12
 qubit_range = 4:2:max_num_qubits
 gid = "CID:$(get_git_id())"
 

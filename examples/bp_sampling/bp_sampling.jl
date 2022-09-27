@@ -19,10 +19,29 @@ println("staring script..."); flush(stdout)
 #@everywhere Random.seed!(42)
 #@everywhere rng = MersenneTwister(14)
 
+if length(ARGS) >= 1
+    debug_arg = ARGS[1]
+    if debug_arg == "debug"
+        debug = true
+    else
+        error("Invalid arg: $debug_arg")
+    end
+else
+    debug = false
+end
+
 # Hyperparameters
-@everywhere num_samples = 50
-@everywhere num_point_samples = 200
-@everywhere max_num_qubits = 12
+if debug
+    @everywhere num_samples = 5
+    @everywhere num_point_samples = 5
+    @everywhere max_num_qubits = 6
+    @everywhere data_path_prefix = "debug_data/data"
+else
+    @everywhere num_samples = 50
+    @everywhere num_point_samples = 200
+    @everywhere max_num_qubits = 12
+    @everywhere data_path_prefix = "data/data"
+end
 @everywhere max_grad = 1e-6
 @everywhere use_norm = true
 @everywhere max_adapt_layers = 50
@@ -31,7 +50,6 @@ println("staring script..."); flush(stdout)
 @everywhere ball_sampling_radii = vcat(0.0:0.01:(0.2-0.01),0.2:0.2:5)
 @everywhere opt_alg = "LD_LBFGS"
 @everywhere opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
-@everywhere data_path_prefix = "data/data"
 @everywhere data_path_suffix = "csv"
 
 @everywhere function analyze_results!(res_dict, ham, opt_states)
