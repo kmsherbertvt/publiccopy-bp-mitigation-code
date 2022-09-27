@@ -3,6 +3,7 @@
 *.dat
 *.old
 *.log
+**/debug_*/**
 dask-*/
 __pycache__/*
 .vscode*/
