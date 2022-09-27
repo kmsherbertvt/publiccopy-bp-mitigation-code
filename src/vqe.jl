@@ -213,7 +213,7 @@ function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = no
     result_errors = result_energy .- min_energy
     result_relative_errors = result_errors ./ get_energy_gap(hamiltonian)
 
-    if use_norm
+    if use_norm && (num_pars>0)
         if (length(result_grads) % num_pars) != 0
             error("Invalid length encountered")
         end
@@ -223,6 +223,13 @@ function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = no
             for k=1:num_samples
         ]
         result_grads = _result_grads
+        if maximum(result_grads) >= 1e-6 && dist == 0.0
+            m = maximum(result_grads)
+            @warn "Encountered large gradient at center of ball: $m"
+        end
+    end
+    if use_norm && (num_pars==0)
+        result_grads = map(abs, result_grads)
     end
 
     return (result_energy, result_grads, result_errors, result_relative_errors)
