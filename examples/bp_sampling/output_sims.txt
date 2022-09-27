@@ -4,150 +4,537 @@
 Threads set to 1 by default, try julia -t 17 ...
 Couldn't find Project.toml, using default
 staring script...
-      From worker 20:	  Activating project at `~/bp-mitigation-code`
-      From worker 51:	  Activating project at `~/bp-mitigation-code`
-      From worker 79:	  Activating project at `~/bp-mitigation-code`
-      From worker 84:	  Activating project at `~/bp-mitigation-code`
-      From worker 47:	  Activating project at `~/bp-mitigation-code`
-      From worker 72:	  Activating project at `~/bp-mitigation-code`
-      From worker 17:	  Activating project at `~/bp-mitigation-code`
-      From worker 4:	  Activating project at `~/bp-mitigation-code`
-      From worker 29:	  Activating project at `~/bp-mitigation-code`
-      From worker 9:	  Activating project at `~/bp-mitigation-code`
-      From worker 33:	  Activating project at `~/bp-mitigation-code`
-      From worker 76:	  Activating project at `~/bp-mitigation-code`
-      From worker 74:	  Activating project at `~/bp-mitigation-code`
-      From worker 53:	  Activating project at `~/bp-mitigation-code`
-      From worker 120:	  Activating project at `~/bp-mitigation-code`
-      From worker 37:	  Activating project at `~/bp-mitigation-code`
-      From worker 6:	  Activating project at `~/bp-mitigation-code`
-      From worker 98:	  Activating project at `~/bp-mitigation-code`
-      From worker 39:	  Activating project at `~/bp-mitigation-code`
-      From worker 43:	  Activating project at `~/bp-mitigation-code`
-      From worker 69:	  Activating project at `~/bp-mitigation-code`
-      From worker 28:	  Activating project at `~/bp-mitigation-code`
-      From worker 86:	  Activating project at `~/bp-mitigation-code`
-      From worker 19:	  Activating project at `~/bp-mitigation-code`
-      From worker 3:	  Activating project at `~/bp-mitigation-code`
-      From worker 87:	  Activating project at `~/bp-mitigation-code`
-      From worker 27:	  Activating project at `~/bp-mitigation-code`
-      From worker 58:	  Activating project at `~/bp-mitigation-code`
-      From worker 121:	  Activating project at `~/bp-mitigation-code`
-      From worker 103:	  Activating project at `~/bp-mitigation-code`
-      From worker 111:	  Activating project at `~/bp-mitigation-code`
-      From worker 71:	  Activating project at `~/bp-mitigation-code`
-      From worker 8:	  Activating project at `~/bp-mitigation-code`
-      From worker 10:	  Activating project at `~/bp-mitigation-code`
-      From worker 119:	  Activating project at `~/bp-mitigation-code`
-      From worker 63:	  Activating project at `~/bp-mitigation-code`
-      From worker 25:	  Activating project at `~/bp-mitigation-code`
-      From worker 123:	  Activating project at `~/bp-mitigation-code`
-      From worker 55:	  Activating project at `~/bp-mitigation-code`
-      From worker 88:	  Activating project at `~/bp-mitigation-code`
-      From worker 91:	  Activating project at `~/bp-mitigation-code`
-      From worker 35:	  Activating project at `~/bp-mitigation-code`
-      From worker 26:	  Activating project at `~/bp-mitigation-code`
-      From worker 21:	  Activating project at `~/bp-mitigation-code`
-      From worker 118:	  Activating project at `~/bp-mitigation-code`
-      From worker 114:	  Activating project at `~/bp-mitigation-code`
-      From worker 13:	  Activating project at `~/bp-mitigation-code`
-      From worker 96:	  Activating project at `~/bp-mitigation-code`
-      From worker 78:	  Activating project at `~/bp-mitigation-code`
-      From worker 104:	  Activating project at `~/bp-mitigation-code`
-      From worker 126:	  Activating project at `~/bp-mitigation-code`
-      From worker 41:	  Activating project at `~/bp-mitigation-code`
-      From worker 16:	  Activating project at `~/bp-mitigation-code`
-      From worker 82:	  Activating project at `~/bp-mitigation-code`
-      From worker 64:	  Activating project at `~/bp-mitigation-code`
-      From worker 112:	  Activating project at `~/bp-mitigation-code`
-      From worker 56:	  Activating project at `~/bp-mitigation-code`
-      From worker 113:	  Activating project at `~/bp-mitigation-code`
-      From worker 49:	  Activating project at `~/bp-mitigation-code`
-      From worker 62:	  Activating project at `~/bp-mitigation-code`
-      From worker 14:	  Activating project at `~/bp-mitigation-code`
-      From worker 127:	  Activating project at `~/bp-mitigation-code`
-      From worker 110:	  Activating project at `~/bp-mitigation-code`
-      From worker 129:	  Activating project at `~/bp-mitigation-code`
-      From worker 80:	  Activating project at `~/bp-mitigation-code`
-      From worker 18:	  Activating project at `~/bp-mitigation-code`
-      From worker 57:	  Activating project at `~/bp-mitigation-code`
-      From worker 73:	  Activating project at `~/bp-mitigation-code`
-      From worker 66:	  Activating project at `~/bp-mitigation-code`
-      From worker 100:	  Activating project at `~/bp-mitigation-code`
-      From worker 32:	  Activating project at `~/bp-mitigation-code`
-      From worker 60:	  Activating project at `~/bp-mitigation-code`
-      From worker 44:	  Activating project at `~/bp-mitigation-code`
-      From worker 61:	  Activating project at `~/bp-mitigation-code`
-      From worker 45:	  Activating project at `~/bp-mitigation-code`
-      From worker 122:	  Activating project at `~/bp-mitigation-code`
-      From worker 115:	  Activating project at `~/bp-mitigation-code`
-      From worker 85:	  Activating project at `~/bp-mitigation-code`
-      From worker 105:	  Activating project at `~/bp-mitigation-code`
-      From worker 40:	  Activating project at `~/bp-mitigation-code`
-      From worker 5:	  Activating project at `~/bp-mitigation-code`
-      From worker 50:	  Activating project at `~/bp-mitigation-code`
-      From worker 12:	  Activating project at `~/bp-mitigation-code`
-      From worker 101:	  Activating project at `~/bp-mitigation-code`
-      From worker 107:	  Activating project at `~/bp-mitigation-code`
-      From worker 23:	  Activating project at `~/bp-mitigation-code`
-      From worker 67:	  Activating project at `~/bp-mitigation-code`
-      From worker 48:	  Activating project at `~/bp-mitigation-code`
-      From worker 116:	  Activating project at `~/bp-mitigation-code`
-      From worker 125:	  Activating project at `~/bp-mitigation-code`
-      From worker 54:	  Activating project at `~/bp-mitigation-code`
-      From worker 68:	  Activating project at `~/bp-mitigation-code`
-      From worker 90:	  Activating project at `~/bp-mitigation-code`
-      From worker 128:	  Activating project at `~/bp-mitigation-code`
-      From worker 46:	  Activating project at `~/bp-mitigation-code`
-      From worker 99:	  Activating project at `~/bp-mitigation-code`
-      From worker 30:	  Activating project at `~/bp-mitigation-code`
-      From worker 15:	  Activating project at `~/bp-mitigation-code`
-      From worker 36:	  Activating project at `~/bp-mitigation-code`
-      From worker 34:	  Activating project at `~/bp-mitigation-code`
-      From worker 11:	  Activating project at `~/bp-mitigation-code`
-      From worker 94:	  Activating project at `~/bp-mitigation-code`
-      From worker 24:	  Activating project at `~/bp-mitigation-code`
       From worker 93:	  Activating project at `~/bp-mitigation-code`
-      From worker 92:	  Activating project at `~/bp-mitigation-code`
-      From worker 83:	  Activating project at `~/bp-mitigation-code`
-      From worker 97:	  Activating project at `~/bp-mitigation-code`
-      From worker 59:	  Activating project at `~/bp-mitigation-code`
-      From worker 7:	  Activating project at `~/bp-mitigation-code`
-      From worker 95:	  Activating project at `~/bp-mitigation-code`
-      From worker 81:	  Activating project at `~/bp-mitigation-code`
-      From worker 89:	  Activating project at `~/bp-mitigation-code`
       From worker 106:	  Activating project at `~/bp-mitigation-code`
-      From worker 102:	  Activating project at `~/bp-mitigation-code`
-      From worker 2:	  Activating project at `~/bp-mitigation-code`
-      From worker 108:	  Activating project at `~/bp-mitigation-code`
-      From worker 38:	  Activating project at `~/bp-mitigation-code`
-      From worker 117:	  Activating project at `~/bp-mitigation-code`
-      From worker 77:	  Activating project at `~/bp-mitigation-code`
-      From worker 42:	  Activating project at `~/bp-mitigation-code`
-      From worker 52:	  Activating project at `~/bp-mitigation-code`
-      From worker 31:	  Activating project at `~/bp-mitigation-code`
-      From worker 75:	  Activating project at `~/bp-mitigation-code`
-      From worker 65:	  Activating project at `~/bp-mitigation-code`
-      From worker 124:	  Activating project at `~/bp-mitigation-code`
-      From worker 70:	  Activating project at `~/bp-mitigation-code`
-      From worker 109:	  Activating project at `~/bp-mitigation-code`
+      From worker 6:	  Activating project at `~/bp-mitigation-code`
+      From worker 10:	  Activating project at `~/bp-mitigation-code`
+      From worker 98:	  Activating project at `~/bp-mitigation-code`
+      From worker 50:	  Activating project at `~/bp-mitigation-code`
+      From worker 40:	  Activating project at `~/bp-mitigation-code`
+      From worker 126:	  Activating project at `~/bp-mitigation-code`
+      From worker 59:	  Activating project at `~/bp-mitigation-code`
+      From worker 49:	  Activating project at `~/bp-mitigation-code`
       From worker 22:	  Activating project at `~/bp-mitigation-code`
+      From worker 35:	  Activating project at `~/bp-mitigation-code`
+      From worker 56:	  Activating project at `~/bp-mitigation-code`
+      From worker 110:	  Activating project at `~/bp-mitigation-code`
+      From worker 55:	  Activating project at `~/bp-mitigation-code`
+      From worker 5:	  Activating project at `~/bp-mitigation-code`
+      From worker 60:	  Activating project at `~/bp-mitigation-code`
+      From worker 89:	  Activating project at `~/bp-mitigation-code`
+      From worker 94:	  Activating project at `~/bp-mitigation-code`
+      From worker 3:	  Activating project at `~/bp-mitigation-code`
+      From worker 41:	  Activating project at `~/bp-mitigation-code`
+      From worker 48:	  Activating project at `~/bp-mitigation-code`
+      From worker 92:	  Activating project at `~/bp-mitigation-code`
+      From worker 113:	  Activating project at `~/bp-mitigation-code`
+      From worker 54:	  Activating project at `~/bp-mitigation-code`
+      From worker 42:	  Activating project at `~/bp-mitigation-code`
+      From worker 112:	  Activating project at `~/bp-mitigation-code`
+      From worker 124:	  Activating project at `~/bp-mitigation-code`
+      From worker 65:	  Activating project at `~/bp-mitigation-code`
+      From worker 129:	  Activating project at `~/bp-mitigation-code`
+      From worker 61:	  Activating project at `~/bp-mitigation-code`
+      From worker 39:	  Activating project at `~/bp-mitigation-code`
+      From worker 123:	  Activating project at `~/bp-mitigation-code`
+      From worker 58:	  Activating project at `~/bp-mitigation-code`
+      From worker 45:	  Activating project at `~/bp-mitigation-code`
+      From worker 117:	  Activating project at `~/bp-mitigation-code`
+      From worker 73:	  Activating project at `~/bp-mitigation-code`
+      From worker 52:	  Activating project at `~/bp-mitigation-code`
+      From worker 83:	  Activating project at `~/bp-mitigation-code`
+      From worker 24:	  Activating project at `~/bp-mitigation-code`
+      From worker 82:	  Activating project at `~/bp-mitigation-code`
+      From worker 111:	  Activating project at `~/bp-mitigation-code`
+      From worker 81:	  Activating project at `~/bp-mitigation-code`
+      From worker 108:	  Activating project at `~/bp-mitigation-code`
+      From worker 127:	  Activating project at `~/bp-mitigation-code`
+      From worker 34:	  Activating project at `~/bp-mitigation-code`
+      From worker 23:	  Activating project at `~/bp-mitigation-code`
+      From worker 20:	  Activating project at `~/bp-mitigation-code`
+      From worker 21:	  Activating project at `~/bp-mitigation-code`
+      From worker 63:	  Activating project at `~/bp-mitigation-code`
+      From worker 103:	  Activating project at `~/bp-mitigation-code`
+      From worker 84:	  Activating project at `~/bp-mitigation-code`
+      From worker 128:	  Activating project at `~/bp-mitigation-code`
+      From worker 97:	  Activating project at `~/bp-mitigation-code`
+      From worker 121:	  Activating project at `~/bp-mitigation-code`
+      From worker 77:	  Activating project at `~/bp-mitigation-code`
+      From worker 107:	  Activating project at `~/bp-mitigation-code`
+      From worker 125:	  Activating project at `~/bp-mitigation-code`
+      From worker 46:	  Activating project at `~/bp-mitigation-code`
+      From worker 90:	  Activating project at `~/bp-mitigation-code`
+      From worker 8:	  Activating project at `~/bp-mitigation-code`
+      From worker 115:	  Activating project at `~/bp-mitigation-code`
+      From worker 75:	  Activating project at `~/bp-mitigation-code`
+      From worker 119:	  Activating project at `~/bp-mitigation-code`
+      From worker 62:	  Activating project at `~/bp-mitigation-code`
+      From worker 100:	  Activating project at `~/bp-mitigation-code`
+      From worker 14:	  Activating project at `~/bp-mitigation-code`
+      From worker 74:	  Activating project at `~/bp-mitigation-code`
+      From worker 27:	  Activating project at `~/bp-mitigation-code`
+      From worker 43:	  Activating project at `~/bp-mitigation-code`
+      From worker 87:	  Activating project at `~/bp-mitigation-code`
+      From worker 69:	  Activating project at `~/bp-mitigation-code`
+      From worker 116:	  Activating project at `~/bp-mitigation-code`
+      From worker 70:	  Activating project at `~/bp-mitigation-code`
+      From worker 37:	  Activating project at `~/bp-mitigation-code`
+      From worker 71:	  Activating project at `~/bp-mitigation-code`
+      From worker 85:	  Activating project at `~/bp-mitigation-code`
+      From worker 88:	  Activating project at `~/bp-mitigation-code`
+      From worker 79:	  Activating project at `~/bp-mitigation-code`
+      From worker 17:	  Activating project at `~/bp-mitigation-code`
+      From worker 26:	  Activating project at `~/bp-mitigation-code`
+      From worker 53:	  Activating project at `~/bp-mitigation-code`
+      From worker 95:	  Activating project at `~/bp-mitigation-code`
+      From worker 44:	  Activating project at `~/bp-mitigation-code`
+      From worker 7:	  Activating project at `~/bp-mitigation-code`
+      From worker 32:	  Activating project at `~/bp-mitigation-code`
+      From worker 13:	  Activating project at `~/bp-mitigation-code`
+      From worker 2:	  Activating project at `~/bp-mitigation-code`
+      From worker 104:	  Activating project at `~/bp-mitigation-code`
+      From worker 67:	  Activating project at `~/bp-mitigation-code`
+      From worker 91:	  Activating project at `~/bp-mitigation-code`
+      From worker 16:	  Activating project at `~/bp-mitigation-code`
+      From worker 80:	  Activating project at `~/bp-mitigation-code`
+      From worker 25:	  Activating project at `~/bp-mitigation-code`
+      From worker 33:	  Activating project at `~/bp-mitigation-code`
+      From worker 57:	  Activating project at `~/bp-mitigation-code`
+      From worker 15:	  Activating project at `~/bp-mitigation-code`
+      From worker 105:	  Activating project at `~/bp-mitigation-code`
+      From worker 64:	  Activating project at `~/bp-mitigation-code`
+      From worker 96:	  Activating project at `~/bp-mitigation-code`
+      From worker 47:	  Activating project at `~/bp-mitigation-code`
+      From worker 51:	  Activating project at `~/bp-mitigation-code`
+      From worker 9:	  Activating project at `~/bp-mitigation-code`
+      From worker 66:	  Activating project at `~/bp-mitigation-code`
+      From worker 114:	  Activating project at `~/bp-mitigation-code`
+      From worker 38:	  Activating project at `~/bp-mitigation-code`
+      From worker 12:	  Activating project at `~/bp-mitigation-code`
+      From worker 78:	  Activating project at `~/bp-mitigation-code`
+      From worker 11:	  Activating project at `~/bp-mitigation-code`
+      From worker 122:	  Activating project at `~/bp-mitigation-code`
+      From worker 99:	  Activating project at `~/bp-mitigation-code`
+      From worker 19:	  Activating project at `~/bp-mitigation-code`
+      From worker 76:	  Activating project at `~/bp-mitigation-code`
+      From worker 18:	  Activating project at `~/bp-mitigation-code`
+      From worker 102:	  Activating project at `~/bp-mitigation-code`
+      From worker 120:	  Activating project at `~/bp-mitigation-code`
+      From worker 86:	  Activating project at `~/bp-mitigation-code`
+      From worker 109:	  Activating project at `~/bp-mitigation-code`
+      From worker 68:	  Activating project at `~/bp-mitigation-code`
+      From worker 72:	  Activating project at `~/bp-mitigation-code`
+      From worker 28:	  Activating project at `~/bp-mitigation-code`
+      From worker 101:	  Activating project at `~/bp-mitigation-code`
+      From worker 31:	  Activating project at `~/bp-mitigation-code`
+      From worker 118:	  Activating project at `~/bp-mitigation-code`
+      From worker 4:	  Activating project at `~/bp-mitigation-code`
+      From worker 30:	  Activating project at `~/bp-mitigation-code`
+      From worker 29:	  Activating project at `~/bp-mitigation-code`
+      From worker 36:	  Activating project at `~/bp-mitigation-code`
+      From worker 31:	Precompiling project...
+      From worker 72:	Precompiling project...
+      From worker 25:	Precompiling project...
+      From worker 8:	Precompiling project...
+      From worker 103:	Precompiling project...
+      From worker 59:	Precompiling project...
+      From worker 109:	Precompiling project...
+      From worker 37:	Precompiling project...
+      From worker 126:	Precompiling project...
+      From worker 111:	Precompiling project...
+      From worker 43:	Precompiling project...
+      From worker 10:	Precompiling project...
+      From worker 79:	Precompiling project...
+      From worker 15:	Precompiling project...
+      From worker 2:	Precompiling project...
+      From worker 105:	Precompiling project...
+      From worker 58:	Precompiling project...
+      From worker 85:	Precompiling project...
+      From worker 18:	Precompiling project...
+      From worker 9:	Precompiling project...
+      From worker 32:	Precompiling project...
+      From worker 26:	Precompiling project...
+      From worker 90:	Precompiling project...
+      From worker 5:	Precompiling project...
+      From worker 96:	Precompiling project...
+      From worker 29:	Precompiling project...
+      From worker 128:	Precompiling project...
+      From worker 6:	Precompiling project...
+      From worker 73:	Precompiling project...
+      From worker 47:	Precompiling project...
+      From worker 42:	Precompiling project...
+      From worker 39:	Precompiling project...
+      From worker 23:	Precompiling project...
+      From worker 94:	Precompiling project...
+      From worker 108:	Precompiling project...
+      From worker 80:	Precompiling project...
+      From worker 115:	Precompiling project...
+      From worker 16:	Precompiling project...
+      From worker 100:	Precompiling project...
+      From worker 17:	Precompiling project...
+      From worker 44:	Precompiling project...
+      From worker 95:	Precompiling project...
+      From worker 30:	Precompiling project...
+      From worker 119:	Precompiling project...
+      From worker 77:	Precompiling project...
+      From worker 124:	Precompiling project...
+      From worker 13:	Precompiling project...
+      From worker 33:	Precompiling project...
+      From worker 56:	Precompiling project...
+      From worker 106:	Precompiling project...
+      From worker 7:	Precompiling project...
+      From worker 48:	Precompiling project...
+      From worker 129:	Precompiling project...
+      From worker 110:	Precompiling project...
+      From worker 63:	Precompiling project...
+      From worker 114:	Precompiling project...
+      From worker 54:	Precompiling project...
+      From worker 78:	Precompiling project...
+      From worker 69:	Precompiling project...
+      From worker 11:	Precompiling project...
+      From worker 61:	Precompiling project...
+      From worker 87:	Precompiling project...
+      From worker 118:	Precompiling project...
+      From worker 24:	Precompiling project...
+      From worker 117:	Precompiling project...
+      From worker 65:	Precompiling project...
+      From worker 127:	Precompiling project...
+      From worker 121:	Precompiling project...
+      From worker 102:	Precompiling project...
+      From worker 14:	Precompiling project...
+      From worker 84:	Precompiling project...
+      From worker 99:	Precompiling project...
+      From worker 3:	Precompiling project...
+      From worker 88:	Precompiling project...
+      From worker 66:	Precompiling project...
+      From worker 92:	Precompiling project...
+      From worker 27:	Precompiling project...
+      From worker 62:	Precompiling project...
+      From worker 38:	Precompiling project...
+      From worker 51:	Precompiling project...
+      From worker 86:	Precompiling project...
+      From worker 4:	Precompiling project...
+      From worker 125:	Precompiling project...
+      From worker 107:	Precompiling project...
+      From worker 97:	Precompiling project...
+      From worker 70:	Precompiling project...
+      From worker 74:	Precompiling project...
+      From worker 55:	Precompiling project...
+      From worker 67:	Precompiling project...
+      From worker 91:	Precompiling project...
+      From worker 75:	Precompiling project...
+      From worker 68:	Precompiling project...
+      From worker 71:	Precompiling project...
+      From worker 76:	Precompiling project...
+      From worker 60:	Precompiling project...
+      From worker 45:	Precompiling project...
+      From worker 101:	Precompiling project...
+      From worker 116:	Precompiling project...
+      From worker 113:	Precompiling project...
+      From worker 52:	Precompiling project...
+      From worker 21:	Precompiling project...
+      From worker 81:	Precompiling project...
+      From worker 82:	Precompiling project...
+      From worker 28:	Precompiling project...
+      From worker 64:	Precompiling project...
+      From worker 104:	Precompiling project...
+      From worker 49:	Precompiling project...
+      From worker 41:	Precompiling project...
+      From worker 112:	Precompiling project...
+      From worker 53:	Precompiling project...
+      From worker 35:	Precompiling project...
+      From worker 123:	Precompiling project...
+      From worker 20:	Precompiling project...
+      From worker 40:	Precompiling project...
+      From worker 83:	Precompiling project...
+      From worker 93:	Precompiling project...
+      From worker 120:	Precompiling project...
+      From worker 89:	Precompiling project...
+      From worker 36:	Precompiling project...
+      From worker 46:	Precompiling project...
+      From worker 12:	Precompiling project...
+      From worker 34:	Precompiling project...
+      From worker 122:	Precompiling project...
+      From worker 22:	Precompiling project...
+      From worker 50:	Precompiling project...
+      From worker 57:	Precompiling project...
+      From worker 19:	Precompiling project...
+      From worker 98:	Precompiling project...
+      From worker 110:	[32m  ✓ [39mAdaptBarren
+      From worker 110:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 65:	[32m  ✓ [39mAdaptBarren
+      From worker 65:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 120:	[32m  ✓ [39mAdaptBarren
+      From worker 120:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 118:	[32m  ✓ [39mAdaptBarren
+      From worker 118:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 88:	[32m  ✓ [39mAdaptBarren
+      From worker 88:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 79:	[32m  ✓ [39mAdaptBarren
+      From worker 79:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 85:	[32m  ✓ [39mAdaptBarren
+      From worker 85:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 102:	[32m  ✓ [39mAdaptBarren
+      From worker 102:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 129:	[32m  ✓ [39mAdaptBarren
+      From worker 129:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 55:	[32m  ✓ [39mAdaptBarren
+      From worker 55:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 90:	[32m  ✓ [39mAdaptBarren
+      From worker 90:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 8:	[32m  ✓ [39mAdaptBarren
+      From worker 8:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 11:	[32m  ✓ [39mAdaptBarren
+      From worker 11:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 61:	[32m  ✓ [39mAdaptBarren
+      From worker 61:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 93:	[32m  ✓ [39mAdaptBarren
+      From worker 93:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 71:	[32m  ✓ [39mAdaptBarren
+      From worker 71:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 104:	[32m  ✓ [39mAdaptBarren
+      From worker 104:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 92:	[32m  ✓ [39mAdaptBarren
+      From worker 92:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 125:	[32m  ✓ [39mAdaptBarren
+      From worker 125:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 28:	[32m  ✓ [39mAdaptBarren
+      From worker 28:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 7:	[32m  ✓ [39mAdaptBarren
+      From worker 7:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 10:	[32m  ✓ [39mAdaptBarren
+      From worker 10:	  1 dependency successfully precompiled in 51 seconds (227 already precompiled)
+      From worker 80:	[32m  ✓ [39mAdaptBarren
+      From worker 80:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 19:	[32m  ✓ [39mAdaptBarren
+      From worker 19:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 68:	[32m  ✓ [39mAdaptBarren
+      From worker 68:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 59:	[32m  ✓ [39mAdaptBarren
+      From worker 59:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 44:	[32m  ✓ [39mAdaptBarren
+      From worker 44:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 46:	[32m  ✓ [39mAdaptBarren
+      From worker 46:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 39:	[32m  ✓ [39mAdaptBarren
+      From worker 39:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 86:	[32m  ✓ [39mAdaptBarren
+      From worker 86:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 115:	[32m  ✓ [39mAdaptBarren
+      From worker 115:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 87:	[32m  ✓ [39mAdaptBarren
+      From worker 87:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 91:	[32m  ✓ [39mAdaptBarren
+      From worker 91:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 49:	[32m  ✓ [39mAdaptBarren
+      From worker 49:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 30:	[32m  ✓ [39mAdaptBarren
+      From worker 30:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 50:	[32m  ✓ [39mAdaptBarren
+      From worker 50:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 107:	[32m  ✓ [39mAdaptBarren
+      From worker 107:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 70:	[32m  ✓ [39mAdaptBarren
+      From worker 70:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 76:	[32m  ✓ [39mAdaptBarren
+      From worker 76:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 75:	[32m  ✓ [39mAdaptBarren
+      From worker 75:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 52:	[32m  ✓ [39mAdaptBarren
+      From worker 52:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 43:	[32m  ✓ [39mAdaptBarren
+      From worker 43:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 66:	[32m  ✓ [39mAdaptBarren
+      From worker 66:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 36:	[32m  ✓ [39mAdaptBarren
+      From worker 36:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 121:	[32m  ✓ [39mAdaptBarren
+      From worker 121:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 106:	[32m  ✓ [39mAdaptBarren
+      From worker 106:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 60:	[32m  ✓ [39mAdaptBarren
+      From worker 60:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 123:	[32m  ✓ [39mAdaptBarren
+      From worker 123:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 74:	[32m  ✓ [39mAdaptBarren
+      From worker 74:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 57:	[32m  ✓ [39mAdaptBarren
+      From worker 57:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 77:	[32m  ✓ [39mAdaptBarren
+      From worker 77:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 9:	[32m  ✓ [39mAdaptBarren
+      From worker 9:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 6:	[32m  ✓ [39mAdaptBarren
+      From worker 6:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 97:	[32m  ✓ [39mAdaptBarren
+      From worker 97:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 15:	[32m  ✓ [39mAdaptBarren
+      From worker 15:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 114:	[32m  ✓ [39mAdaptBarren
+      From worker 114:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 83:	[32m  ✓ [39mAdaptBarren
+      From worker 83:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 94:	[32m  ✓ [39mAdaptBarren
+      From worker 94:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 98:	[32m  ✓ [39mAdaptBarren
+      From worker 98:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 20:	[32m  ✓ [39mAdaptBarren
+      From worker 20:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 41:	[32m  ✓ [39mAdaptBarren
+      From worker 41:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 42:	[32m  ✓ [39mAdaptBarren
+      From worker 42:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 35:	[32m  ✓ [39mAdaptBarren
+      From worker 35:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 127:	[32m  ✓ [39mAdaptBarren
+      From worker 127:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 116:	[32m  ✓ [39mAdaptBarren
+      From worker 116:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 14:	[32m  ✓ [39mAdaptBarren
+      From worker 14:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 47:	[32m  ✓ [39mAdaptBarren
+      From worker 47:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 5:	[32m  ✓ [39mAdaptBarren
+      From worker 45:	[32m  ✓ [39mAdaptBarren
+      From worker 111:	[32m  ✓ [39mAdaptBarren
+      From worker 124:	[32m  ✓ [39mAdaptBarren
+      From worker 128:	[32m  ✓ [39mAdaptBarren
+      From worker 105:	[32m  ✓ [39mAdaptBarren
+      From worker 27:	[32m  ✓ [39mAdaptBarren
+      From worker 103:	[32m  ✓ [39mAdaptBarren
+      From worker 25:	[32m  ✓ [39mAdaptBarren
+      From worker 26:	[32m  ✓ [39mAdaptBarren
+      From worker 48:	[32m  ✓ [39mAdaptBarren
+      From worker 58:	[32m  ✓ [39mAdaptBarren
+      From worker 29:	[32m  ✓ [39mAdaptBarren
+      From worker 3:	[32m  ✓ [39mAdaptBarren
+      From worker 112:	[32m  ✓ [39mAdaptBarren
+      From worker 56:	[32m  ✓ [39mAdaptBarren
+      From worker 21:	[32m  ✓ [39mAdaptBarren
+      From worker 16:	[32m  ✓ [39mAdaptBarren
+      From worker 54:	[32m  ✓ [39mAdaptBarren
+      From worker 62:	[32m  ✓ [39mAdaptBarren
+      From worker 122:	[32m  ✓ [39mAdaptBarren
+      From worker 31:	[32m  ✓ [39mAdaptBarren
+      From worker 31:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 99:	[32m  ✓ [39mAdaptBarren
+      From worker 117:	[32m  ✓ [39mAdaptBarren
+      From worker 95:	[32m  ✓ [39mAdaptBarren
+      From worker 13:	[32m  ✓ [39mAdaptBarren
+      From worker 4:	[32m  ✓ [39mAdaptBarren
+      From worker 101:	[32m  ✓ [39mAdaptBarren
+      From worker 18:	[32m  ✓ [39mAdaptBarren
+      From worker 72:	[32m  ✓ [39mAdaptBarren
+      From worker 38:	[32m  ✓ [39mAdaptBarren
+      From worker 17:	[32m  ✓ [39mAdaptBarren
+      From worker 12:	[32m  ✓ [39mAdaptBarren
+      From worker 23:	[32m  ✓ [39mAdaptBarren
+      From worker 89:	[32m  ✓ [39mAdaptBarren
+      From worker 63:	[32m  ✓ [39mAdaptBarren
+      From worker 100:	[32m  ✓ [39mAdaptBarren
+      From worker 109:	[32m  ✓ [39mAdaptBarren
+      From worker 2:	[32m  ✓ [39mAdaptBarren
+      From worker 51:	[32m  ✓ [39mAdaptBarren
+      From worker 64:	[32m  ✓ [39mAdaptBarren
+      From worker 119:	[32m  ✓ [39mAdaptBarren
+      From worker 84:	[32m  ✓ [39mAdaptBarren
+      From worker 34:	[32m  ✓ [39mAdaptBarren
+      From worker 67:	[32m  ✓ [39mAdaptBarren
+      From worker 32:	[32m  ✓ [39mAdaptBarren
+      From worker 126:	[32m  ✓ [39mAdaptBarren
+      From worker 37:	[32m  ✓ [39mAdaptBarren
+      From worker 73:	[32m  ✓ [39mAdaptBarren
+      From worker 108:	[32m  ✓ [39mAdaptBarren
+      From worker 22:	[32m  ✓ [39mAdaptBarren
+      From worker 40:	[32m  ✓ [39mAdaptBarren
+      From worker 33:	[32m  ✓ [39mAdaptBarren
+      From worker 113:	[32m  ✓ [39mAdaptBarren
+      From worker 53:	[32m  ✓ [39mAdaptBarren
+      From worker 78:	[32m  ✓ [39mAdaptBarren
+      From worker 81:	[32m  ✓ [39mAdaptBarren
+      From worker 96:	[32m  ✓ [39mAdaptBarren
+      From worker 82:	[32m  ✓ [39mAdaptBarren
+      From worker 24:	[32m  ✓ [39mAdaptBarren
+      From worker 69:	[32m  ✓ [39mAdaptBarren
+      From worker 5:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 117:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 45:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 128:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 58:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 27:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 38:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 25:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 103:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 124:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 3:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 21:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 16:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 82:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 56:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 95:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 112:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 111:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 99:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 101:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 17:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 100:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 18:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 12:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 13:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 4:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 2:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 23:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 119:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 51:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 72:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 32:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 63:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 105:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 69:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 108:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 109:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 64:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 126:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 89:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 22:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 33:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 54:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 53:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 84:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 37:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 29:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 73:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 34:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 26:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 96:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 113:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 24:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 81:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 48:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 78:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 62:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 40:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 67:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
+      From worker 122:	  1 dependency successfully precompiled in 52 seconds (227 already precompiled)
 Num procs: 129
 Num workers: 128
 There are 1650 problem problem_instances for each number of qubits
 Starting n=4 qubits
 Dumping
-Finished n=4 qubits in 11154.600625991821 seconds
+Finished n=4 qubits in 251.68481707572937 seconds
 Starting n=6 qubits
 Dumping
-Finished n=6 qubits in 10921.99374294281 seconds
+Finished n=6 qubits in 387.9777841567993 seconds
 Starting n=8 qubits
 Dumping
-Finished n=8 qubits in 12556.966989994049 seconds
+Finished n=8 qubits in 1267.6204059123993 seconds
 Starting n=10 qubits
 Dumping
-Finished n=10 qubits in 17457.981271982193 seconds
+Finished n=10 qubits in 5701.735933065414 seconds
 Starting n=12 qubits
 Dumping
-Finished n=12 qubits in 45515.193423986435 seconds
+Finished n=12 qubits in 36219.716456890106 seconds
   Activating project at `~/bp-mitigation-code`
+Precompiling project...
+[32m  ✓ [39mAdaptBarren
+  1 dependency successfully precompiled in 52 seconds (227 already precompiled)

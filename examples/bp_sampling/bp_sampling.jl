@@ -24,6 +24,7 @@ println("staring script..."); flush(stdout)
 @everywhere num_point_samples = 200
 @everywhere max_num_qubits = 12
 @everywhere max_grad = 1e-6
+@everywhere use_norm = true
 @everywhere max_adapt_layers = 50
 @everywhere vqe_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
 @everywhere adapt_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
@@ -149,7 +150,7 @@ end
     end
     # Whole space sampling
     t_0 = time()
-    sample_pairs = [(dp, sample_points(hamiltonian, res["ansatz"][1:dp], initial_state, num_point_samples; rng=rng)...) for dp=_depths]
+    sample_pairs = [(dp, sample_points(hamiltonian, res["ansatz"][1:dp], initial_state, num_point_samples; rng=rng, use_norm=use_norm)...) for dp=_depths]
     sampled_energies_list = [ens for (_, ens, _, _, _)=sample_pairs]
     sampled_grads_list = [grads for (_, _, grads, _, _)=sample_pairs]
     sampled_energy_errors_list = [en_errs for (_, _, _, en_errs, _)=sample_pairs]
@@ -160,7 +161,7 @@ end
     # Ball sampling
     t_0 = time()
     optimal_point = res["opt_pars"][end]
-    ball_sample_pairs = [(rp, sample_points(hamiltonian, res["ansatz"], initial_state, Int(floor(sqrt(num_point_samples))); rng=rng, dist=rp, point=optimal_point)...) for rp=ball_sampling_radii]
+    ball_sample_pairs = [(rp, sample_points(hamiltonian, res["ansatz"], initial_state, Int(floor(sqrt(num_point_samples))); rng=rng, dist=rp, point=optimal_point, use_norm=use_norm)...) for rp=ball_sampling_radii]
     ball_sampled_energies_list = [ens for (_, ens, _, _, _)=ball_sample_pairs]
     ball_sampled_energy_errors_list = [en_errs for (_, _, _, en_errs, _)=ball_sample_pairs]
     ball_sampled_relative_energy_errors_list = [rel_en_errs for (_, _, _, _, rel_en_errs)=ball_sample_pairs]

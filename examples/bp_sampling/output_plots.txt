@@ -4,9 +4,9 @@
 Threads set to 1 by default, try julia -t 17 ...
 Couldn't find Project.toml, using default
 Loading data...
-Took 251.4936330318451 seconds
+Took 39.18817687034607 seconds
 Transforming data...
-Took 35.78266906738281 seconds
+Took 35.53511595726013 seconds
 Starting plots...
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
@@ -437,6 +437,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -448,6 +451,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -459,6 +465,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -470,6 +479,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -668,6 +680,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -679,6 +694,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -690,6 +708,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -701,6 +722,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -899,6 +923,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -910,6 +937,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -921,6 +951,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -932,6 +965,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -1130,6 +1166,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -1141,6 +1180,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -1152,6 +1194,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -1163,6 +1208,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2049,6 +2097,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2060,6 +2111,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2071,6 +2125,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2082,6 +2139,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2280,6 +2340,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2291,6 +2354,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2302,6 +2368,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2313,6 +2382,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2511,6 +2583,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2522,6 +2597,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2533,6 +2611,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2544,6 +2625,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2742,6 +2826,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2753,6 +2840,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2764,6 +2854,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2775,6 +2868,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2973,6 +3069,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2984,6 +3083,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -2995,6 +3097,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -3006,6 +3111,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -3892,6 +4000,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -3903,6 +4014,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -3914,6 +4028,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -3925,6 +4042,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -4123,6 +4243,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -4134,6 +4257,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -4145,6 +4271,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -4156,6 +4285,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -4354,6 +4486,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -4365,6 +4500,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -4390,6 +4528,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -4588,6 +4729,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -4599,6 +4743,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -4610,6 +4757,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -4621,6 +4771,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -4819,6 +4972,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -4830,6 +4986,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -4841,6 +5000,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -4852,6 +5014,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -5738,6 +5903,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -5749,6 +5917,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -5760,6 +5931,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -5771,6 +5945,9 @@ GKS: can't connect to GKS socket application
 
 GKS: Open failed in routine OPEN_WS
 GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
+GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 qt.qpa.xcb: could not connect to display 
 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
@@ -9581,7 +9758,7 @@ GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in ro
 GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 GKS: Rectangle definition is invalid in routine SET_VIEWPORT
 GKS: Rectangle definition is invalid in routine SET_VIEWPORT
-Took 4020.5142090320587 seconds
+Took 3406.8848230838776 seconds
 ┌ Warning: Skipped yaxis arg linear
 └ @ Plots ~/.julia/packages/Plots/dNEbX/src/axes.jl:76
 ┌ Warning: Skipped yaxis arg linear
