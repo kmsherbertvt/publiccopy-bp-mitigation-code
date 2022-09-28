@@ -276,6 +276,21 @@ end
 
 
 """
+    is_diagonal(O::Operator)
+
+Checks if an operator is diagonal in the computational basis.
+"""
+function is_diagonal(O::Operator)
+    for (_,p) in zip(O.coeffs, O.paulis)
+        if (p.x != 0) | (p.y != 0)
+            return false
+        end
+    end
+    return true
+end
+
+
+"""
     diagonal_operator_to_vector(O::Operator)
 
 Return the diagonal of an operator which is diagonal in the computational
