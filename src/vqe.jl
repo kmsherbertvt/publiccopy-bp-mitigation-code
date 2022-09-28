@@ -305,6 +305,13 @@ function VQE(
     #    close(fid)
     #end
 
+    grad = similar(minx)
+    cost_fn(minx, grad)
+    if norm(grad) >= 1e-6
+        _norm = norm(grad)
+        @warn "Gradient not converged: norm=$(_norm) \t ret=$ret"
+    end
+
     return (minf, minx, ret, eval_count)
 end
 
