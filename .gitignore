@@ -12,5 +12,6 @@ dask_*/
 dask_*
 dask-*
 *.out
+*.err
 .ipynb_checkpoints
 Manifest.toml
