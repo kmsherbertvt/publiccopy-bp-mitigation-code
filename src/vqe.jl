@@ -517,7 +517,7 @@ function adapt_step!(
     push!(hist.max_grad_ind, argmax(map(x -> abs(x), hist.grads[end])))
     push!(hist.max_grad, abs(hist.grads[end][hist.max_grad_ind[end]]))
     push!(hist.energy, real(exp_val(hamiltonian, state, tmp)))
-    push!(hist.opt_pars, opt_pars)
+    push!(hist.opt_pars, copy(opt_pars))
     push!(hist.paulis, pauli_chosen)
     push!(hist.opt_numevals, numevals)
     push!(hist.opt_state, copy(state))
