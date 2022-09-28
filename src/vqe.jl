@@ -317,7 +317,7 @@ function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = no
 
     m = maximum(result_grads)
     if use_norm && (m >= 1e-6) && (dist == 0.0)
-        @warn "Encountered large gradient at center of ball: $m"
+        @warn "Encountered large gradient at center of ball (dist=$dist): $m"
     end
 
     return (result_energy, result_grads, result_errors, result_relative_errors)
