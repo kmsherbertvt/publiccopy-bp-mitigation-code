@@ -1,7 +1,64 @@
 using HDF5
 using NLopt
+using Optim
 using Random
 using Distributions
+
+# cost_fn(x, grad)
+# x is used for the parameters
+# grad is updated in place
+# the cost function value is returned
+
+# f(x) returns cost function at point
+# g!(grad, x) updates grad in place at x
+
+function reform_cost_fn(cost_fn)
+    function f(x)
+        grad = similar(x)
+        return cost_fn(x, grad)
+    end
+    function g!(grad, x)
+        cost_fn(x, grad)
+    end
+    return f, g!
+end
+
+function my_optimize(opt_dict::Dict, cost_fn, initial_point::Vector{Float64})
+    opt = make_opt(opt_dict, initial_point)
+    opt.lower_bounds = -π
+    opt.upper_bounds = +π
+    opt.min_objective = cost_fn
+    fn_val, x_val, res_other = NLopt.optimize(opt, initial_point)
+    return fn_val, x_val, res_other
+end
+
+function my_optimize(opt::Optim.AbstractOptimizer, cost_fn, initial_point::Vector{Float64})
+    f, g! = reform_cost_fn(cost_fn)
+    optimization_result = Optim.optimize(f, g!, initial_point, opt)
+    x_val = Optim.minimizer(optimization_result)
+    fn_val = Optim.minimum(optimization_result)
+    res_other = optimization_result
+    return fn_val, x_val, res_other
+end
+
+function make_opt(optimizer, point)
+    if optimizer isa String
+        opt_dict = Dict("name" => optimizer)
+    elseif optimizer isa Dict
+        opt_dict = optimizer
+    else
+        throw(ArgumentError("optimizer should be String or Dict"))
+    end
+
+    opt = NLopt.Opt(Symbol(opt_dict["name"]), length(point))
+    opt_keys = collect(keys(opt_dict))
+    deleteat!(opt_keys,findall(x->x=="name",opt_keys))
+    for akey in opt_keys
+        setproperty!(opt,Symbol(akey),opt_dict[akey])
+    end
+    return opt
+end
+
 
 """ Unpacking a vector refers to taking the original vector (`x`) and
 repeating each element in a new vector some (potentially variable) number
@@ -275,7 +332,7 @@ Run the VQE algorithm.
 function VQE(
     hamiltonian::Operator,
     ansatz::Array{Pauli{T},1},
-    opt::Union{Opt,String},
+    opt,
     initial_point::Array{Float64,1},
     num_qubits::Int64,
     initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
@@ -301,11 +358,7 @@ function VQE(
     end
 
     if opt !== "random_sampling"
-        opt.lower_bounds = -π
-        opt.upper_bounds = +π
-        opt.min_objective = cost_fn
-
-        (minf,minx,ret) = optimize(opt, initial_point)
+        (minf,minx,_) = my_optimize(opt, cost_fn, initial_point)
     else
         k = length(ansatz)
         grad = zeros(Float64, k)
@@ -314,7 +367,7 @@ function VQE(
             x = rand(d, k)
             cost_fn(x, grad)
         end
-        (minf, minx, ret)=(nothing, nothing, nothing)
+        (minf, minx, _)=(nothing, nothing, nothing)
     end
 
     #if path != nothing
@@ -328,10 +381,10 @@ function VQE(
     cost_fn(minx, grad)
     if norm(grad) >= 1e-6
         _norm = norm(grad)
-        @warn "Gradient not converged: norm=$(_norm) \t ret=$ret"
+        @warn "Gradient not converged: norm=$(_norm)"
     end
 
-    return (minf, minx, ret, eval_count)
+    return (minf, minx, nothing, eval_count)
 end
 
 
@@ -346,7 +399,7 @@ This is useful for running QAOA and Fermionic anstaze.
 function commuting_vqe(
     hamiltonian::Operator,
     ansatz::Array{Operator,1},
-    opt::Opt,
+    opt,
     initial_point::Array{Float64,1},
     num_qubits::Int64,
     initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
@@ -370,19 +423,15 @@ function commuting_vqe(
         return _cost_fn_commuting_vqe(x, grad, ansatz, hamiltonian, fn_evals, grad_evals, eval_count, state, initial_state, tmp, tmp1, tmp2, output_state)
     end
 
-    opt.lower_bounds = -π
-    opt.upper_bounds = +π
-    opt.min_objective = cost_fn
-
     cost_fn(initial_point, similar(initial_point))
 
-    (minf,minx,ret) = optimize(opt, initial_point)
+    (minf,minx,_) = my_optimize(opt, cost_fn, initial_point)
 
     if output_state !== nothing
         cost_fn(minx, similar(minx))
     end
 
-    return (minf, minx, ret, eval_count)
+    return (minf, minx, nothing, eval_count)
 end
 
 function qaoa_ansatz(
@@ -438,7 +487,7 @@ Run the QAOA algorithm with a specified number of layers `p`. Uses the `X_1 + ..
 function QAOA(
     hamiltonian::Operator,
     p::Int,
-    opt::Opt,
+    opt,
     initial_point::Array{Float64,1},
     num_qubits::Int64,
     initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
@@ -558,7 +607,7 @@ function adapt_vqe(
     hamiltonian::Operator,
     pool::Array{Pauli{T},1},
     num_qubits::Int64,
-    optimizer::Union{String,Dict},
+    optimizer,
     callbacks::Array{Function};
     initial_parameter::Float64 = 0.0,
     initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
@@ -573,14 +622,6 @@ function adapt_vqe(
     #        $path/adapt_history.csv
     #    """
     #end
-
-    if optimizer isa String
-        opt_dict = Dict("name" => optimizer)
-    elseif optimizer isa Dict
-        opt_dict = optimizer
-    else
-        throw(ArgumentError("optimizer should be String or Dict"))
-    end
 
     if tmp === nothing
         tmp = zeros(ComplexF64, 2^num_qubits)
@@ -616,43 +657,16 @@ function adapt_vqe(
         push!(ansatz, pool[hist.max_grad_ind[end]])
         point = vcat(hist.opt_pars[end], [initial_parameter])
 
-        opt = Opt(Symbol(opt_dict["name"]), length(point))
-
-        opt_keys = collect(keys(opt_dict))
-        deleteat!(opt_keys,findall(x->x=="name",opt_keys))
-        for akey in opt_keys
-            setproperty!(opt,Symbol(akey),opt_dict[akey])
-        end
-
 	vqe_path = "$path/vqe_layer_$layer_count.h5"
 
         state .= initial_state
-        energy, point, ret, opt_evals = VQE(hamiltonian, ansatz, opt, point, num_qubits, state, vqe_path)
+        energy, point, _, opt_evals = VQE(hamiltonian, ansatz, optimizer, point, num_qubits, state, vqe_path)
         state .= initial_state
         pauli_ansatz!(ansatz, point, state, tmp)
         adapt_step!(hist, comms, tmp, state, hamiltonian, point,pool[hist.max_grad_ind[end]],opt_evals) # pool operator of the step that just finished
 
         layer_count += 1
     end
-end
-
-
-function make_opt(optimizer, point)
-    if optimizer isa String
-        opt_dict = Dict("name" => optimizer)
-    elseif optimizer isa Dict
-        opt_dict = optimizer
-    else
-        throw(ArgumentError("optimizer should be String or Dict"))
-    end
-
-    opt = Opt(Symbol(opt_dict["name"]), length(point))
-    opt_keys = collect(keys(opt_dict))
-    deleteat!(opt_keys,findall(x->x=="name",opt_keys))
-    for akey in opt_keys
-        setproperty!(opt,Symbol(akey),opt_dict[akey])
-    end
-    return opt
 end
 
 
@@ -671,7 +685,7 @@ function adapt_qaoa(
     hamiltonian::Operator,
     pool::Array{Operator,1},
     num_qubits::Int64,
-    optimizer::Union{String,Dict},
+    optimizer,
     callbacks::Array{Function};
     initial_parameter::Float64 = 0.0,
     initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
@@ -732,7 +746,7 @@ function adapt_qaoa(
         if length(point) != 2*length(mixers) error("Invalid point size") end
 
         output_state = similar(initial_state)
-        min_energy, optimal_point, _, opt_evals = QAOA(hamiltonian, mixers, make_opt(optimizer, point), point, num_qubits, copy(initial_state), nothing, output_state)
+        min_energy, optimal_point, _, opt_evals = QAOA(hamiltonian, mixers, optimizer, point, num_qubits, copy(initial_state), nothing, output_state)
         state .= output_state
         point .= optimal_point
     end

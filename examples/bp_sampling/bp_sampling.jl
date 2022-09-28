@@ -13,6 +13,7 @@ println("staring script..."); flush(stdout)
 @everywhere using Distributions
 @everywhere using IterTools
 @everywhere using NLopt
+@everywhere using Optim
 @everywhere using Random
 @everywhere using CSV
 
@@ -48,8 +49,8 @@ end
 @everywhere vqe_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
 @everywhere adapt_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
 @everywhere ball_sampling_radii = vcat(0.0:0.01:(0.2-0.01),0.2:0.2:5)
-@everywhere opt_alg = "LD_LBFGS"
-@everywhere opt_dict = Dict("name" => opt_alg, "maxeval" => 1500)
+#@everywhere opt_spec = Dict("name" => "LD_LBFGS", "maxeval" => 100000)
+@everywhere opt_spec = Optim.LBFGS()
 @everywhere data_path_suffix = "csv"
 
 @everywhere function analyze_results!(res_dict, ham, opt_states)
@@ -74,7 +75,7 @@ end
     callbacks = Function[MaxGradientStopper(max_grad), DeltaYStopper(), ParameterStopper(max_adapt_layers)]
     initial_state = uniform_state(n)
 
-    res = adapt_vqe(ham, pool, n, opt_dict, callbacks; initial_state=initial_state)
+    res = adapt_vqe(ham, pool, n, opt_spec, callbacks; initial_state=initial_state)
     res_dict = Dict{Any,Any}(
         "energies" => res.energy,
         "ansatz" => map(p -> Operator(p), filter(x -> x !== nothing, res.paulis)),
@@ -90,7 +91,7 @@ end
     callbacks = Function[MaxGradientStopper(max_grad), DeltaYStopper(), ParameterStopper(max_adapt_layers)]
     initial_state = uniform_state(n)
 
-    res = adapt_qaoa(ham, pool, n, opt_dict, callbacks; initial_parameter=1e-2, initial_state=initial_state)
+    res = adapt_qaoa(ham, pool, n, opt_spec, callbacks; initial_parameter=0.0, initial_state=initial_state)
     res.paulis
     mixers = map(p->Operator(p),filter(p -> p !== nothing,res.paulis))
     ansatz = qaoa_ansatz(ham, mixers)
@@ -110,7 +111,7 @@ end
     psi = copy(initial_state)
     initial_point = rand(rng, Uniform(-pi, +pi), length(ansatz))
 
-    min_en, opt_pt, _, _ = VQE(ham, ansatz, make_opt(opt_dict, initial_point), initial_point, n, initial_state)
+    min_en, opt_pt, _, _ = VQE(ham, ansatz, opt_spec, initial_point, n, initial_state)
     pauli_ansatz!(ansatz, opt_pt, psi, similar(initial_state))
 
     res_dict = Dict{Any,Any}(
