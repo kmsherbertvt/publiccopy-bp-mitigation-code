@@ -11,6 +11,8 @@
 #SBATCH --cpus-per-task=20
 #SBATCH --mem=200G
 #SBATCH -t 72:00:00
+#SBATCH --output=slurm.out
+#SBATCH --error=slurm.err
 
 # Allow time to load modules
 # This takes time sometimes for some reason
@@ -32,7 +34,9 @@ export OPENBLAS_NUM_THREADS=1
 #echo $INFILE
 #echo $OUTFILE
 
-export SCRIPT_DEBUG=""
+rm output_*.txt
+
+#export SCRIPT_DEBUG=""
 export SCRIPT_DEBUG=debug
 
 julia --project=$JULIAENV --procs=auto bp_sampling.jl $SCRIPT_DEBUG >& output_sims.txt
