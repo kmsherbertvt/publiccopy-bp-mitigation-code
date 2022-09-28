@@ -12,7 +12,10 @@ include("callbacks.jl")
 include("qaoa_hamiltonians.jl")
 
 export ADAPTHistory,
+    is_diagonal,
     _cost_fn_commuting_vqe,
+    _cost_fn_vqe,
+    commuting_vqe,
     make_opt,
     DeltaYStopper,
     ground_state_overlap,
