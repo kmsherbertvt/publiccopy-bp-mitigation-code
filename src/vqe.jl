@@ -23,12 +23,22 @@ function reform_cost_fn(cost_fn)
     return f, g!
 end
 
+function validate_opt_res(cost_fn, minx)
+    grad = similar(minx)
+    cost_fn(minx, grad)
+    _norm = norm(grad)
+    if _norm >= 1e-6
+        @warn "Gradient not converged: norm=$(_norm)"
+    end
+end
+
 function my_optimize(opt_dict::Dict, cost_fn, initial_point::Vector{Float64})
     opt = make_opt(opt_dict, initial_point)
     opt.lower_bounds = -π
     opt.upper_bounds = +π
     opt.min_objective = cost_fn
     fn_val, x_val, res_other = NLopt.optimize(opt, initial_point)
+    validate_opt_res(cost_fn, x_val)
     return fn_val, x_val, res_other
 end
 
@@ -38,6 +48,7 @@ function my_optimize(opt::Optim.AbstractOptimizer, cost_fn, initial_point::Vecto
     x_val = Optim.minimizer(optimization_result)
     fn_val = Optim.minimum(optimization_result)
     res_other = optimization_result
+    validate_opt_res(cost_fn, x_val)
     return fn_val, x_val, res_other
 end
 
@@ -299,13 +310,14 @@ function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = no
             for k=1:num_samples
         ]
         result_grads = _result_grads
-        if maximum(result_grads) >= 1e-6 && dist == 0.0
-            m = maximum(result_grads)
-            @warn "Encountered large gradient at center of ball: $m"
-        end
     end
     if use_norm && (num_pars==0)
         result_grads = map(abs, result_grads)
+    end
+
+    m = maximum(result_grads)
+    if use_norm && (m >= 1e-6) && (dist == 0.0)
+        @warn "Encountered large gradient at center of ball: $m"
     end
 
     return (result_energy, result_grads, result_errors, result_relative_errors)
@@ -376,13 +388,6 @@ function VQE(
     #    fid["grad_evals"] = grad_evals
     #    close(fid)
     #end
-
-    grad = similar(minx)
-    cost_fn(minx, grad)
-    if norm(grad) >= 1e-6
-        _norm = norm(grad)
-        @warn "Gradient not converged: norm=$(_norm)"
-    end
 
     return (minf, minx, nothing, eval_count)
 end
