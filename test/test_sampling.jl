@@ -17,16 +17,14 @@ rng = MersenneTwister(42);
     hamiltonian = random_regular_max_cut_hamiltonian(n, n-1; weighted = true)
     initial_state = uniform_state(n)
 
-    point = rand(rng, Uniform(-pi, +pi), length(ansatz))
+    points_to_sample = Vector{Vector{Float64}}()
+    append!(points_to_sample, [rand(rng, Uniform(-pi, +pi), length(ansatz))])
 
     l_min = []
     l_max = []
 
     for _=1:2
-        result_energies, result_gradients = sample_points(hamiltonian, ansatz, initial_state, num_samples; rng=rng, dist=0.0, point=point)
-
-        @test length(result_energies) == num_samples
-        @test length(result_gradients) == num_samples * k
+        result_energies, result_gradients, _, _ = sample_points(hamiltonian, ansatz, initial_state, num_samples; rng=rng, dist=0.0, point=points_to_sample)
 
         delta = maximum(result_energies) - minimum(result_energies)
         @test abs(delta) <= 1e-6

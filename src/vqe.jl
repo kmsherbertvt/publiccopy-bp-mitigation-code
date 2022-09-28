@@ -197,21 +197,40 @@ function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = no
     psi_3 = similar(initial_state)
     psi_4 = similar(initial_state)
 
-    for _=1:num_samples
-        if (dist === nothing) && (point === nothing)
+    points_to_sample = []
+    if (dist === nothing) && (point === nothing)
+        for _=1:num_samples
             x .= rand(rng, Uniform(-pi, +pi), num_pars)
-        else
+            append!(points_to_sample, [x])
+        end
+    elseif typeof(point) === Vector{Vector{Float64}}
+        points_to_sample = point
+        num_samples = length(points_to_sample)
+    else
+        for _=1:num_samples
             x .= rand(rng, Uniform(-pi, +pi), num_pars)
             x /= norm(x)
             x *= dist
             x += point
+            append!(points_to_sample, [x])
         end
+    end
+
+    for x in points_to_sample
         _cost_fn_commuting_vqe(x, grad, ansatz, hamiltonian, result_energy, result_grads, eval_count, psi_4, initial_state, psi_1, psi_2, psi_3, nothing)
     end
 
-    min_energy = get_ground_state(hamiltonian)
+    if is_diagonal(hamiltonian)
+        min_energy = get_ground_state(hamiltonian)
+        gap = get_energy_gap(hamiltonian)
+    else
+        @warn "Hamiltonian is off-diagonal, using 0.0 for minimum energy"
+        min_energy = 0.0
+        gap = 1.0
+    end
+
     result_errors = result_energy .- min_energy
-    result_relative_errors = result_errors ./ get_energy_gap(hamiltonian)
+    result_relative_errors = result_errors ./ gap
 
     if use_norm && (num_pars>0)
         if (length(result_grads) % num_pars) != 0
