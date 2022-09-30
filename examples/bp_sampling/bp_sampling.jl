@@ -96,7 +96,7 @@ end
     callbacks = Function[MaxGradientStopper(max_grad), DeltaYStopper(), ParameterStopper(max_adapt_layers)]
     initial_state = uniform_state(n)
 
-    res = adapt_qaoa(ham, pool, n, opt_spec, callbacks; initial_parameter=0.0, initial_state=initial_state)
+    res = adapt_qaoa(ham, pool, n, opt_spec, callbacks; initial_parameter=1e-2, initial_state=initial_state)
     res.paulis
     mixers = map(p->Operator(p),filter(p -> p !== nothing,res.paulis))
     ansatz = qaoa_ansatz(ham, mixers)
@@ -185,6 +185,7 @@ end
     # Ball sampling
     t_0 = time()
     optimal_point = res["opt_pars"][end]
+    if length(optimal_point) != length(res["ansatz"]) error("Should be equal") end
     ball_sample_pairs = [(rp, sample_points(hamiltonian, res["ansatz"], initial_state, Int(floor(sqrt(num_point_samples))); rng=rng, dist=rp, point=optimal_point, use_norm=use_norm)...) for rp=ball_sampling_radii]
     ball_sampled_energies_list = [ens for (_, ens, _, _, _)=ball_sample_pairs]
     ball_sampled_energy_errors_list = [en_errs for (_, _, _, en_errs, _)=ball_sample_pairs]
