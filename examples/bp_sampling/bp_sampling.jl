@@ -80,7 +80,7 @@ end
     callbacks = Function[MaxGradientStopper(max_grad), DeltaYStopper(), ParameterStopper(max_adapt_layers)]
     initial_state = uniform_state(n)
 
-    res = adapt_vqe(ham, pool, n, opt_spec, callbacks; initial_state=initial_state)
+    res = adapt_vqe(ham, pool, n, opt_spec, callbacks; initial_state=copy(initial_state))
     res_dict = Dict{Any,Any}(
         "energies" => res.energy,
         "ansatz" => map(p -> Operator(p), filter(x -> x !== nothing, res.paulis)),
@@ -96,7 +96,7 @@ end
     callbacks = Function[MaxGradientStopper(max_grad), DeltaYStopper(), ParameterStopper(max_adapt_layers)]
     initial_state = uniform_state(n)
 
-    res = adapt_qaoa(ham, pool, n, opt_spec, callbacks; initial_parameter=1e-2, initial_state=initial_state)
+    res = adapt_qaoa(ham, pool, n, opt_spec, callbacks; initial_parameter=1e-2, initial_state=copy(initial_state))
     res.paulis
     mixers = map(p->Operator(p),filter(p -> p !== nothing,res.paulis))
     ansatz = qaoa_ansatz(ham, mixers)
@@ -116,7 +116,7 @@ end
     psi = copy(initial_state)
     initial_point = rand(rng, Uniform(-pi, +pi), length(ansatz))
 
-    min_en, opt_pt, _, _ = VQE(ham, ansatz, opt_spec, initial_point, n, initial_state)
+    min_en, opt_pt, _, _ = VQE(ham, ansatz, opt_spec, initial_point, n, copy(initial_state))
     pauli_ansatz!(ansatz, opt_pt, psi, similar(initial_state))
 
     res_dict = Dict{Any,Any}(
@@ -174,7 +174,7 @@ end
     end
     # Whole space sampling
     t_0 = time()
-    sample_pairs = [(dp, sample_points(hamiltonian, res["ansatz"][1:dp], initial_state, num_point_samples; rng=rng, use_norm=use_norm)...) for dp=_depths]
+    sample_pairs = [(dp, sample_points(hamiltonian, res["ansatz"][1:dp], copy(initial_state), num_point_samples; rng=rng, use_norm=use_norm)...) for dp=_depths]
     sampled_energies_list = [ens for (_, ens, _, _, _)=sample_pairs]
     sampled_grads_list = [grads for (_, _, grads, _, _)=sample_pairs]
     sampled_energy_errors_list = [en_errs for (_, _, _, en_errs, _)=sample_pairs]
@@ -186,7 +186,7 @@ end
     t_0 = time()
     optimal_point = res["opt_pars"][end]
     if length(optimal_point) != length(res["ansatz"]) error("Should be equal") end
-    ball_sample_pairs = [(rp, sample_points(hamiltonian, res["ansatz"], initial_state, Int(floor(sqrt(num_point_samples))); rng=rng, dist=rp, point=optimal_point, use_norm=use_norm)...) for rp=ball_sampling_radii]
+    ball_sample_pairs = [(rp, sample_points(hamiltonian, res["ansatz"], copy(initial_state), Int(floor(sqrt(num_point_samples))); rng=rng, dist=rp, point=optimal_point, use_norm=use_norm)...) for rp=ball_sampling_radii]
     ball_sampled_energies_list = [ens for (_, ens, _, _, _)=ball_sample_pairs]
     ball_sampled_energy_errors_list = [en_errs for (_, _, _, en_errs, _)=ball_sample_pairs]
     ball_sampled_relative_energy_errors_list = [rel_en_errs for (_, _, _, _, rel_en_errs)=ball_sample_pairs]
