@@ -50,8 +50,8 @@ end
 @everywhere vqe_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
 @everywhere adapt_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
 @everywhere ball_sampling_radii = vcat(0.0:0.01:(0.2-0.01),0.2:0.2:5)
-#@everywhere opt_spec = Dict("name" => "LD_LBFGS", "maxeval" => 1500)
-@everywhere opt_spec = Optim.LBFGS(
+@everywhere opt_spec_1 = Dict("name" => "LD_LBFGS", "maxeval" => 5000)
+@everywhere opt_spec_2 = Optim.LBFGS(
     m=100,
     alphaguess=LineSearches.InitialStatic(alpha=0.5),
     linesearch=LineSearches.HagerZhang()
@@ -80,7 +80,7 @@ end
     callbacks = Function[MaxGradientStopper(max_grad), DeltaYStopper(), ParameterStopper(max_adapt_layers)]
     initial_state = uniform_state(n)
 
-    res = adapt_vqe(ham, pool, n, opt_spec, callbacks; initial_state=copy(initial_state))
+    res = adapt_vqe(ham, pool, n, opt_spec_1, callbacks; initial_state=copy(initial_state))
     res_dict = Dict{Any,Any}(
         "energies" => res.energy,
         "ansatz" => map(p -> Operator(p), filter(x -> x !== nothing, res.paulis)),
@@ -96,7 +96,7 @@ end
     callbacks = Function[MaxGradientStopper(max_grad), DeltaYStopper(), ParameterStopper(max_adapt_layers)]
     initial_state = uniform_state(n)
 
-    res = adapt_qaoa(ham, pool, n, opt_spec, callbacks; initial_parameter=1e-2, initial_state=copy(initial_state))
+    res = adapt_qaoa(ham, pool, n, opt_spec_1, callbacks; initial_parameter=1e-2, initial_state=copy(initial_state))
     res.paulis
     mixers = map(p->Operator(p),filter(p -> p !== nothing,res.paulis))
     ansatz = qaoa_ansatz(ham, mixers)
