@@ -156,7 +156,8 @@ function _cost_fn_vqe(
     initial_state, 
     tmp, 
     tmp1, 
-    tmp2,
+    tmp2;
+    use_norm=false
     )
     eval_count += 1
     state .= initial_state
@@ -168,7 +169,11 @@ function _cost_fn_vqe(
     end
 
     push!(fn_evals, res)
-    append!(grad_evals, grad)
+    if use_norm
+        push!(grad_evals, norm(grad))
+    else
+        append!(grad_evals, grad)
+    end
 
     return res
 end
@@ -187,7 +192,8 @@ function _cost_fn_commuting_vqe(
     tmp, 
     tmp1, 
     tmp2,
-    output_state
+    output_state;
+    use_norm=false
     )
     # Initialize statevector
     state .= initial_state
@@ -236,7 +242,11 @@ function _cost_fn_commuting_vqe(
 
     # Cleaning up
     push!(fn_evals, res)
-    append!(grad_evals, grad)
+    if use_norm
+        push!(grad_evals, norm(grad))
+    else
+        append!(grad_evals, grad)
+    end
     eval_count += 1
     return res
 end
