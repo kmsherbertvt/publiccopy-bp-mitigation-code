@@ -22,7 +22,7 @@ end
 
 # Hyperparameters
 if debug
-    max_num_qubits = 6
+    max_num_qubits = 4
     FIGS_DIR = "./debug_figs"
     DATA_DIR = "./debug_data"
 else

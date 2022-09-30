@@ -33,7 +33,7 @@ end
 
 # Hyperparameters
 if debug
-    @everywhere num_samples = 1
+    @everywhere num_samples = 5
     @everywhere num_point_samples = 5
     @everywhere max_num_qubits = 4
     @everywhere data_path_prefix = "debug_data/data"
