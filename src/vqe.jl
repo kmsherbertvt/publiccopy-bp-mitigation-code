@@ -726,7 +726,7 @@ function adapt_qaoa(
     mixers = Array{Operator, 1}()
     layer_count = 0
 
-    state = initial_state
+    state = copy(initial_state)
     point = Vector{Float64}()
     optimal_point = Vector{Float64}()
     opt_evals = nothing
@@ -741,7 +741,7 @@ function adapt_qaoa(
             chosen_op = nothing
         end
 
-        adapt_step!(hist, comms, tmp, state, hamiltonian, optimal_point, chosen_op, opt_evals, grad_state)
+        adapt_step!(hist, comms, tmp, copy(state), hamiltonian, copy(optimal_point), chosen_op, opt_evals, copy(grad_state))
 
         #### Check Convergence
         for c in callbacks
