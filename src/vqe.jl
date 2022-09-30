@@ -385,7 +385,7 @@ function VQE(
     end
 
     if opt !== "random_sampling"
-        (minf,minx,_) = my_optimize(opt, cost_fn, initial_point)
+        (minf,minx,_) = my_optimize(opt, cost_fn, initial_point, false)
     else
         k = length(ansatz)
         grad = zeros(Float64, k)
