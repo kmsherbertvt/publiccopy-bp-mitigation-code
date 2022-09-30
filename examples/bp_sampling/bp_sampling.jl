@@ -16,6 +16,7 @@ println("staring script..."); flush(stdout)
 @everywhere using Optim
 @everywhere using LineSearches
 @everywhere using Random
+@everywhere using Retry
 @everywhere using CSV
 
 #@everywhere Random.seed!(42)
@@ -113,10 +114,16 @@ end
 
 @everywhere function main_vqe(n, ham, ansatz::Array{Pauli{T},1}, rng) where T<:Unsigned
     initial_state = uniform_state(n)
-    initial_point = rand(rng, Uniform(-pi, +pi), length(ansatz))
     op_ans = collect(map(Operator, ansatz))
 
-    min_en, opt_pt, _, _ = commuting_vqe(ham, op_ans, opt_spec_1, initial_point, n, copy(initial_state))
+
+    (initial_point, min_en, opt_pt) = @repeat 10 try
+        initial_point = rand(rng, Uniform(-pi, +pi), length(ansatz))
+        min_en, opt_pt, _, _ = commuting_vqe(ham, op_ans, opt_spec_1, initial_point, n, copy(initial_state), nothing, nothing, true)
+        (initial_point, min_en, opt_pt)
+    catch err
+        @retry if true end
+    end
 
     psi = copy(initial_state)
     pauli_ansatz!(ansatz, opt_pt, psi, similar(initial_state))
