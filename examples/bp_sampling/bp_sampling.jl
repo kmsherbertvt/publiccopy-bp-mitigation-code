@@ -14,6 +14,7 @@ println("staring script..."); flush(stdout)
 @everywhere using IterTools
 @everywhere using NLopt
 @everywhere using Optim
+@everywhere using LineSearches
 @everywhere using Random
 @everywhere using CSV
 
@@ -49,8 +50,12 @@ end
 @everywhere vqe_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
 @everywhere adapt_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
 @everywhere ball_sampling_radii = vcat(0.0:0.01:(0.2-0.01),0.2:0.2:5)
-#@everywhere opt_spec = Dict("name" => "LD_LBFGS", "maxeval" => 100000)
-@everywhere opt_spec = Optim.LBFGS()
+#@everywhere opt_spec = Dict("name" => "LD_LBFGS", "maxeval" => 1500)
+@everywhere opt_spec = Optim.LBFGS(
+    m=100,
+    alphaguess=LineSearches.InitialStatic(alpha=0.5),
+    linesearch=LineSearches.HagerZhang()
+)
 @everywhere data_path_suffix = "csv"
 
 @everywhere function analyze_results!(res_dict, ham, opt_states)
