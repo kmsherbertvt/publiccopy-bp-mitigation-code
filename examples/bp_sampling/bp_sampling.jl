@@ -113,15 +113,17 @@ end
 
 @everywhere function main_vqe(n, ham, ansatz::Array{Pauli{T},1}, rng) where T<:Unsigned
     initial_state = uniform_state(n)
-    psi = copy(initial_state)
     initial_point = rand(rng, Uniform(-pi, +pi), length(ansatz))
+    op_ans = collect(map(Operator, ansatz))
 
-    min_en, opt_pt, _, _ = VQE(ham, ansatz, opt_spec, initial_point, n, copy(initial_state))
+    min_en, opt_pt, _, _ = commuting_vqe(ham, op_ans, opt_spec_1, initial_point, n, copy(initial_state))
+
+    psi = copy(initial_state)
     pauli_ansatz!(ansatz, opt_pt, psi, similar(initial_state))
 
     res_dict = Dict{Any,Any}(
         "energies" => [min_en],
-        "ansatz" => map(p->Operator(p),ansatz),
+        "ansatz" => map(Operator,ansatz),
         "max_grads" => Array{Float64,1}(),
         "opt_pars" => [opt_pt],
     )
@@ -174,7 +176,7 @@ end
     end
     # Whole space sampling
     t_0 = time()
-    sample_pairs = [(dp, sample_points(hamiltonian, res["ansatz"][1:dp], copy(initial_state), num_point_samples; rng=rng, use_norm=use_norm)...) for dp=_depths]
+    sample_pairs = [(dp, sample_points(hamiltonian, res["ansatz"][1:dp], copy(initial_state), num_point_samples; rng=rng, use_norm=use_norm, check_center=false)...) for dp=_depths]
     sampled_energies_list = [ens for (_, ens, _, _, _)=sample_pairs]
     sampled_grads_list = [grads for (_, _, grads, _, _)=sample_pairs]
     sampled_energy_errors_list = [en_errs for (_, _, _, en_errs, _)=sample_pairs]
@@ -186,7 +188,7 @@ end
     t_0 = time()
     optimal_point = res["opt_pars"][end]
     if length(optimal_point) != length(res["ansatz"]) error("Should be equal") end
-    ball_sample_pairs = [(rp, sample_points(hamiltonian, res["ansatz"], copy(initial_state), Int(floor(sqrt(num_point_samples))); rng=rng, dist=rp, point=optimal_point, use_norm=use_norm)...) for rp=ball_sampling_radii]
+    ball_sample_pairs = [(rp, sample_points(hamiltonian, res["ansatz"], copy(initial_state), Int(floor(sqrt(num_point_samples))); rng=rng, dist=rp, point=optimal_point, use_norm=use_norm, check_center=true)...) for rp=ball_sampling_radii]
     ball_sampled_energies_list = [ens for (_, ens, _, _, _)=ball_sample_pairs]
     ball_sampled_energy_errors_list = [en_errs for (_, _, _, en_errs, _)=ball_sample_pairs]
     ball_sampled_relative_energy_errors_list = [rel_en_errs for (_, _, _, _, rel_en_errs)=ball_sample_pairs]

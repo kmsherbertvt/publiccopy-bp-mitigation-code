@@ -258,7 +258,7 @@ end
 Compute samples of the VQE cost function and its gradient components for the given Hamiltonian,
 list of generators, and initial state. Optional RNG for determining points to be sampled.
 """
-function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = nothing, dist = nothing, point = nothing, use_norm = false)
+function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = nothing, dist = nothing, point = nothing, use_norm = false, check_center = true)
     if rng === nothing
         rng = _DEFAULT_RNG
     end
@@ -318,7 +318,7 @@ function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = no
     result_relative_errors = result_errors ./ gap
 
     m = maximum(result_grads)
-    if use_norm && (m >= 1e-3) && (dist == 0.0)
+    if use_norm && (m >= 1e-3) && (dist == 0.0) && check_center
         # hamiltonian, ansatz, initial_state, num_samples; rng = nothing, dist = nothing, point = nothing, use_norm = false
         println("Ham:       $hamiltonian")
         println("Ans:       $ansatz")
