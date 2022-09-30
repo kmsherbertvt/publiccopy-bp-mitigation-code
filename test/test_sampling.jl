@@ -41,9 +41,9 @@ using LineSearches
 end
 
 @testset "Point sampling gradient minimum" begin
-    for seed=1:200
+    for seed=1:500
         rng = MersenneTwister(seed)
-        num_samples = 1
+        num_samples = 5
         n = 4
         use_norm = true
 
@@ -56,11 +56,12 @@ end
 
         initial_state = uniform_state(n)
         dist = 0.0
-        opt = Optim.LBFGS(
-            m=100,
-            alphaguess=LineSearches.InitialStatic(alpha=0.5),
-            linesearch=LineSearches.HagerZhang()
-        )
+        #opt = Optim.LBFGS(
+        #    m=100,
+        #    alphaguess=LineSearches.InitialStatic(alpha=0.5),
+        #    linesearch=LineSearches.HagerZhang()
+        #)
+        opt = Dict("name" => "LD_LBFGS", "maxeval" => 5000)
         callbacks = Function[MaxGradientStopper(1e-6), DeltaYStopper(), ParameterStopper(50)]
 
         adapt_hist = adapt_qaoa(
