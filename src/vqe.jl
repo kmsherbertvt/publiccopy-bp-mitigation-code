@@ -290,12 +290,19 @@ function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = no
             x /= norm(x)
             x *= dist
             x += point
-            append!(points_to_sample, [x])
+            append!(points_to_sample, [copy(x)])
         end
     end
 
     for x in points_to_sample
-        _cost_fn_commuting_vqe(x, grad, ansatz, hamiltonian, result_energy, result_grads, eval_count, psi_4, initial_state, psi_1, psi_2, psi_3, nothing)
+        if dist !== nothing
+            _m = norm(x .- point)
+            if (dist == 0.0) && (_m >= 1e-10)
+                @warn "That should not happen, found point dist=$(_m) away"
+            end
+        end
+        _cost_fn_commuting_vqe(x, grad, ansatz, hamiltonian, result_energy, [], eval_count, psi_4, copy(initial_state), psi_1, psi_2, psi_3, nothing; use_norm=false)
+        push!(result_grads, norm(grad))
     end
 
     if is_diagonal(hamiltonian)
@@ -310,24 +317,17 @@ function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = no
     result_errors = result_energy .- min_energy
     result_relative_errors = result_errors ./ gap
 
-    if use_norm && (num_pars>0)
-        if (length(result_grads) % num_pars) != 0
-            error("Invalid length encountered")
-        end
-        _result_grads = similar(result_grads)
-        _result_grads = [
-            norm(result_grads[((k-1)*num_pars+1):(num_pars*k)])
-            for k=1:num_samples
-        ]
-        result_grads = _result_grads
-    end
-    if use_norm && (num_pars==0)
-        result_grads = map(abs, result_grads)
-    end
-
     m = maximum(result_grads)
-    if use_norm && (m >= 1e-6) && (dist == 0.0)
-        @warn "Encountered large gradient at center of ball (dist=$dist): $m"
+    if use_norm && (m >= 1e-3) && (dist == 0.0)
+        # hamiltonian, ansatz, initial_state, num_samples; rng = nothing, dist = nothing, point = nothing, use_norm = false
+        println("Ham:       $hamiltonian")
+        println("Ans:       $ansatz")
+        println("Init:      $initial_state")
+        println("Num:       $num_samples")
+        println("Dist:      $dist")
+        println("Point:     $point")
+        println("Use norm:  $use_norm")
+        error("Encountered large gradient at center of ball (dist=$dist): $m")
     end
 
     return (result_energy, result_grads, result_errors, result_relative_errors)
