@@ -23,32 +23,37 @@ function reform_cost_fn(cost_fn)
     return f, g!
 end
 
-function validate_opt_res(cost_fn, minx)
+function validate_opt_res(cost_fn, minx, strict_convergence)
     grad = similar(minx)
     cost_fn(minx, grad)
     _norm = norm(grad)
     if _norm >= 1e-6
-        @warn "Gradient not converged: norm=$(_norm)"
+        if strict_convergence
+            error("Demanding strict convergence: norm=$(_norm)")
+        else
+            @warn "Gradient not converged: norm=$(_norm)"
+        end
+
     end
 end
 
-function my_optimize(opt_dict::Dict, cost_fn, initial_point::Vector{Float64})
+function my_optimize(opt_dict::Dict, cost_fn, initial_point::Vector{Float64}, strict_convergence)
     opt = make_opt(opt_dict, initial_point)
     opt.lower_bounds = -π
     opt.upper_bounds = +π
     opt.min_objective = cost_fn
     fn_val, x_val, res_other = NLopt.optimize(opt, initial_point)
-    validate_opt_res(cost_fn, x_val)
+    validate_opt_res(cost_fn, x_val, strict_convergence)
     return fn_val, x_val, res_other
 end
 
-function my_optimize(opt::Optim.AbstractOptimizer, cost_fn, initial_point::Vector{Float64})
+function my_optimize(opt::Optim.AbstractOptimizer, cost_fn, initial_point::Vector{Float64}, strict_convergence)
     f, g! = reform_cost_fn(cost_fn)
     optimization_result = Optim.optimize(f, g!, initial_point, opt)
     x_val = Optim.minimizer(optimization_result)
     fn_val = Optim.minimum(optimization_result)
     res_other = optimization_result
-    validate_opt_res(cost_fn, x_val)
+    validate_opt_res(cost_fn, x_val, strict_convergence)
     return fn_val, x_val, res_other
 end
 
@@ -419,7 +424,8 @@ function commuting_vqe(
     num_qubits::Int64,
     initial_state::Union{Nothing,Array{ComplexF64,1}} = nothing, # Initial state
     path = nothing, # Should be a CSV file
-    output_state::Union{Nothing,Array{ComplexF64,1}} = nothing
+    output_state::Union{Nothing,Array{ComplexF64,1}} = nothing,
+    strict_convergence = false
 )
     tmp = zeros(ComplexF64, 2^num_qubits)
     tmp1 = similar(tmp)
@@ -440,7 +446,7 @@ function commuting_vqe(
 
     cost_fn(initial_point, similar(initial_point))
 
-    (minf,minx,_) = my_optimize(opt, cost_fn, initial_point)
+    (minf,minx,_) = my_optimize(opt, cost_fn, initial_point, strict_convergence)
 
     if output_state !== nothing
         cost_fn(minx, similar(minx))
