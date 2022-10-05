@@ -2,6 +2,7 @@ using HDF5
 using NLopt
 using Optim
 using Random
+using StatsBase
 using Distributions
 
 # cost_fn(x, grad)
