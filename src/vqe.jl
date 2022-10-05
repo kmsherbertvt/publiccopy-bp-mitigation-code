@@ -201,7 +201,7 @@ function _cost_fn_commuting_vqe(
     use_norm=false
     )
     # Initialize statevector
-    state .= initial_state
+    state .= copy(initial_state)
     repeat_lengths = map(o -> length(o.paulis), ansatz)
     
     unpacked_x = []
@@ -323,7 +323,8 @@ function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = no
     result_relative_errors = result_errors ./ gap
 
     m = maximum(result_grads)
-    if use_norm && (m >= 1e-3) && (dist == 0.0) && check_center
+    m_en_var = var(result_errors)
+    if use_norm && (m >= 1e-3 || m_en_var >= 1e-3) && (dist == 0.0) && check_center
         # hamiltonian, ansatz, initial_state, num_samples; rng = nothing, dist = nothing, point = nothing, use_norm = false
         println("Ham:       $hamiltonian")
         println("Ans:       $ansatz")
@@ -332,7 +333,12 @@ function sample_points(hamiltonian, ansatz, initial_state, num_samples; rng = no
         println("Dist:      $dist")
         println("Point:     $point")
         println("Use norm:  $use_norm")
-        error("Encountered large gradient at center of ball (dist=$dist): $m")
+        if m >= 1e-3
+            error("Encountered large gradient at center of ball (dist=$dist): $m")
+        end
+        if m_en_var >= 1e-3
+            error("Encountered large energy variance at center of ball (dist=$dist): $m_en_var")
+        end
     end
 
     return (result_energy, result_grads, result_errors, result_relative_errors)

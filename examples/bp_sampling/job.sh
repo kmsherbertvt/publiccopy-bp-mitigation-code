@@ -39,6 +39,9 @@ rm output_*.txt
 export SCRIPT_DEBUG=""
 #export SCRIPT_DEBUG=debug
 
+rm ./figs/*.pdf
+rm ./data/*.csv
+
 julia --project=$JULIAENV --procs=auto bp_sampling.jl $SCRIPT_DEBUG >& output_sims.txt
 julia --project=$JULIAENV plotting.jl $SCRIPT_DEBUG >& output_plots.txt
 
