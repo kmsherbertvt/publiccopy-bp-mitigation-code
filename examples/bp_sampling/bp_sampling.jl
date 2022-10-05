@@ -65,7 +65,7 @@ end
     ham_vec = real(diagonal_operator_to_vector(ham))
     res_dict["energy_errors"] = res_dict["energies"] .- gse
     res_dict["approx_ratio"] = res_dict["energies"] ./ gse
-    res_dict["relative_error"] = abs.(res_dict["energies"]) ./ (gap)
+    res_dict["relative_error"] = res_dict["energy_errors"] ./ (gap)
     res_dict["ground_state_overlaps"] = map(s -> ground_state_overlap(ham_vec, s), opt_states)
 
     res_dict["final_energy_errors"] = res_dict["energy_errors"][end]
