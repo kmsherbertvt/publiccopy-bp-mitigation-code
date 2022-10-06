@@ -4,6 +4,7 @@ using Plots
 using StatsBase
 using IterTools: product
 using LinearAlgebra: norm
+using Glob
 using StatsPlots
 using CSV
 using Statistics
@@ -41,6 +42,9 @@ else
     FIGS_DIR = "./figs"
     DATA_DIR = "./data"
 end
+glob_to_del = "$(FIGS_DIR)/*.pdf"
+println("Deleting figs... $(glob_to_del)")
+rm.(glob(glob_to_del))
 DATA_SUFFIX = "csv"
 qubit_range = 4:2:max_num_qubits
 gid = "CID:$(get_git_id())"
@@ -153,7 +157,7 @@ function plot_1(aggr, sampling, fn, select_instance = missing)
         st_long = "energy_errors"
         symb = :en_err
         use_safe_floor = true
-        use_abs = true
+        use_abs = false
         yaxis_scale = :linear
     elseif fn === "rel_en_err"
         _df_fn = _df_dict["rel_en_err"]
@@ -161,7 +165,7 @@ function plot_1(aggr, sampling, fn, select_instance = missing)
         st_long = "relative_energy_errors"
         symb = :rel_en_err
         use_safe_floor = true
-        use_abs = true
+        use_abs = false
         yaxis_scale = :linear
     else
         error("invalid fn")
@@ -298,8 +302,6 @@ function main()
     plot_2(:approx_ratio; leg_pos=:bottomright)
     #plot_2(:relative_error; leg_pos=:bottomright, yaxis_scale=:linear) # This is just the approximation ratio
     plot_2(:ground_state_overlaps; leg_pos=:bottomleft, safe_floor_agg=true)
-
-    if debug return nothing end
 
     individual_instances = [Dict("n" => n, "seed" => seed) for (n,seed)=product(4:2:max_num_qubits,1:max_inst_sample)]
     for inst in individual_instances
