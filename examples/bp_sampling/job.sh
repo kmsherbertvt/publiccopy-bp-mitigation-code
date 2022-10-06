@@ -18,31 +18,8 @@
 # This takes time sometimes for some reason
 sleep 10
 hostname
-#module reset
-module load Julia/1.7.2-linux-x86_64
 
-export NTHREAD=20
-export JULIAENV=/home/gbarron/bp-mitigation-code/
-# set these to 1 if you are using julia threads heavily to avoid oversubscription
-export MKL_NUM_THREADS=1
-export OMP_NUM_THREADS=1
-export OPENBLAS_NUM_THREADS=1
+export SCRIPT_DEBUG="full_run"
+export INTERACTIVE_JOB=false
 
-#echo "Usage: sbatch job.sh script.jl"
-#export INFILE=$1
-#export OUTFILE="${INFILE}.out"
-#echo $INFILE
-#echo $OUTFILE
-
-rm output_*.txt
-
-export SCRIPT_DEBUG=""
-#export SCRIPT_DEBUG=debug
-
-rm ./figs/*.pdf
-rm ./data/*.csv
-
-julia --project=$JULIAENV --procs=auto bp_sampling.jl $SCRIPT_DEBUG >& output_sims.txt
-julia --project=$JULIAENV plotting.jl $SCRIPT_DEBUG >& output_plots.txt
-
-exit
+./run.sh

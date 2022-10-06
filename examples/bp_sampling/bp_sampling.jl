@@ -7,6 +7,7 @@ println("staring script..."); flush(stdout)
 @everywhere using AdaptBarren
 
 @everywhere using LinearAlgebra
+@everywhere using Glob
 @everywhere using Test
 @everywhere using DataFrames
 @everywhere using StatsBase
@@ -26,38 +27,53 @@ if length(ARGS) >= 1
     debug_arg = ARGS[1]
     if debug_arg == "debug"
         debug = true
+    elseif debug_arg == "full_run"
+        debug = false
     else
-        error("Invalid arg: $debug_arg")
+        @warn "Invalid arg: $(debug_arg), using debug mode"
+        debug = true
     end
 else
-    debug = false
+    debug = true
+end
+
+if debug
+    println("Running in debug mode")
+else
+    println("Running in full-run mode")
 end
 
 # Hyperparameters
+@everywhere data_path_suffix = "csv"
 if debug
     @everywhere num_samples = 5
     @everywhere num_point_samples = 5
     @everywhere max_num_qubits = 4
+    @everywhere adapt_sampling_depths = [1,2,3]
+    @everywhere ball_sampling_radii = [0.0, 0.05]
+    @everywhere vqe_sampling_depths = [1,2,3]
     @everywhere data_path_prefix = "debug_data/data"
 else
     @everywhere num_samples = 50
     @everywhere num_point_samples = 200
-    @everywhere max_num_qubits = 12
+    @everywhere max_num_qubits = 6
+    @everywhere vqe_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
+    @everywhere adapt_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
+    @everywhere ball_sampling_radii = vcat(0.0:0.01:(0.2-0.01),0.2:0.2:5)
     @everywhere data_path_prefix = "data/data"
 end
+glob_to_del = "./$(data_path_prefix)*.$(data_path_suffix)"
+println("Deleting files... $(glob_to_del)")
+rm.(glob(glob_to_del))
 @everywhere max_grad = 1e-6
 @everywhere use_norm = true
 @everywhere max_adapt_layers = 50
-@everywhere vqe_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
-@everywhere adapt_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
-@everywhere ball_sampling_radii = vcat(0.0:0.01:(0.2-0.01),0.2:0.2:5)
 @everywhere opt_spec_1 = Dict("name" => "LD_LBFGS", "maxeval" => 5000)
 @everywhere opt_spec_2 = Optim.LBFGS(
     m=100,
     alphaguess=LineSearches.InitialStatic(alpha=0.5),
     linesearch=LineSearches.HagerZhang()
 )
-@everywhere data_path_suffix = "csv"
 
 @everywhere function analyze_results!(res_dict, ham, opt_states)
     gse = get_ground_state(ham)
@@ -205,15 +221,15 @@ end
 
     return Dict(
         "result_dict" => res,
-        "sampled_energies_list" => sampled_energies_list,
-        "sampled_energy_errors_list" => sampled_energy_errors_list,
-        "sampled_relative_energy_errors_list" => sampled_relative_energy_errors_list,
-        "sampled_grads_list" => sampled_grads_list,
-        "sampled_depths" => sampled_depths,
-        "ball_sampled_energies_list" => ball_sampled_energies_list,
-        "ball_sampled_energy_errors_list" => ball_sampled_energy_errors_list,
-        "ball_sampled_relative_energy_errors_list" => ball_sampled_relative_energy_errors_list,
-        "ball_sampled_grads_list" => ball_sampled_grads_list,
+        "whole_sampled_en" => sampled_energies_list,
+        "whole_sampled_en_err" => sampled_energy_errors_list,
+        "whole_sampled_rel_en_err" => sampled_relative_energy_errors_list,
+        "whole_sampled_grad" => sampled_grads_list,
+        "whole_sampled_depths" => sampled_depths,
+        "ball_sampled_en" => ball_sampled_energies_list,
+        "ball_sampled_en_err" => ball_sampled_energy_errors_list,
+        "ball_sampled_rel_en_err" => ball_sampled_relative_energy_errors_list,
+        "ball_sampled_grad" => ball_sampled_grads_list,
         "ball_sampled_rads" => ball_sampled_rads,
         "pars_dict" => Dict("seed" => seed, "method" => method, "n" => n, "d" => d),
     )
@@ -241,122 +257,55 @@ for n=4:2:max_num_qubits
     println("Starting n=$n qubits"); flush(stdout)
     t_0 = time()
     results = pmap(inst -> run_instance(inst[1], n, inst[2], inst[3]), problem_instances)
-    println("Dumping"); flush(stdout)
-    df_res   = DataFrame(n=[], method=[], d=[], seed=[], 
-        energies=[], 
-        sim_dur=[],
-        samp_dur=[],
-        ball_samp_dur=[],
-        max_grads=[], 
-        opt_pars=[], 
-        energy_errors=[], 
-        approx_ratio=[], 
-        relative_error=[],
-        ground_state_overlaps=[],
-        final_energy_errors=[],
-        final_approx_ratio=[],
-        final_relative_error=[],
-        final_ground_state_overlaps=[]
-        )
-    df_grads = DataFrame(n=[], method=[], d=[], seed=[],
-        grad=[]
-        )
-    df_ens   = DataFrame(n=[], method=[], d=[], seed=[],
-        en=[]
-        )
-    df_en_errs   = DataFrame(n=[], method=[], d=[], seed=[],
-        en_err=[]
-        )
-    df_rel_en_errs   = DataFrame(n=[], method=[], d=[], seed=[],
-        rel_en_err=[]
-        )
-    df_grads_ball = DataFrame(n=[], method=[], rad=[], seed=[],
-        grad=[]
-        )
-    df_ens_ball   = DataFrame(n=[], method=[], rad=[], seed=[],
-        en=[]
-        )
-    df_en_errs_ball   = DataFrame(n=[], method=[], rad=[], seed=[],
-        en_err=[]
-        )
-    df_rel_en_errs_ball   = DataFrame(n=[], method=[], rad=[], seed=[],
-        rel_en_err=[]
-        )
+    println("Processing data..."); flush(stdout)
+
+    df_res = DataFrame(n=[], method=[], d=[], seed=[], energies=[], sim_dur=[], samp_dur=[],
+        ball_samp_dur=[], max_grads=[], opt_pars=[], energy_errors=[], 
+        approx_ratio=[], relative_error=[], ground_state_overlaps=[], final_energy_errors=[],
+        final_approx_ratio=[], final_relative_error=[], final_ground_state_overlaps=[])
+    
     for res in results
-        _res_dict = res["result_dict"]
+        _res_dict = copy(res["result_dict"])
         pop!(_res_dict, "ansatz")
-        _pars_dict = res["pars_dict"]
-
+        _pars_dict = copy(res["pars_dict"])
         push!(df_res, merge(_pars_dict, _res_dict))
-        # Whole sampling
-        _l = length(res["ball_sampled_grads_list"])
-        for (d,_energies,_grads,_errs,_rel_errs)=zip(res["sampled_depths"], res["sampled_energies_list"], res["sampled_grads_list"], res["sampled_energy_errors_list"], res["sampled_relative_energy_errors_list"])
-            for e in _energies
-                _d_out = merge(Dict("en" => e), _pars_dict)
-                _d_out["d"] = d
-                push!(df_ens, _d_out)
-            end
-            for g in _grads
-                _d_out = merge(Dict("grad" => g), _pars_dict)
-                _d_out["d"] = d
-                push!(df_grads, _d_out)
-            end
-            for en_err in _errs
-                _d_out = merge(Dict("en_err" => en_err), _pars_dict)
-                _d_out["d"] = d
-                push!(df_en_errs, _d_out)
-            end
-            for rel_en_err in _rel_errs
-                _d_out = merge(Dict("rel_en_err" => rel_en_err), _pars_dict)
-                _d_out["d"] = d
-                push!(df_rel_en_errs, _d_out)
-            end
-        end
+    end
 
-        # Ball sampling
-        """ This is taking a while, this could potentially be improved in terms
-        of performance by doing something like `df_tmp = DataFrame(rad=res["ball_sampled_rads"], ...)`
-        and then `df_tmp["n"] = n`, etc., then concatenating then DataFrames.
-        """
-        _l = length(res["ball_sampled_grads_list"])
-        for (rad,_energies,_grads,_errs,_rel_errs)=zip(res["ball_sampled_rads"], res["ball_sampled_energies_list"], res["ball_sampled_grads_list"], res["ball_sampled_energy_errors_list"], res["ball_sampled_relative_energy_errors_list"])
-            for e in _energies
-                _d_out = merge(Dict("en" => e), _pars_dict)
-                _d_out["rad"] = rad
-                delete!(_d_out, "d")
-                push!(df_ens_ball, _d_out)
-            end
-            for g in _grads
-                _d_out = merge(Dict("grad" => g), _pars_dict)
-                _d_out["rad"] = rad
-                delete!(_d_out, "d")
-                push!(df_grads_ball, _d_out)
-            end
-            for en_err in _errs
-                _d_out = merge(Dict("en_err" => en_err), _pars_dict)
-                _d_out["rad"] = rad
-                delete!(_d_out, "d")
-                push!(df_en_errs_ball, _d_out)
-            end
-            for rel_en_err in _rel_errs
-                _d_out = merge(Dict("rel_en_err" => rel_en_err), _pars_dict)
-                _d_out["rad"] = rad
-                delete!(_d_out, "d")
-                push!(df_rel_en_errs_ball, _d_out)
+    df_dict = Dict{Any, DataFrame}()
+    output_vars = [:grad, :en, :en_err, :rel_en_err]
+    output_methods = [(:d, :whole, "depths"), (:rad, :ball, "rads")]
+    for o_var in output_vars
+        for (dmet, o_meth, dmet_str)=output_methods
+            df_dict[(o_var, o_meth, dmet)] = DataFrame(Dict("n"=>[], "method"=>[], String(dmet)=>[], "seed"=>[], String(o_var)=>[]))
+            for res in results
+                ovar_list = res[String(o_meth) * "_sampled_" * String(o_var)]
+                dmet_list = res[String(o_meth) * "_sampled_" * String(dmet_str)]
+
+                if length(ovar_list) != length(dmet_list)
+                    error("uh oh")
+                end
+
+                for (_dmet, _ovar)=zip(dmet_list, ovar_list)
+                    l_ovar = length(_ovar)
+                    append!(df_dict[(o_var, o_meth, dmet)], DataFrame(Dict(
+                        "n" => repeat([n], l_ovar),
+                        "method" => repeat([res["pars_dict"]["method"]], l_ovar),
+                        "seed" => repeat([res["pars_dict"]["seed"]], l_ovar),
+                        String(dmet) => repeat([_dmet], l_ovar),
+                        String(o_var) => _ovar,
+                    )))
+                end
             end
         end
     end
 
+   println("Writing to disk..."); flush(stdout)
+    for (name,df_out)=df_dict
+        o_var, o_meth, dmet = String.(name)
+        df_out_path = "$(data_path_prefix)_$(o_meth)_$(o_var)_$(n).$(data_path_suffix)"
+        CSV.write(df_out_path, df_out)
+    end
+
     CSV.write("$(data_path_prefix)_res_$(n).$(data_path_suffix)", df_res)
-    CSV.write("$(data_path_prefix)_en_$(n).$(data_path_suffix)", df_ens)
-    CSV.write("$(data_path_prefix)_grad_$(n).$(data_path_suffix)", df_grads)
-    CSV.write("$(data_path_prefix)_en_errs_$(n).$(data_path_suffix)", df_en_errs)
-    CSV.write("$(data_path_prefix)_rel_en_errs_$(n).$(data_path_suffix)", df_rel_en_errs)
-
-    CSV.write("$(data_path_prefix)_ball_en_$(n).$(data_path_suffix)", df_ens_ball)
-    CSV.write("$(data_path_prefix)_ball_grad_$(n).$(data_path_suffix)", df_grads_ball)
-    CSV.write("$(data_path_prefix)_ball_en_errs_$(n).$(data_path_suffix)", df_en_errs_ball)
-    CSV.write("$(data_path_prefix)_ball_rel_en_errs_$(n).$(data_path_suffix)", df_rel_en_errs_ball)
-
     println("Finished n=$n qubits in $(time()-t_0) seconds"); flush(stdout)
 end

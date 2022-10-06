@@ -13,20 +13,31 @@ if length(ARGS) >= 1
     debug_arg = ARGS[1]
     if debug_arg == "debug"
         debug = true
+    elseif debug_arg == "full_run"
+        debug = false
     else
-        error("Invalid arg: $debug_arg")
+        @warn "Invalid arg: $(debug_arg), using debug mode"
+        debug = true
     end
 else
-    debug = false
+    debug = true
+end
+
+if debug
+    println("Running in debug mode")
+else
+    println("Running in full-run mode")
 end
 
 # Hyperparameters
 if debug
     max_num_qubits = 4
+    max_inst_sample = 1
     FIGS_DIR = "./debug_figs"
     DATA_DIR = "./debug_data"
 else
     max_num_qubits = 12
+    max_inst_sample = 5
     FIGS_DIR = "./figs"
     DATA_DIR = "./data"
 end
@@ -49,27 +60,27 @@ end
 t_0 = time()
 println("Loading data..."); flush(stdout)
 
-df_en = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_en_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
-df_grad = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_grad_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
-df_en_errs = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_en_errs_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
-df_rel_en_errs = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_rel_en_errs_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
+df_en =               vcat([DataFrame(CSV.File("$(DATA_DIR)/data_whole_en_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
+df_grad =             vcat([DataFrame(CSV.File("$(DATA_DIR)/data_whole_grad_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
+df_en_err =          vcat([DataFrame(CSV.File("$(DATA_DIR)/data_whole_en_err_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
+df_rel_en_err =      vcat([DataFrame(CSV.File("$(DATA_DIR)/data_whole_rel_en_err_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 
-df_ball_en = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_en_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
-df_ball_grad = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_grad_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
-df_ball_en_errs = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_en_errs_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
-df_ball_rel_en_errs = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_rel_en_errs_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
+df_ball_en =          vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_en_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
+df_ball_grad =        vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_grad_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
+df_ball_en_err =     vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_en_err_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
+df_ball_rel_en_err = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_ball_rel_en_err_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
 
 df_dict_ball = Dict(
     "en" => df_ball_en,
     "grad" => df_ball_grad,
-    "en_errs" => df_ball_en_errs,
-    "rel_en_errs" => df_ball_rel_en_errs,
+    "en_err" => df_ball_en_err,
+    "rel_en_err" => df_ball_rel_en_err,
 )
 df_dict = Dict(
     "en" => df_en,
     "grad" => df_grad,
-    "en_errs" => df_en_errs,
-    "rel_en_errs" => df_rel_en_errs,
+    "en_err" => df_en_err,
+    "rel_en_err" => df_rel_en_err,
 )
 
 df_res = vcat([DataFrame(CSV.File("$(DATA_DIR)/data_res_$(n).$(DATA_SUFFIX)")) for n=qubit_range]...)
@@ -84,7 +95,7 @@ println("Took $(time()-t_0) seconds"); flush(stdout)
 
 # Utility Functions
 function mean_on(df, grp_cols, mean_col; aggr_fn = mean)
-    gdf = groupby(df, grp_cols)
+    gdf = DataFrames.groupby(df, grp_cols)
     return combine(gdf, mean_col => (x -> aggr_fn(x)) => mean_col)
 end
 
@@ -136,17 +147,17 @@ function plot_1(aggr, sampling, fn, select_instance = missing)
         use_safe_floor = false
         use_abs = false
         yaxis_scale = :linear
-    elseif fn === "en_errs"
-        _df_fn = _df_dict["en_errs"]
-        st = "En Errs"
+    elseif fn === "en_err"
+        _df_fn = _df_dict["en_err"]
+        st = "En Err"
         st_long = "energy_errors"
         symb = :en_err
         use_safe_floor = true
         use_abs = true
         yaxis_scale = :linear
-    elseif fn === "rel_en_errs"
-        _df_fn = _df_dict["rel_en_errs"]
-        st = "Rel En Errs"
+    elseif fn === "rel_en_err"
+        _df_fn = _df_dict["rel_en_err"]
+        st = "Rel En Err"
         st_long = "relative_energy_errors"
         symb = :rel_en_err
         use_safe_floor = true
@@ -275,7 +286,7 @@ end
 function main()
     for fn in ["mean", "var"]
         for strat in ["layers", "ball"]
-            for fom in ["grad", "en", "en_errs", "rel_en_errs"]
+            for fom in ["grad", "en", "en_err", "rel_en_err"]
                 plot_1(fn, strat, fom, missing)
             end
         end
@@ -288,11 +299,13 @@ function main()
     #plot_2(:relative_error; leg_pos=:bottomright, yaxis_scale=:linear) # This is just the approximation ratio
     plot_2(:ground_state_overlaps; leg_pos=:bottomleft, safe_floor_agg=true)
 
-    individual_instances = [Dict("n" => n, "seed" => seed) for (n,seed)=product(4:2:max_num_qubits,1:5)]
+    if debug return nothing end
+
+    individual_instances = [Dict("n" => n, "seed" => seed) for (n,seed)=product(4:2:max_num_qubits,1:max_inst_sample)]
     for inst in individual_instances
         for fn in ["mean", "var"]
             for strat in ["layers", "ball"]
-                for fom in ["grad", "en", "en_errs", "rel_en_errs"]
+                for fom in ["grad", "en", "en_err", "rel_en_err"]
                     plot_1(fn, strat, fom, inst)
                 end
             end
