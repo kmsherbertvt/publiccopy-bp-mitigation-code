@@ -276,7 +276,7 @@ for n=4:2:max_num_qubits
     output_methods = [(:d, :whole, "depths"), (:rad, :ball, "rads")]
     for o_var in output_vars
         for (dmet, o_meth, dmet_str)=output_methods
-            df_dict[(o_var, o_meth, dmet)] = DataFrame(Dict("n"=>[], "method"=>[], String(dmet)=>[], "seed"=>[], String(o_var)=>[]))
+            df_dict[(o_var, o_meth, dmet)] = DataFrame(Dict("n"=>[], "method"=>[], String(dmet)=>[], "dans"=>[], "seed"=>[], String(o_var)=>[]))
             for res in results
                 ovar_list = res[String(o_meth) * "_sampled_" * String(o_var)]
                 dmet_list = res[String(o_meth) * "_sampled_" * String(dmet_str)]
@@ -285,12 +285,18 @@ for n=4:2:max_num_qubits
                     error("uh oh")
                 end
 
+                dans = res["pars_dict"]["d"]
+                if dans === missing
+                    dans = 0
+                end
+
                 for (_dmet, _ovar)=zip(dmet_list, ovar_list)
                     l_ovar = length(_ovar)
                     append!(df_dict[(o_var, o_meth, dmet)], DataFrame(Dict(
                         "n" => repeat([n], l_ovar),
                         "method" => repeat([res["pars_dict"]["method"]], l_ovar),
                         "seed" => repeat([res["pars_dict"]["seed"]], l_ovar),
+                        "dans" => repeat([dans], l_ovar),
                         String(dmet) => repeat([_dmet], l_ovar),
                         String(o_var) => _ovar,
                     )))
