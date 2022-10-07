@@ -56,8 +56,8 @@ if debug
 else
     @everywhere num_samples = 50
     @everywhere num_point_samples = 200
-    @everywhere max_num_qubits = 6
-    @everywhere vqe_sampling_depths = [50]
+    @everywhere max_num_qubits = 12
+    @everywhere vqe_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
     @everywhere adapt_sampling_depths = vcat(1:10,10:5:50,60:10:100,150:50:400)
     @everywhere ball_sampling_radii = vcat(0.0:0.01:(0.2-0.01),0.2:0.2:5)
     @everywhere data_path_prefix = "data/data"
