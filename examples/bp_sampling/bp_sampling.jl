@@ -51,7 +51,7 @@ if debug
     @everywhere max_num_qubits = 4
     @everywhere adapt_sampling_depths = [1,2,3]
     @everywhere ball_sampling_radii = [0.0, 0.05]
-    @everywhere vqe_sampling_depths = [2]
+    @everywhere vqe_sampling_depths = [2, 5]
     @everywhere data_path_prefix = "debug_data/data"
 else
     @everywhere num_samples = 50
