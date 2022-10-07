@@ -118,8 +118,9 @@ end
 
 # Main Plots
 
-function plot_1(aggr, sampling, fn, select_instance = missing)
+function plot_1(aggr, sampling, fn, select_instance = missing, depth = 200)
     """ 4 plots, x axis is number of layers, y axis is var grad, hue num qubits """
+    println("Plotting plot1 aggr=$aggr sampling=$sampling fn=$fn inst=$select_instance depth=$depth")
     plot_names = unique(df_en[!, :method])
 
     if sampling === "ball"
@@ -197,15 +198,23 @@ function plot_1(aggr, sampling, fn, select_instance = missing)
         filename = filename * "_n$(_n)seed$(_seed)"
     end
 
-    ymin = minimum(_df_fn[!, symb])
-    ymax = maximum(_df_fn[!, symb])
-
     plots = Dict()
     for nm in plot_names
-        _df = mean_on(filter(:method => ==(nm), _df_fn), [:n, x_axis], symb; aggr_fn = aggr_fn)
+        title=replace(uppercase(nm), "_" => " ")
+        if depth !== missing && sampling == "ball"
+            cols = [:n, x_axis, :dans]
+        else
+            cols = [:n, x_axis]
+        end
+        _df = mean_on(filter(:method => ==(nm), _df_fn), cols, symb; aggr_fn = aggr_fn)
+        if depth !== missing && sampling == "ball" && nm == "vqe"
+            _df = filter(:dans => ==(depth), _df)
+            title = title * "(d=$depth)"
+        end
+        if nrow(_df) == 0 error("Empty DataFrame") end
         plots[nm] = @df _df plot(cols(x_axis), cols(symb), group=:n, 
             yaxis=yaxis_scale, 
-            title=replace(uppercase(nm), "_" => " "),
+            title=title,
             xlabel=x_axis_label,
             ylabel=ylabel,
             #ylim=(ymin,ymax),
@@ -289,9 +298,9 @@ end
 # Main
 function main()
     for fn in ["mean", "var"]
-        for strat in ["layers", "ball"]
+        for strat in ["ball", "layers"]
             for fom in ["grad", "en", "en_err", "rel_en_err"]
-                plot_1(fn, strat, fom, missing)
+                plot_1(fn, strat, fom, missing, if strat == "layers" missing else 200 end)
             end
         end
     end
